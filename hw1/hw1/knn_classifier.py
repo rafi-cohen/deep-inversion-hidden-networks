@@ -152,7 +152,23 @@ def find_best_k(ds_train: Dataset, k_choices, num_folds):
         #  random split each iteration), or implement something else.
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        k_accuracies = []
+        import torch.utils.data.sampler as sampler
+        indices = np.arange(len(ds_train))
+        folds_indices = np.array(np.split(indices, num_folds))
+        for j in range(num_folds):
+            validation_indices = folds_indices[j]
+            validation_samples, validation_labels = tuple(zip(*[ds_train[j] for j in validation_indices]))
+            train_indices = np.delete(folds_indices, j, 0).flatten()
+            train_sampler = sampler.SubsetRandomSampler(train_indices)
+            dl_train = torch.utils.data.DataLoader(ds_train, sampler=train_sampler, batch_size=1024, num_workers=2)
+
+            model.train(dl_train)
+            y_pred = model.predict(torch.stack(validation_samples))
+            y_true = torch.Tensor(validation_labels)
+            k_accuracies.append(accuracy(y_true, y_pred))
+
+        accuracies.append(k_accuracies)
         # ========================
 
     best_k_idx = np.argmax([np.mean(acc) for acc in accuracies])
