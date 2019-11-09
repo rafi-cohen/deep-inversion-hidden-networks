@@ -89,7 +89,11 @@ def l2_dist(x1: Tensor, x2: Tensor):
 
     dists = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    a_squared = torch.diag(torch.mm(x1, x1.t())).reshape(-1, 1)
+    ab = torch.mm(x1, x2.t())
+    b_squared = torch.diag(torch.mm(x2, x2.t()))
+    dists = a_squared - 2*ab + b_squared
+    dists = torch.sqrt(dists)
     # ========================
 
     return dists
