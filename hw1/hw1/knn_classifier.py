@@ -110,10 +110,10 @@ def accuracy(y: Tensor, y_pred: Tensor):
     assert y.shape == y_pred.shape
     assert y.dim() == 1
 
-    # TODO: Calculate prediction accuracy. Don't use an explicit loop.
+    # DONE: Calculate prediction accuracy. Don't use an explicit loop.
     accuracy = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    accuracy = torch.sum(y == y_pred).item() / y.numel()
     # ========================
 
     return accuracy
