@@ -70,7 +70,7 @@ class KNNClassifier(object):
             dists_i = dist_matrix[:, i]
             _, indices = torch.topk(dists_i, self.k, largest=False)
             k_labels = self.y_train[indices]
-            y_pred[i] = k_labels[torch.bincount(k_labels).argmax()]
+            y_pred[i] = torch.bincount(k_labels).argmax()
             # ========================
 
         return y_pred
