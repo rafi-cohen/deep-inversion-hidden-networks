@@ -67,14 +67,10 @@ class KNNClassifier(object):
             #  - Set y_pred[i] to the most common class among them
             #  - Don't use an explicit loop.
             # ====== YOUR CODE: ======
-            from collections import Counter
-            dists = dist_matrix[:, i]
-            labeled_dists = list(zip(dists, self.y_train))
-            k_best = sorted(labeled_dists)[:self.k]
-            k_labels = list(map(lambda t: t[1], k_best))
-            counter = Counter(k_labels)
-            y_pred[i] = counter.most_common(1)[0][0].item()
-
+            dists_i = dist_matrix[:, i]
+            _, indices = torch.topk(dists_i, self.k, largest=False)
+            k_labels = self.y_train[indices]
+            y_pred[i] = k_labels[torch.bincount(k_labels).argmax()]
             # ========================
 
         return y_pred
