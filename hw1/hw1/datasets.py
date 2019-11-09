@@ -36,6 +36,9 @@ class RandomImageDataset(Dataset):
         #  the random state outside this method.
 
         # ====== YOUR CODE: ======
+        if not 0 <= index < self.num_samples:
+            raise IndexError()
+
         rng = np.random.RandomState(seed=index)
         sample = rng.randint(low=0, high=256, size=self.image_dim)
         sample = torch.from_numpy(sample)
