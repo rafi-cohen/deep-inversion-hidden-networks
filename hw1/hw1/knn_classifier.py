@@ -78,7 +78,7 @@ def l2_dist(x1: Tensor, x2: Tensor):
     represents the distance between x1 sample i and x2 sample j.
     """
 
-    # TODO:
+    # DONE:
     #  Implement L2-distance calculation efficiently as possible.
     #  Notes:
     #  - Use only basic pytorch tensor operations, no external code.
