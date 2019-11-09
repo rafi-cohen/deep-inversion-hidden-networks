@@ -23,14 +23,19 @@ class KNNClassifier(object):
         :return: self
         """
 
-        # TODO:
+        # DONE:
         #  Convert the input dataloader into x_train, y_train and n_classes.
         #  1. You should join all the samples returned from the dataloader into
         #     the (N,D) matrix x_train and all the labels into the (N,) vector
         #     y_train.
         #  2. Save the number of classes as n_classes.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        x_train = torch.FloatTensor()
+        y_train = torch.LongTensor()
+        for sample, label in dl_train:
+            x_train = torch.cat((x_train, sample))
+            y_train = torch.cat((y_train, label))
+        n_classes = len(set(y_train))  # count number of unique labels
         # ========================
 
         self.x_train = x_train
@@ -48,7 +53,7 @@ class KNNClassifier(object):
         # Calculate distances between training and test samples
         dist_matrix = l2_dist(self.x_train, x_test)
 
-        # TODO:
+        # DONE:
         #  Implement k-NN class prediction based on distance matrix.
         #  For each training sample we'll look for it's k-nearest neighbors.
         #  Then we'll predict the label of that sample to be the majority
@@ -57,12 +62,19 @@ class KNNClassifier(object):
         n_test = x_test.shape[0]
         y_pred = torch.zeros(n_test, dtype=torch.int64)
         for i in range(n_test):
-            # TODO:
+            # DONE:
             #  - Find indices of k-nearest neighbors of test sample i
             #  - Set y_pred[i] to the most common class among them
             #  - Don't use an explicit loop.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            from collections import Counter
+            dists = dist_matrix[:, i]
+            labeled_dists = list(zip(dists, self.y_train))
+            k_best = sorted(labeled_dists)[:self.k]
+            k_labels = list(map(lambda t: t[1], k_best))
+            counter = Counter(k_labels)
+            y_pred[i] = counter.most_common(1)[0][0].item()
+
             # ========================
 
         return y_pred
