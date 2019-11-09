@@ -29,14 +29,18 @@ class RandomImageDataset(Dataset):
         :return: A tuple (sample, label).
         """
 
-        # TODO:
+        # DONE:
         #  Create a random image tensor and return it.
         #  Try to make sure to always return the same image for the
         #  same index (make it deterministic per index), but don't mess-up
         #  the random state outside this method.
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        rng = np.random.RandomState(seed=index)
+        sample = rng.randint(low=0, high=256, size=self.image_dim)
+        sample = torch.from_numpy(sample)
+        label = rng.randint(low=0, high=self.num_classes)
+        return sample, label
         # ========================
 
     def __len__(self):
@@ -44,7 +48,7 @@ class RandomImageDataset(Dataset):
         :return: Number of samples in this dataset.
         """
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        return self.num_samples
         # ========================
 
 
