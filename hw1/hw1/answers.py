@@ -26,12 +26,16 @@ part2_q2 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. Selecting the best model with respect to the train-set accuracy basically means choosing the most overfitted model.
+    Doing so is against the idea of selecting a model that can make generalized predictions on unseen data.
+
+    On the other hand, while using k-fold CV, we are able to test the model's accuracy on unseen data
+    even *during* the training process, which allows us to asses its generalization ability for future unseen datasets.
+
+2. Selecting the best model with respect to the test-set accuracy after training the model on the entire
+    train-set might hinder the generalization of the model on unseen data. The reason for that is that we don't 
+    know whether the test-set is a good representation of the real distribution of the data, and therefore selecting
+    our parameters based on the accuracy on this set could lead to biased results.
 
 """
 
