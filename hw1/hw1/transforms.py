@@ -10,9 +10,9 @@ class TensorView(object):
         self.view_dims = view_dims
 
     def __call__(self, tensor: torch.Tensor):
-        # TODO: Use Tensor.view() to implement the transform.
+        # DONE: Use Tensor.view() to implement the transform.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        return tensor.view(self.view_dims)
         # ========================
 
 
