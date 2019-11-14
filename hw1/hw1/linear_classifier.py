@@ -24,7 +24,7 @@ class LinearClassifier(object):
 
         self.weights = None
         # ====== YOUR CODE: ======
-        self.weights = torch.normal(mean=0, std=weight_std, size=(n_features+1, n_classes))
+        self.weights = torch.normal(mean=0, std=weight_std, size=(n_features, n_classes))
         # ========================
 
     def predict(self, x: Tensor):
@@ -47,7 +47,7 @@ class LinearClassifier(object):
         y_pred, class_scores = None, None
         # ====== YOUR CODE: ======
         class_scores = torch.mm(x, self.weights)
-        y_pred = torch.argmax(class_scores, dim=0)
+        y_pred = torch.argmax(class_scores, dim=1)
         # ========================
 
         return y_pred, class_scores
