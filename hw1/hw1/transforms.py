@@ -61,9 +61,12 @@ class BiasTrick(object):
         """
         assert x.dim() > 0, "Scalars not supported"
 
-        # TODO:
+        # DONE:
         #  Add a 1 at the beginning of the given tensor's feature dimension.
         #  Hint: See torch.cat().
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        size = list(x.shape)
+        size[-1] = 1
+        ones = x.new_ones(size)
+        return torch.cat((ones, x), -1)
         # ========================
