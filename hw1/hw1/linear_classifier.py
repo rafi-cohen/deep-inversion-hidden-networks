@@ -62,7 +62,7 @@ class LinearClassifier(object):
         :return: The accuracy in percent.
         """
 
-        # TODO:
+        # DONE:
         #  calculate accuracy of prediction.
         #  Use the predict function above and compare the predicted class
         #  labels to the ground truth labels to obtain the accuracy (in %).
@@ -70,7 +70,7 @@ class LinearClassifier(object):
 
         acc = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        acc = torch.sum(y == y_pred).item() / y.numel()
         # ========================
 
         return acc * 100
