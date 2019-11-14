@@ -39,14 +39,15 @@ class LinearClassifier(object):
                 per sample.
         """
 
-        # TODO:
+        # DONE:
         #  Implement linear prediction.
         #  Calculate the score for each class using the weights and
         #  return the class y_pred with the highest score.
 
         y_pred, class_scores = None, None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = torch.mm(x, self.weights)
+        y_pred = torch.argmax(class_scores, dim=0)
         # ========================
 
         return y_pred, class_scores
