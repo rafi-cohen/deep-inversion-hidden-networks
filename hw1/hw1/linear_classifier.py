@@ -18,13 +18,13 @@ class LinearClassifier(object):
         self.n_features = n_features
         self.n_classes = n_classes
 
-        # TODO:
+        # DONE:
         #  Create weights tensor of appropriate dimensions
         #  Initialize it from a normal dist with zero mean and the given std.
 
         self.weights = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.weights = torch.normal(mean=0, std=weight_std, size=(n_features+1, n_classes))
         # ========================
 
     def predict(self, x: Tensor):
