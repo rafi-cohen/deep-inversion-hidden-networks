@@ -26,7 +26,7 @@ class InvertColors(object):
         :param x: A tensor of shape (C,H,W) representing an image.
         :return: The image with inverted colors.
         """
-        # TODO: Invert the colors of the input image.
+        # DONE: Invert the colors of the input image.
         # ====== YOUR CODE: ======
         return 1. - x
         # ========================
@@ -38,7 +38,7 @@ class FlipUpDown(object):
         :param x: A tensor of shape (C,H,W) representing an image.
         :return: The image, flipped around the horizontal axis.
         """
-        # TODO: Flip the input image so that up is down.
+        # DONE: Flip the input image so that up is down.
         # ====== YOUR CODE: ======
         return torch.flip(x, [1])
         # ========================
