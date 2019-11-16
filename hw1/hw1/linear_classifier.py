@@ -148,12 +148,13 @@ class LinearClassifier(object):
         :return: Tensor of shape (n_classes, C, H, W).
         """
 
-        # TODO:
+        # DONE:
         #  Convert the weights matrix into a tensor of images.
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        w_images = self.weights[1:] if has_bias else self.weights
+        w_images = w_images.reshape(self.n_classes, *img_shape)
         # ========================
 
         return w_images
