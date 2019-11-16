@@ -63,12 +63,20 @@ part3_q2 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The differences between the visualization images of the weights above illustrate how the various shapes
+of the different digit classes were translated into the different weight vectors. It appears that digit classes
+that look very different from each other were translated into very different weight vectors. For example, the 
+images relating to the weights of the digits 9 and 5 are very different from each other. On the other hand,
+digits that look fairly similar to each other, for example, 6 and 5, were translated to relatively similar 
+weight vectors, which explains one of the classification errors - where the digit 5 was mistakenly classified as
+the digit 6.
+
+This interpretation is similar to KNN in the following regard:
+* Whereas KNN classifies each sample by looking at its nearest neighbor in the training set, SVM models the common
+traits of each class digit in its weights vector ($\vec{w_j}$) and then finds the "closest" class to the sample
+($\vec{x_i}$) by choosing the class whose score ($\vectr{w_j} \vec{x_i}$) is the greatest. Therefore, the classes can be seen as
+the neighbors, the scores as the distances (where a greater score means a smaller distance),
+and SVM chooses the "nearest" class.
 
 """
 
@@ -76,12 +84,18 @@ part3_q3 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. The curve of the training set loss in our graph is pretty smooth, and therefore we think that value we chose for the
+learning rate ($\eta=0.025$) is good. Had we chosen a value which is too low, the algorithm would not have been able
+to converge enough in 30 epochs, and therefore the loss wouldn't have gone as low as in our graph.
+On the other hand, had we chosen a value which is too high, the algorithm would've converged faster, but after
+getting close to the local minimum, the higher learning rate would've made it sway back and forth close to that point,
+which would've translated into spikes in the loss curve.
+
+2. Based on the difference between the accuracy curves on the train and validation sets, we think that our model is
+slightly overfitted to the training set. It appears that after about 10 epochs the accuracy of the model on the
+validation set has reached its peak (about 90%), and after that it did not seem to improve any longer. On the other
+hand, the accuracy of the model on the training set *did* continue to improve even after the 10th epoch, which indicates
+that the model started overfitting itself to the training data in the later epochs.
 
 """
 
