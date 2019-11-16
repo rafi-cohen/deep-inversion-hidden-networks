@@ -90,7 +90,7 @@ class LinearClassifier(object):
             total_correct = 0
             average_loss = 0
 
-            # TODO:
+            # DONE:
             #  Implement model training loop.
             #  1. At each epoch, evaluate the model on the entire training set
             #     (batch by batch) and update the weights.
@@ -102,7 +102,21 @@ class LinearClassifier(object):
             #     using the weight_decay parameter.
 
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            for samples_batch, labels_batch in dl_train:
+                y_pred, class_scores = self.predict(samples_batch)
+                loss = loss_fn(samples_batch, labels_batch, class_scores, y_pred)
+                loss += (weight_decay/2)*(self.weights.norm()**2)
+                train_res.loss.append(loss)
+                train_res.accuracy.append(self.evaluate_accuracy(labels_batch, y_pred))
+                grad = loss_fn.grad() + weight_decay*self.weights
+                self.weights = self.weights - learn_rate*grad
+
+            for samples_batch, labels_batch in dl_valid:
+                y_pred, class_scores = self.predict(samples_batch)
+                loss = loss_fn(samples_batch, labels_batch, class_scores, y_pred)
+                loss += (weight_decay / 2) * (self.weights.norm() ** 2)
+                valid_res.loss.append(loss)
+                valid_res.accuracy.append(self.evaluate_accuracy(labels_batch, y_pred))
             # ========================
             print('.', end='')
 
