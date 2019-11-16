@@ -48,12 +48,14 @@ part3_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The selection of $\Delta > 0$ is arbitrary for the SVM loss $L(\mat{W})$ because the loss, as defined above,
+is affected by both the value of $\Delta$ and the distances between the scores.
+However, the hyperparameter $\lambda$ controls the magnitude of the weights, therefore allowing us
+to stretch/shrink them and by doing so we can effectively control the distances between the scores.
+Therefore given a model with the hyperparameters $\Delta_1, \lambda_1$, and another model
+with the hyperparameter $\Delta_2\neq\Delta_1$, we can find a $\lambda_2$ such that both models will behave the same.
+This means that we can safely set $\Delta$ at a fixed value (e.g. $\Delta=1$) and then just tune the $\lambda$
+hyperparameter, instead of tuning both parameters. 
 
 """
 
