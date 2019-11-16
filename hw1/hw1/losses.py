@@ -60,14 +60,17 @@ class SVMHingeLoss(ClassifierLoss):
         M = x_scores - y_scores + self.delta
         # Nullify negative elements (equivalent to calculating max(0, x))
         M[M < 0] = 0
-        loss = (torch.sum(M) - N*self.delta) / N
-        # We subtract N*self.delta, because in our summation we didn't skip the part where j==y_i for each row,
-        # so we had one excessive delta for each row (sample).
+        indices = (torch.arange(N), y)  # indices of m_i,y_i for all i in [0,N-1]
+        M[indices] = 0  # zero out m_i,y_i to 'skip' it in the summation
+        loss = (torch.sum(M)) / N
         # ========================
 
-        # TODO: Save what you need for gradient calculation in self.grad_ctx
+        # DONE: Save what you need for gradient calculation in self.grad_ctx
         # ====== YOUR CODE: ======
-        # raise NotImplementedError()
+        self.grad_ctx['M'] = M
+        self.grad_ctx['N'] = N
+        self.grad_ctx['x'] = x
+        self.grad_ctx['indices'] = indices
         # ========================
 
         return loss
@@ -78,14 +81,25 @@ class SVMHingeLoss(ClassifierLoss):
         :return: The gradient, of shape (D, C).
 
         """
-        # TODO:
+        # DONE:
         #  Implement SVM loss gradient calculation
         #  Same notes as above. Hint: Use the matrix M from above, based on
         #  it create a matrix G such that X^T * G is the gradient.
 
         grad = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        M: torch.Tensor = self.grad_ctx['M']
+        N: torch.Tensor = self.grad_ctx['N']
+        x: torch.Tensor = self.grad_ctx['x']
+        indices: torch.Tensor = self.grad_ctx['indices']
+        # initialize G with 1 where m_i,j > 0, and 0 otherwise
+        G = M.new_zeros(M.shape)
+        G[M > 0] = 1
+        # in the case of m_i,j where j=y_i, set G_i,j to be minus the numbers of time m_i,j > 0 for every j!=y_i
+        G[indices] = -torch.sum(G, dim=1)
+
+        grad = torch.mm(x.t(), G)
+        grad /= N  # divide the whole grad by N, instead of dividing each column separately
         # ========================
 
         return grad
