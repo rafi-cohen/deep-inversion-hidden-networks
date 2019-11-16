@@ -102,21 +102,37 @@ class LinearClassifier(object):
             #     using the weight_decay parameter.
 
             # ====== YOUR CODE: ======
+
+            num_batches = len(dl_train)
+            num_samples = num_batches*dl_train.batch_size
             for samples_batch, labels_batch in dl_train:
                 y_pred, class_scores = self.predict(samples_batch)
                 loss = loss_fn(samples_batch, labels_batch, class_scores, y_pred)
                 loss += (weight_decay/2)*(self.weights.norm()**2)
-                train_res.loss.append(loss)
-                train_res.accuracy.append(self.evaluate_accuracy(labels_batch, y_pred))
+                average_loss += loss.item()
+                total_correct += sum(labels_batch == y_pred)
                 grad = loss_fn.grad() + weight_decay*self.weights
                 self.weights = self.weights - learn_rate*grad
 
+            average_loss /= num_batches
+            train_res.loss.append(average_loss)
+            train_res.accuracy.append((float(total_correct) / num_samples)*100.)
+
+            average_loss = 0
+            total_correct = 0
+            num_batches = len(dl_valid)
+            num_samples = num_batches*dl_valid.batch_size
             for samples_batch, labels_batch in dl_valid:
                 y_pred, class_scores = self.predict(samples_batch)
                 loss = loss_fn(samples_batch, labels_batch, class_scores, y_pred)
                 loss += (weight_decay / 2) * (self.weights.norm() ** 2)
-                valid_res.loss.append(loss)
-                valid_res.accuracy.append(self.evaluate_accuracy(labels_batch, y_pred))
+                average_loss += loss.item()
+                total_correct += sum(labels_batch == y_pred)
+
+            average_loss /= num_batches
+            valid_res.loss.append(average_loss)
+            valid_res.accuracy.append((float(total_correct)/ num_samples)*100.)
+
             # ========================
             print('.', end='')
 
