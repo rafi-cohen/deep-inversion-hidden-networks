@@ -137,10 +137,25 @@ def top_correlated_features(df: DataFrame, target_feature, n=5):
         correlated) feature is first.
     """
 
-    # TODO: Calculate correlations with target and sort features by it
+    # DONE: Calculate correlations with target and sort features by it
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    # Calculate the correlation coefficient for every feature with the target feature
+    corrs = {}
+    y = df[target_feature]
+    mu_y = y.mean()
+    sigma_y = np.sqrt(((y - mu_y) ** 2).sum())
+    for feature in df:
+        if feature == target_feature:
+            continue
+        x = df[feature]
+        mu_x = x.mean()
+        sigma_xy = ((x - mu_x) * (y - mu_x)).sum()
+        sigma_x = np.sqrt(((x - mu_x) ** 2).sum())
+        corrs[feature] = sigma_xy / (sigma_x * sigma_y)
+
+    # Extract top n
+    top_n_features, top_n_corr = zip(*sorted(corrs.items(), key=lambda t: abs(t[1]), reverse=True)[:n])
     # ========================
 
     return top_n_features, top_n_corr
