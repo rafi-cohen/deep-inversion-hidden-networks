@@ -71,13 +71,15 @@ class BiasTrickTransformer(BaseEstimator, TransformerMixin):
         """
         X = check_array(X, ensure_2d=True)
 
-        # TODO:
+        # DONE:
         #  Add bias term to X as the first feature.
         #  See np.hstack().
 
         xb = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = X.shape[0]
+        ones = np.ones(shape=(N, 1))
+        xb = np.hstack((ones, X))
         # ========================
 
         return xb
