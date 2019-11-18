@@ -26,11 +26,11 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
         X = check_array(X)
         check_is_fitted(self, 'weights_')
 
-        # TODO: Calculate the model prediction, y_pred
+        # DONE: Calculate the model prediction, y_pred
 
         y_pred = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        y_pred = np.matmul(self.weights_, X.transpose())
         # ========================
 
         return y_pred
@@ -43,13 +43,17 @@ class LinearRegressor(BaseEstimator, RegressorMixin):
         """
         X, y = check_X_y(X, y)
 
-        # TODO:
+        # DONE:
         #  Calculate the optimal weights using the closed-form solution
         #  Use only numpy functions. Don't forget regularization.
 
         w_opt = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = X.shape[0]
+        n_features = X.shape[1]
+        diag_lambda = N * self.reg_lambda * np.identity(n_features)
+        diag_lambda[0] = 0  # ignore bias
+        w_opt = np.matmul(np.linalg.pinv(np.matmul(X.T, X) + diag_lambda), np.matmul(X.T, y))
         # ========================
 
         self.weights_ = w_opt
