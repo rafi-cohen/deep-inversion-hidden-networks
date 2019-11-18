@@ -171,7 +171,7 @@ def mse_score(y: np.ndarray, y_pred: np.ndarray):
     :return: MSE score.
     """
 
-    # TODO: Implement MSE using numpy.
+    # DONE: Implement MSE using numpy.
     # ====== YOUR CODE: ======
     mse = ((y - y_pred)**2).mean()
     # ========================
@@ -186,7 +186,7 @@ def r2_score(y: np.ndarray, y_pred: np.ndarray):
     :return: R^2 score.
     """
 
-    # TODO: Implement R^2 using numpy.
+    # DONE: Implement R^2 using numpy.
     # ====== YOUR CODE: ======
     ss_res = ((y - y_pred)**2).sum()
     ss_tot = ((y - y.mean())**2).sum()
