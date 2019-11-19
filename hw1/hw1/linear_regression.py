@@ -162,6 +162,7 @@ def top_correlated_features(df: DataFrame, target_feature, n=5):
 
     # Extract top n
     top_n_features, top_n_corr = zip(*sorted(corrs.items(), key=lambda t: abs(t[1]), reverse=True)[:n])
+    top_n_features = list(top_n_features)
     # ========================
 
     return top_n_features, top_n_corr
