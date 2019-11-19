@@ -122,7 +122,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
 
         X_transformed = None
         # ====== YOUR CODE: ======
-        X_transformed = PolynomialFeatures(degree=self.degree + 1).fit_transform(X)
+        X_transformed = PolynomialFeatures(degree=self.degree).fit_transform(X)
         # ========================
 
         return X_transformed
