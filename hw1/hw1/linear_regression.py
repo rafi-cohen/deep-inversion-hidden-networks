@@ -100,7 +100,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
         # TODO: Your custom initialization, if needed
         # Add any hyperparameters you need and save them as above
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+
         # ========================
 
     def fit(self, X, y=None):
@@ -114,7 +114,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
         """
         X = check_array(X)
 
-        # TODO:
+        # DONE:
         #  Transform the features of X into new features in X_transformed
         #  Note: You CAN count on the order of features in the Boston dataset
         #  (this class is "Boston-specific"). For example X[:,1] is the second
@@ -122,7 +122,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
 
         X_transformed = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        X_transformed = PolynomialFeatures(degree=self.degree + 1).fit_transform(X)
         # ========================
 
         return X_transformed
