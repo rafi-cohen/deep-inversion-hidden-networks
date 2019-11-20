@@ -108,25 +108,35 @@ part4_q1 = r"""
 **Your answer:**
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The ideal pattern to see in a residual plot is a pattern where most of the points can be found inside a narrow strip
+around the vertical axis: this means that for most points the magnitude of the residual $e^{(i)} = y^{(i)} - \hat{y}^{(i)}$
+is as close to zero as possible, meaning that most predictions are close to their true value. The width of the strip 
+(marked by the dotted line) is determined by the std value of the values of the points: the smaller the std, the more
+concentrated the points will be (hopefully) around the zero line.
+
+By looking at the two residual plot graphs that we have created, it is clear the pattern we described above is much
+more evident in the CV plot: in this plot almost all the points are concentrated inside a narrow strip around the zero line,
+whereas in the top-5 plot the points are significantly more scattered around a slightly wider strip. These results are not surprising as 
+the CV plot model is significantly more sophisticated than the model of the top-5 plot (a large set of non-linear featuers
+vs. a very small set of linear features).
 
 """
 
 part4_q2 = r"""
 **Your answer:**
 
+1. We think `np.logspace` was used to define the range for $\lambda$ because using a logarithmic scale allows us to easily
+generate a relatively small set of values that differ from each other in multiple orders of magnitude. This property is desired
+because it allows us to quickly find the order of magnitude of the best value of $\lambda$ without having to scan a huge set
+of values. Then, after finding the optimal order of magnitude, one can fine-tune the results even further by looking
+for the best value of $\lambda$ of that magnitude. On the other hand, this task is not possible using
+`np.linspace` which generates a set of numbers that are evenly spaced.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The number of times the model was fitted to the data can be given by:
+
+$$
+|\text{degree_range}| \times |\text{lambda_range}| \times |\text{k_folds}| = 3 \times 20 \times 3 = 180
+$$
 
 """
 
