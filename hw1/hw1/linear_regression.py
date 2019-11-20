@@ -97,7 +97,7 @@ class BostonFeaturesTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, degree=2):
         self.degree = degree
 
-        # TODO: Your custom initialization, if needed
+        # DONE: Your custom initialization, if needed
         # Add any hyperparameters you need and save them as above
         # ====== YOUR CODE: ======
 
@@ -214,7 +214,7 @@ def cv_best_hyperparams(model: BaseEstimator, X, y, k_folds,
         with some of the keys as returned by model.get_params()
     """
 
-    # TODO: Do K-fold cross validation to find the best hyperparameters
+    # DONE: Do K-fold cross validation to find the best hyperparameters
     #  Notes:
     #  - You can implement it yourself or use the built in sklearn utilities
     #    (recommended). See the docs for the sklearn.model_selection package
@@ -227,7 +227,14 @@ def cv_best_hyperparams(model: BaseEstimator, X, y, k_folds,
     #  - You can use MSE or R^2 as a score.
 
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    param_grid = {
+        'bostonfeaturestransformer__degree': degree_range,
+        'linearregressor__reg_lambda': lambda_range,
+    }
+
+    gs = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=param_grid, cv=k_folds, iid=False)
+    gs.fit(X, y)
+    best_params = gs.best_params_
     # ========================
 
     return best_params
