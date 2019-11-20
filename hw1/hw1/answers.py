@@ -12,7 +12,7 @@ part2_q1 = r"""
 **Your answer:**
 
 
-It appears that the best accuracy scores were achieved using relatively low values of k (1-5), while the best score was
+It appears that the best accuracy scores were achieved using relatively low values of `k` (1-5), while the best score was
 achieved using `k = 3`.
 
 On the one hand, by basing its prediction on a very small subset of the sample's closest neighbors the model might tend
@@ -36,6 +36,10 @@ part2_q2 = r"""
     train-set might hinder the generalization of the model on unseen data. The reason for that is that we don't 
     know whether the test-set is a good representation of the real distribution of the data, and therefore selecting
     our parameters based on the accuracy on this set could lead to biased results.
+    
+    However, in k-fold CV, we are evaluating our model on multiple different independent validation sets, and
+    then selecting the model with the best average results. This reduces the risk of the model being biased
+    towards a single set.
 
 """
 
@@ -86,7 +90,7 @@ part3_q3 = r"""
 
 1. The curve of the training set loss in our graph is pretty smooth, and therefore we think that value we chose for the
 learning rate ($\eta=0.025$) is good. Had we chosen a value which is too low, the algorithm would not have been able
-to converge enough in 30 epochs, and therefore the loss wouldn't have gone as low as in our graph.
+to converge enough in 30 epochs, and therefore the loss wouldn't have gone as low as it has in our graph.
 On the other hand, had we chosen a value which is too high, the algorithm would've converged faster, but after
 getting close to the local minimum, the higher learning rate would've made it sway back and forth close to that point,
 which would've translated into spikes in the loss curve.
@@ -117,7 +121,7 @@ concentrated the points will be (hopefully) around the zero line.
 By looking at the two residual plot graphs that we have created, it is clear the pattern we described above is much
 more evident in the CV plot: in this plot almost all the points are concentrated inside a narrow strip around the zero line,
 whereas in the top-5 plot the points are significantly more scattered around a slightly wider strip. These results are not surprising as 
-the CV plot model is significantly more sophisticated than the model of the top-5 plot (a large set of non-linear featuers
+the model corresponding the the final plot is significantly more sophisticated than the model of the top-5 plot (a large set of non-linear featuers
 vs. a very small set of linear features).
 
 """
