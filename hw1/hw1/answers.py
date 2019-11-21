@@ -66,19 +66,29 @@ hyperparameter, instead of tuning both parameters.
 part3_q2 = r"""
 **Your answer:**
 
+It is clear that the brighter parts of most of the weights images resemble the digits that these weights represent.
+This can be explained given how the model calculates the scores for the images:
 
-The differences between the visualization images of the weights above illustrate how the various shapes
-of the different digit classes were translated into the different weight vectors. It appears that digit classes
-that look very different from each other were translated into very different weight vectors. For example, the 
-images relating to the weights of the digits 9 and 5 are very different from each other. On the other hand,
-digits that look fairly similar to each other, for example, 6 and 5, were translated to relatively similar 
-weight vectors, which explains one of the classification errors - where the digit 5 was mistakenly classified as
-the digit 6.
+$$
+s_j = \vectr{w_j} x + b_j.
+$$
 
-This interpretation is similar to KNN in the following regard:
+Given an image vector $\vectr{x}$, the model calculates the compatibility score of $\vectr{x}$ for each digit class j by multiplying 
+$\vectr{x}$ by $\vectr{w_j}$ (and adding the bias). We should note that the values of $\vectr{x}$ are in the range [0,255] in order to represent
+different shades of gray (0 for white, 255 for black). Pixels in $\vectr{x}$ that create the actual shape of the digit are in white
+and therefore have lower values. That's why in order to maximize the score of $\vectr{w_j} x$ (where $\vectr{w_j}$ is the
+weight of the correct class of $\vectr{x}$), in the indices of the pixels where $\vectr{x}$ has the black background $\vectr{w_j}$ must have values
+that will 'cancel them out', whereas in the indices in $\vectr{x}$ of the actual digit $\vectr{w_j}$ must have values
+that will magnify them. That's why on average the image of each weight will look similar to the digit of the class it is
+representing after the training process.
+
+This can explain some of the classification errors seen above, for example: the digit 5 was mistakenly classified as
+the digit 6 since it appears they have relatively similar weight vectors (the images of their weights look similar).
+
+The way this model's interpretation is similar to KNN is in the following regard:
 * Whereas KNN classifies each sample by looking at its nearest neighbor in the training set, SVM models the common
 traits of each class digit in its weights vector ($\vec{w_j}$) and then finds the "closest" class to the sample
-($\vec{x_i}$) by choosing the class whose score ($\vectr{w_j} \vec{x_i}$) is the greatest. Therefore, the classes can be seen as
+($\vec{x_i}$) by choosing the class whose score ($\vec{w_j} \vec{x_i}$) is the greatest. Therefore, the classes can be seen as
 the neighbors, the scores as the distances (where a greater score means a smaller distance),
 and SVM chooses the "nearest" class.
 
