@@ -122,11 +122,13 @@ part4_q1 = r"""
 **Your answer:**
 
 
-The ideal pattern to see in a residual plot is a pattern where most of the points can be found inside a narrow strip
-around the vertical axis: this means that for most points the magnitude of the residual $e^{(i)} = y^{(i)} - \hat{y}^{(i)}$
-is as close to zero as possible, meaning that most predictions are close to their true value. The width of the strip 
-(marked by the dotted line) is determined by the std value of the values of the points: the smaller the std, the more
-concentrated the points will be (hopefully) around the zero line.
+The ideal pattern to see in a residual plot is a pattern where all of the points are on a straight horizontal line that 
+goes through 0 in the vertical axis. This means that the magnitude of the residual $e^{(i)} = y^{(i)} - \hat{y}^{(i)}$
+is zero for all samples, meaning that all predictions are identical to their true value.
+However, in most cases this level of accuracy is unattainable but we would still want all the points to be inside a narrow
+horizontal strip around the value of 0. The width of the strip (marked by the dotted lines above) is determined by the
+std value of the values of the points: the smaller the std, the more concentrated the points will be (hopefully) 
+around the zero line.
 
 By looking at the two residual plot graphs that we have created, it is clear the pattern we described above is much
 more evident in the CV plot: in this plot almost all the points are concentrated inside a narrow strip around the zero line,
