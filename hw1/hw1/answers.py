@@ -75,9 +75,9 @@ $$
 
 Given an image vector $\vectr{x}$, the model calculates the compatibility score of $\vectr{x}$ for each digit class j by multiplying 
 $\vectr{x}$ by $\vectr{w_j}$ (and adding the bias). Since that the values of $\vectr{x}$ represent
-different shades of gray, the values in the indices of the pixels that form the actual digit in the image tend to have much lower
-values then the rest of the pixels. That's why in order to maximize the score of $\vectr{w_j} x$ (where $\vectr{w_j}$ is the
-weight of the correct class of $\vectr{x}$), in the indices of the pixels where $\vectr{x}$ has the the black background $\vectr{w_j}$ must have values
+different shades of gray, the values in the indices of the pixels that form the actual digit in the image tend to have very different
+values than the rest of the pixels. That's why in order to maximize the score of $\vectr{w_j} x$ (where $\vectr{w_j}$ is the
+weight of the correct class of $\vectr{x}$), in the indices of the pixels where $\vectr{x}$ has the black background $\vectr{w_j}$ must have values
 that will 'cancel' this values out, whereas in the indices in $\vectr{x}$ that form the actual digit $\vectr{w_j}$ must have values
 that will magnify them. That's why on average after the training process the shape of the image of each weight will look similar to the digit that it 
 represents.
