@@ -415,9 +415,16 @@ class MLP(Block):
         """
         blocks = []
 
-        # TODO: Build the MLP architecture as described.
+        # DONE: Build the MLP architecture as described.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        all_dims = [in_features, *hidden_features, num_classes]
+        for in_dim, out_dim in zip(all_dims[:-1], all_dims[1:]):
+            blocks.append(Linear(in_dim, out_dim))
+            if activation == 'relu':
+                blocks.append(ReLU())
+            elif activation == 'sigmoid':
+                blocks.append(Sigmoid())
+        blocks.pop()
         # ========================
 
         self.sequence = Sequential(*blocks)
