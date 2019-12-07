@@ -163,7 +163,9 @@ class ReLU(Block):
 
         # DONE: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        dx = torch.max(dout, torch.zeros_like(dout))
+        dzdx = torch.zeros_like(x)
+        dzdx[x > 0] = 1
+        dx = dout * dzdx
         # ========================
 
         return dx
