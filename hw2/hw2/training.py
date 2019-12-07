@@ -64,7 +64,7 @@ class Trainer(abc.ABC):
                 verbose = True
             self._print(f'--- EPOCH {epoch+1}/{num_epochs} ---', verbose)
 
-            # TODO: Train & evaluate for one epoch
+            # DONE: Train & evaluate for one epoch
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             #  - Implement early stopping. This is a very useful and
@@ -73,7 +73,22 @@ class Trainer(abc.ABC):
             #    save the model to the file specified by the checkpoints
             #    argument.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            actual_num_epochs += 1
+            train_epoch_res = self.train_epoch(dl_train, verbose=verbose)
+            train_loss.append(torch.mean(torch.tensor(train_epoch_res.losses)))
+            train_acc.append(train_epoch_res.accuracy)
+            test_epoch_res = self.test_epoch(dl_test, verbose=verbose)
+            test_loss.append(torch.mean(torch.tensor(test_epoch_res.losses)))
+            test_acc.append(test_epoch_res.accuracy)
+            if best_acc is None or test_epoch_res.accuracy > best_acc:
+                best_acc = test_epoch_res.accuracy
+                epochs_without_improvement = 0
+                if checkpoints:
+                    torch.save(self.model, checkpoints)
+            else:
+                epochs_without_improvement += 1
+                if epochs_without_improvement == early_stopping:
+                    break
             # ========================
 
         return FitResult(actual_num_epochs,
