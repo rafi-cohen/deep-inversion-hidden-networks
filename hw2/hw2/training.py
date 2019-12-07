@@ -203,11 +203,14 @@ class BlocksTrainer(Trainer):
     def test_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Evaluate the Block model on one batch of data.
+        # DONE: Evaluate the Block model on one batch of data.
         #  - Forward pass
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = self.model(X)
+        loss = self.loss_fn(class_scores, y)
+        y_pred = torch.argmax(class_scores, dim=1)
+        num_correct = torch.sum(y_pred == y)
         # ========================
 
         return BatchResult(loss, num_correct)
