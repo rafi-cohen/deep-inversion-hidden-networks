@@ -250,12 +250,12 @@ class CrossEntropyLoss(Block):
         xmax, _ = torch.max(x, dim=1, keepdim=True)
         x = x - xmax  # for numerical stability
 
-        # TODO: Compute the cross entropy loss using the last formula from the
+        # DONE: Compute the cross entropy loss using the last formula from the
         #  notebook (i.e. directly using the class scores).
         #  Tip: to get a different column from each row of a matrix tensor m,
         #  you can index it with m[range(num_rows), list_of_cols].
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        loss = torch.mean(-x[range(N), y] + torch.log(torch.sum(torch.exp(x), dim=1)))
         # ========================
 
         self.grad_cache['x'] = x
