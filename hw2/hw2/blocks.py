@@ -73,9 +73,10 @@ class Linear(Block):
         self.in_features = in_features
         self.out_features = out_features
 
-        # TODO: Create the weight matrix (w) and bias vector (b).
+        # DONE: Create the weight matrix (w) and bias vector (b).
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.w = torch.normal(mean=0, std=wstd, size=(out_features, in_features))
+        self.b = torch.normal(mean=0, std=wstd, size=(out_features,))
         # ========================
 
         self.dw = torch.zeros_like(self.w)
@@ -97,9 +98,9 @@ class Linear(Block):
 
         x = x.reshape((x.shape[0], -1))
 
-        # TODO: Compute the affine transform
+        # DONE: Compute the affine transform
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = x @ self.w.T + self.b
         # ========================
 
         self.grad_cache['x'] = x
