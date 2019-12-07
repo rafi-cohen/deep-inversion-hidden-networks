@@ -191,11 +191,13 @@ class Sigmoid(Block):
         :return: Sigmoid of each sample in x.
         """
 
-        # TODO: Implement the Sigmoid function.
+        # DONE: Implement the Sigmoid function.
         #  Save whatever you need into
         #  grad_cache.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        ones = torch.ones_like(x)
+        out = ones / (ones + torch.exp(-x))
+        self.grad_cache['out'] = out
         # ========================
 
         return out
@@ -206,9 +208,10 @@ class Sigmoid(Block):
         :return: Gradient with respect to block input, shape (N, *)
         """
 
-        # TODO: Implement gradient w.r.t. the input x
+        # DONE: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = self.grad_cache['out']
+        dx = dout * (out * (1 - out))
         # ========================
 
         return dx
