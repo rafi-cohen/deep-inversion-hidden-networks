@@ -113,13 +113,15 @@ class Linear(Block):
         """
         x = self.grad_cache['x']
 
-        # TODO: Compute
+        # DONE: Compute
         #   - dx, the gradient of the loss with respect to x
         #   - dw, the gradient of the loss with respect to w
         #   - db, the gradient of the loss with respect to b
         #  You should accumulate gradients in dw and db.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        dx = dout @ self.w
+        self.dw += dout.T @ x
+        self.db += torch.sum(dout, dim=0)
         # ========================
 
         return dx
