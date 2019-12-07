@@ -183,13 +183,19 @@ class BlocksTrainer(Trainer):
     def train_batch(self, batch) -> BatchResult:
         X, y = batch
 
-        # TODO: Train the Block model on one batch of data.
+        # DONE: Train the Block model on one batch of data.
         #  - Forward pass
         #  - Backward pass
         #  - Optimize params
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = self.model(X)
+        self.optimizer.zero_grad()
+        loss = self.loss_fn(class_scores, y)
+        self.model.backward(self.loss_fn.backward())
+        self.optimizer.step()
+        y_pred = torch.argmax(class_scores, dim=1)
+        num_correct = torch.sum(y_pred == y)
         # ========================
 
         return BatchResult(loss, num_correct)
