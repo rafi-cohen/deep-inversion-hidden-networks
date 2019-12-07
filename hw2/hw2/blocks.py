@@ -341,7 +341,7 @@ class Sequential(Block):
         # ====== YOUR CODE: ======
         out = x
         for block in self.blocks:
-            out = block(out)
+            out = block(out, **kw)
         # ========================
 
         return out
