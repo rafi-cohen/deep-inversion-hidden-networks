@@ -146,9 +146,9 @@ class ReLU(Block):
         :return: ReLU of each sample in x.
         """
 
-        # TODO: Implement the ReLU operation.
+        # DONE: Implement the ReLU operation.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = torch.max(x, torch.zeros_like(x))
         # ========================
 
         self.grad_cache['x'] = x
@@ -161,9 +161,9 @@ class ReLU(Block):
         """
         x = self.grad_cache['x']
 
-        # TODO: Implement gradient w.r.t. the input x
+        # DONE: Implement gradient w.r.t. the input x
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        dx = torch.max(dout, torch.zeros_like(dout))
         # ========================
 
         return dx
