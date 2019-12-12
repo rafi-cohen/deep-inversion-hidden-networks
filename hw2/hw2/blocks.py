@@ -304,15 +304,12 @@ class Dropout(Block):
         #  Notice that contrary to previous blocks, this block behaves
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
-        out = x
         if self.training_mode:
-            for i in range(x.shape[1]):
-                self.grad_cache[i] = False
-                if torch.rand(1) < self.p:
-                    out[:, i] = 0
-                    self.grad_cache[i] = True
+            dropout_mask = torch.rand(x.shape[1]) >= self.p
+            self.grad_cache['dropout_mask'] = dropout_mask
+            out = x * dropout_mask
         else:
-            out *= (1 - self.p)
+            out = x * (1 - self.p)
         # ========================
 
         return out
@@ -320,13 +317,11 @@ class Dropout(Block):
     def backward(self, dout):
         # DONE: Implement the dropout backward pass.
         # ====== YOUR CODE: ======
-        dx = dout
         if self.training_mode:
-            for i in range(dx.shape[1]):
-                if self.grad_cache[i]:
-                    dx[:, i] = 0
+            dropout_mask = self.grad_cache['dropout_mask']
+            dx = dout * dropout_mask
         else:
-            dx *= (1 - self.p)
+            dx = dout * (1 - self.p)
         # ========================
 
         return dx
