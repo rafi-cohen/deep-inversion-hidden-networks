@@ -300,19 +300,33 @@ class Dropout(Block):
         self.p = p
 
     def forward(self, x, **kw):
-        # TODO: Implement the dropout forward pass.
+        # DONE: Implement the dropout forward pass.
         #  Notice that contrary to previous blocks, this block behaves
         #  differently a according to the current training_mode (train/test).
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = x
+        if self.training_mode:
+            for i in range(x.shape[1]):
+                self.grad_cache[i] = False
+                if torch.rand(1) < self.p:
+                    out[:, i] = 0
+                    self.grad_cache[i] = True
+        else:
+            out *= (1 - self.p)
         # ========================
 
         return out
 
     def backward(self, dout):
-        # TODO: Implement the dropout backward pass.
+        # DONE: Implement the dropout backward pass.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        dx = dout
+        if self.training_mode:
+            for i in range(dx.shape[1]):
+                if self.grad_cache[i]:
+                    dx[:, i] = 0
+        else:
+            dx *= (1 - self.p)
         # ========================
 
         return dx
@@ -422,8 +436,12 @@ class MLP(Block):
             blocks.append(Linear(in_dim, out_dim))
             if activation == 'relu':
                 blocks.append(ReLU())
+                if dropout > 0:
+                    blocks.append(Dropout(dropout))
             elif activation == 'sigmoid':
                 blocks.append(Sigmoid())
+        if isinstance(blocks[-1], Dropout):
+            blocks.pop()
         blocks.pop()
         # ========================
 
