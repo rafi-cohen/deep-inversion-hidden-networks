@@ -74,11 +74,11 @@ class Trainer(abc.ABC):
             #    argument.
             # ====== YOUR CODE: ======
             actual_num_epochs += 1
-            train_epoch_res = self.train_epoch(dl_train, verbose=verbose)
-            train_loss.append(torch.mean(torch.tensor(train_epoch_res.losses)))
+            train_epoch_res = self.train_epoch(dl_train, verbose=verbose, **kw)
+            train_loss.extend(train_epoch_res.losses)
             train_acc.append(train_epoch_res.accuracy)
-            test_epoch_res = self.test_epoch(dl_test, verbose=verbose)
-            test_loss.append(torch.mean(torch.tensor(test_epoch_res.losses)))
+            test_epoch_res = self.test_epoch(dl_test, verbose=verbose, **kw)
+            test_loss.extend(test_epoch_res.losses)
             test_acc.append(test_epoch_res.accuracy)
             if best_acc is None or test_epoch_res.accuracy > best_acc:
                 best_acc = test_epoch_res.accuracy
