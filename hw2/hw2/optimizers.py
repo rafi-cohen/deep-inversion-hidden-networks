@@ -129,9 +129,11 @@ class RMSProp(Optimizer):
         self.decay = decay
         self.eps = eps
 
-        # TODO: Add your own initializations as needed.
+        # DONE: Add your own initializations as needed.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.prev_steps = {}
+        for p, _ in self.params:
+            self.prev_steps[id(p)] = torch.zeros_like(p)
         # ========================
 
     def step(self):
@@ -139,10 +141,15 @@ class RMSProp(Optimizer):
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
+            # DONE: Implement the optimizer step.
             # Create a per-parameter learning rate based on a decaying moving
             # average of it's previous gradients. Use it to update the
             # parameters tensor.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            dp += self.reg * p
+            assert id(p) in self.prev_steps.keys()
+            prev_step = self.prev_steps[id(p)]
+            new_step = self.decay * prev_step + (1 - self.decay) * dp ** 2
+            p -= (self.learn_rate / torch.sqrt(new_step + self.eps)) * dp
+            self.prev_steps[id(p)] = new_step
             # ========================
