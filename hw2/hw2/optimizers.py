@@ -89,9 +89,11 @@ class MomentumSGD(Optimizer):
         self.reg = reg
         self.momentum = momentum
 
-        # TODO: Add your own initializations as needed.
+        # DONE: Add your own initializations as needed.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.prev_steps = {}
+        for p, _ in self.params:
+            self.prev_steps[id(p)] = torch.zeros_like(p)
         # ========================
 
     def step(self):
@@ -99,11 +101,16 @@ class MomentumSGD(Optimizer):
             if dp is None:
                 continue
 
-            # TODO: Implement the optimizer step.
+            # DONE: Implement the optimizer step.
             # update the parameters tensor based on the velocity. Don't forget
             # to include the regularization term.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            dp += self.reg * p
+            assert id(p) in self.prev_steps.keys()
+            prev_step = self.prev_steps[id(p)]
+            new_step = self.momentum * prev_step - self.learn_rate * dp
+            p += new_step
+            self.prev_steps[id(p)] = new_step
             # ========================
 
 
