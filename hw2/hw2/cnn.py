@@ -47,7 +47,7 @@ class ConvClassifier(nn.Module):
         # ====== YOUR CODE: ======
         N = len(self.channels)
         P = self.pool_every
-        channels = self.channels
+        channels = list(self.channels)
         prev_out_channels = in_channels
         for _ in range(N // P):
             for _ in range(P):
@@ -89,7 +89,7 @@ class ConvClassifier(nn.Module):
         #  The last Linear layer should have an output dim of out_classes.
         # ====== YOUR CODE: ======
         P = self.pool_every
-        prev_out_dim = (in_h * in_w) / 2**(2*P)
+        prev_out_dim = ((in_h * in_w) // 2**(2*P)) * self.channels[-1]
         for out_dim in self.hidden_dims:
             layers.append(nn.Linear(in_features=prev_out_dim, out_features=out_dim))
             layers.append(nn.ReLU())
