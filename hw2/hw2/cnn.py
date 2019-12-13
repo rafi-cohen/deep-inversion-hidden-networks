@@ -82,13 +82,19 @@ class ConvClassifier(nn.Module):
         in_channels, in_h, in_w, = tuple(self.in_size)
 
         layers = []
-        # TODO: Create the classifier part of the model:
+        # DONE: Create the classifier part of the model:
         #  (Linear -> ReLU)*M -> Linear
         #  You'll first need to calculate the number of features going in to
         #  the first linear layer.
         #  The last Linear layer should have an output dim of out_classes.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        P = self.pool_every
+        prev_out_dim = (in_h * in_w) / 2**(2*P)
+        for out_dim in self.hidden_dims:
+            layers.append(nn.Linear(in_features=prev_out_dim, out_features=out_dim))
+            layers.append(nn.ReLU())
+            prev_out_dim = out_dim
+        layers.append(nn.Linear(in_features=prev_out_dim, out_features=self.out_classes))
         # ========================
         seq = nn.Sequential(*layers)
         return seq
