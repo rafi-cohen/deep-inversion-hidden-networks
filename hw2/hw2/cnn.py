@@ -100,11 +100,13 @@ class ConvClassifier(nn.Module):
         return seq
 
     def forward(self, x):
-        # TODO: Implement the forward pass.
+        # DONE: Implement the forward pass.
         #  Extract features from the input, run the classifier on them and
         #  return class scores.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        features = self.feature_extractor(x)
+        features = features.view(features.size(0), -1)
+        out = self.classifier(features)
         # ========================
         return out
 
