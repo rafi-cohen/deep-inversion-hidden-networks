@@ -48,26 +48,31 @@ class ConvClassifier(nn.Module):
         N = len(self.channels)
         P = self.pool_every
         channels = self.channels
+        prev_out_channels = in_channels
         for _ in range(N // P):
             for _ in range(P):
-                layers.extend([nn.Conv2d(in_channels=in_channels,
-                                         out_channels=channels.pop(0),
+                curr_out_channels = channels.pop(0)
+                layers.extend([nn.Conv2d(in_channels=prev_out_channels,
+                                         out_channels=curr_out_channels,
                                          kernel_size=3,
                                          stride=1,
                                          padding=1,
                                          dilation=1),
                               nn.ReLU()])
+                prev_out_channels = curr_out_channels
 
             layers.append(nn.MaxPool2d(kernel_size=2))
 
         for _ in range(N % P):
-            layers.extend([nn.Conv2d(in_channels=in_channels,
-                                     out_channels=channels.pop(0),
+            curr_out_channels = channels.pop(0)
+            layers.extend([nn.Conv2d(in_channels=prev_out_channels,
+                                     out_channels=curr_out_channels,
                                      kernel_size=3,
                                      stride=1,
                                      padding=1,
                                      dilation=1),
                            nn.ReLU()])
+            prev_out_channels = curr_out_channels
 
         # ========================
         seq = nn.Sequential(*layers)
