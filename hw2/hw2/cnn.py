@@ -137,7 +137,7 @@ class ResidualBlock(nn.Module):
 
         self.main_path, self.shortcut_path = None, None
 
-        # TODO: Implement a generic residual block.
+        # DONE: Implement a generic residual block.
         #  Use the given arguments to create two nn.Sequentials:
         #  the main_path, which should contain the convolution, dropout,
         #  batchnorm, relu sequences, and the shortcut_path which should
@@ -145,7 +145,35 @@ class ResidualBlock(nn.Module):
         #  Use convolutions which preserve the spatial extent of the input.
         #  For simplicity of implementation, we'll assume kernel sizes are odd.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        main_path_layers = []
+        prev_out_channels = in_channels
+        for out_channels, kernel_size in zip(channels, kernel_sizes):
+            main_path_layers.append(nn.Conv2d(in_channels=prev_out_channels,
+                                              out_channels=out_channels,
+                                              kernel_size=kernel_size,
+                                              stride=1,
+                                              padding=kernel_size//2,
+                                              dilation=1))
+            if dropout > 0.:
+                main_path_layers.append(nn.Dropout2d(p=dropout))
+            if batchnorm:
+                main_path_layers.append(nn.BatchNorm2d(num_features=out_channels))
+            main_path_layers.append(nn.ReLU())
+            prev_out_channels = out_channels
+        main_path_layers.pop()
+        if dropout > 0.:
+            main_path_layers.pop()
+        if batchnorm:
+            main_path_layers.pop()
+        self.main_path = nn.Sequential(*main_path_layers)
+
+        shortcut_path_layers = []
+        if in_channels != channels[-1]:
+            shortcut_path_layers.append(nn.Conv2d(in_channels=in_channels,
+                                                  out_channels=channels[-1],
+                                                  kernel_size=1,
+                                                  bias=False))
+        self.shortcut_path = nn.Sequential(*shortcut_path_layers)
         # ========================
 
     def forward(self, x):
