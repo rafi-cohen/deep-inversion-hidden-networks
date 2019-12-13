@@ -38,14 +38,36 @@ class ConvClassifier(nn.Module):
         in_channels, in_h, in_w, = tuple(self.in_size)
 
         layers = []
-        # TODO: Create the feature extractor part of the model:
+        # DONE: Create the feature extractor part of the model:
         #  [(CONV -> ReLU)*P -> MaxPool]*(N/P)
         #  Use only dimension-preserving 3x3 convolutions. Apply 2x2 Max
         #  Pooling to reduce dimensions after every P convolutions.
         #  Note: If N is not divisible by P, then N mod P additional
         #  CONV->ReLUs should exist at the end, without a MaxPool after them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = len(self.channels)
+        P = self.pool_every
+        channels = self.channels
+        for _ in range(N // P):
+            for _ in range(P):
+                layers.extend([nn.Conv2d(in_channels=in_channels,
+                                         out_channels=channels.pop(0),
+                                         kernel_size=3,
+                                         stride=1,
+                                         padding=1,
+                                         dilation=1),
+                              nn.ReLU()])
+
+            layers.append(nn.MaxPool2d(kernel_size=2))
+
+        for _ in range(N % P):
+            layers.extend([nn.Conv2d(in_channels=in_channels,
+                                     out_channels=channels.pop(0),
+                                     kernel_size=3,
+                                     stride=1,
+                                     padding=1,
+                                     dilation=1),
+                           nn.ReLU()])
 
         # ========================
         seq = nn.Sequential(*layers)
