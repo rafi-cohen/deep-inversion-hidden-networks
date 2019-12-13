@@ -241,13 +241,19 @@ class TorchTrainer(Trainer):
             X = X.to(self.device)
             y = y.to(self.device)
 
-        # TODO: Train the PyTorch model on one batch of data.
+        # DONE: Train the PyTorch model on one batch of data.
         #  - Forward pass
         #  - Backward pass
         #  - Optimize params
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = self.model(X)
+        self.optimizer.zero_grad()
+        loss = self.loss_fn(class_scores, y)
+        loss.backward()
+        self.optimizer.step()
+        y_pred = torch.argmax(class_scores, dim=1)
+        num_correct = torch.sum(y_pred == y)
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -259,11 +265,14 @@ class TorchTrainer(Trainer):
             y = y.to(self.device)
 
         with torch.no_grad():
-            # TODO: Evaluate the PyTorch model on one batch of data.
+            # DONE: Evaluate the PyTorch model on one batch of data.
             #  - Forward pass
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            class_scores = self.model(X)
+            loss = self.loss_fn(class_scores, y)
+            y_pred = torch.argmax(class_scores, dim=1)
+            num_correct = torch.sum(y_pred == y)
             # ========================
 
         return BatchResult(loss, num_correct)
