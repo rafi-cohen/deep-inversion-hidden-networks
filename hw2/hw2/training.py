@@ -206,11 +206,11 @@ class BlocksTrainer(Trainer):
         # ====== YOUR CODE: ======
         class_scores = self.model(X)
         self.optimizer.zero_grad()
-        loss = self.loss_fn(class_scores, y)
+        loss = self.loss_fn(class_scores, y).item()
         self.model.backward(self.loss_fn.backward())
         self.optimizer.step()
         y_pred = torch.argmax(class_scores, dim=1)
-        num_correct = torch.sum(y_pred == y)
+        num_correct = torch.sum(y_pred == y).item()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -223,9 +223,9 @@ class BlocksTrainer(Trainer):
         #  - Calculate number of correct predictions
         # ====== YOUR CODE: ======
         class_scores = self.model(X)
-        loss = self.loss_fn(class_scores, y)
+        loss = self.loss_fn(class_scores, y).item()
         y_pred = torch.argmax(class_scores, dim=1)
-        num_correct = torch.sum(y_pred == y)
+        num_correct = torch.sum(y_pred == y).item()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -251,9 +251,10 @@ class TorchTrainer(Trainer):
         self.optimizer.zero_grad()
         loss = self.loss_fn(class_scores, y)
         loss.backward()
+        loss = loss.item()
         self.optimizer.step()
         y_pred = torch.argmax(class_scores, dim=1)
-        num_correct = torch.sum(y_pred == y)
+        num_correct = torch.sum(y_pred == y).item()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -270,9 +271,9 @@ class TorchTrainer(Trainer):
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
             class_scores = self.model(X)
-            loss = self.loss_fn(class_scores, y)
+            loss = self.loss_fn(class_scores, y).item()
             y_pred = torch.argmax(class_scores, dim=1)
-            num_correct = torch.sum(y_pred == y)
+            num_correct = torch.sum(y_pred == y).item()
             # ========================
 
         return BatchResult(loss, num_correct)
