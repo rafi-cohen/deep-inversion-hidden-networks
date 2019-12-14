@@ -28,9 +28,9 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-QUEUE=236781
-JOB_NAME="test_job"
-MAIL_USER="example@example.com"
+QUEUE=rishonPartition
+JOB_NAME="$1"
+MAIL_USER="botach@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
 ###
