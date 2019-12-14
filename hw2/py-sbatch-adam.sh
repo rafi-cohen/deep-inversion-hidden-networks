@@ -29,7 +29,7 @@ NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
 QUEUE=rishonPartition
-JOB_NAME="exp_${1 : 11:-3}"
+JOB_NAME="exp_${1: 11:-3}"
 MAIL_USER="botach@campus.technion.ac.il"
 MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
 
@@ -58,7 +58,7 @@ source $CONDA_HOME/etc/profile.d/conda.sh
 conda activate $CONDA_ENV
 
 # Run python with the args to the script
-python $@[1:]
+python $@
 
 echo "*** SLURM BATCH JOB '$JOB_NAME' DONE ***"
 EOF
