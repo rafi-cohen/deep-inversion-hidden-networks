@@ -55,7 +55,7 @@ def run_experiment(run_name, out_dir='./results', seed=None, device=None,
         raise ValueError(f"Unknown model type: {model_type}")
     model_cls = MODEL_TYPES[model_type]
 
-    # TODO: Train
+    # DONE: Train
     #  - Create model, loss, optimizer and trainer based on the parameters.
     #    Use the model you've implemented previously, cross entropy loss and
     #    any optimizer that you wish.
@@ -64,7 +64,27 @@ def run_experiment(run_name, out_dir='./results', seed=None, device=None,
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    x0, _ = ds_train[0]
+    model = model_cls(in_size=x0.shape,
+                      out_classes=len(ds_train.classes),
+                      channels=[k for k in filters_per_layer for _ in range(layers_per_block)],
+                      pool_every=pool_every,
+                      hidden_dims=hidden_dims)
+    loss_fn = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=reg)
+    trainer = training.TorchTrainer(model=model,
+                                    loss_fn=loss_fn,
+                                    optimizer=optimizer,
+                                    device=device)
+    dl_train = torch.utils.data.DataLoader(ds_train, bs_train, shuffle=True)
+    dl_test = torch.utils.data.DataLoader(ds_test, bs_test, shuffle=True)
+    fit_res = trainer.fit(dl_train=dl_train,
+                          dl_test=dl_test,
+                          num_epochs=epochs,
+                          checkpoints=checkpoints,
+                          early_stopping=early_stopping,
+                          print_every=(epochs // 10),
+                          max_batches=batches)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
