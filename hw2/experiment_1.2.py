@@ -2,7 +2,7 @@ from hw2.experiments import run_experiment
 import itertools as it
 
 L = [2, 4, 8]
-K = [[32], [64], [128], [256]]
+K = [32, 64, 128, 256]
 
 for l, k in it.product(L, K):
     run_experiment(run_name=f'exp1_2_L{l}_K{k}',
@@ -15,7 +15,7 @@ for l, k in it.product(L, K):
                    checkpoints=None,
                    lr=1e-3,
                    reg=1e-3,
-                   filters_per_layer=k,
+                   filters_per_layer=[k],
                    layers_per_block=l,
                    pool_every=l,
                    hidden_dims=[1024],

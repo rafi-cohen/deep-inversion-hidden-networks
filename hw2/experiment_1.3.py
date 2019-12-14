@@ -1,7 +1,7 @@
 from hw2.experiments import run_experiment
 import itertools as it
 
-k = [64, 128, 256]
+K = [64, 128, 256]
 L = [1, 2, 3, 4]
 
 for l in L:
@@ -15,7 +15,7 @@ for l in L:
                    checkpoints=None,
                    lr=1e-3,
                    reg=1e-3,
-                   filters_per_layer=k,
+                   filters_per_layer=K,
                    layers_per_block=l,
                    pool_every=l,
                    hidden_dims=[1024],
