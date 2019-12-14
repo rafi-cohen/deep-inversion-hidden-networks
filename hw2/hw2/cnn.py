@@ -194,7 +194,7 @@ class ResNetClassifier(ConvClassifier):
         in_channels, in_h, in_w, = tuple(self.in_size)
 
         layers = []
-        # TODO: Create the feature extractor part of the model:
+        # DONE: Create the feature extractor part of the model:
         #  [-> (CONV -> ReLU)*P -> MaxPool]*(N/P)
         #   \------- SKIP ------/
         #  Use only dimension-preserving 3x3 convolutions. Apply 2x2 Max
@@ -203,7 +203,19 @@ class ResNetClassifier(ConvClassifier):
         #  CONV->ReLUs (with a skip over them) should exist at the end,
         #  without a MaxPool after them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = len(self.channels)
+        P = self.pool_every
+        channels = list(self.channels)
+        prev_out_channels = in_channels
+        for _ in range(N // P):
+            layers.append(ResidualBlock(prev_out_channels, channels[:P], [3]*P))
+            layers.append(nn.MaxPool2d(kernel_size=2))
+            prev_out_channels = channels[P-1]
+            channels = channels[P:]  # Remove first P entries
+
+        remainder = N % P
+        if remainder != 0:
+            layers.append(ResidualBlock(prev_out_channels, channels[:remainder], [3] * remainder))
         # ========================
         seq = nn.Sequential(*layers)
         return seq
