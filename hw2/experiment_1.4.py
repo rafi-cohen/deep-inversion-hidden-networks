@@ -25,7 +25,7 @@ K = [64, 128, 256]
 L = [2, 4, 8]
 
 for l in L:
-    run_experiment(run_name=f'exp1_4_L{l}_K{"-".join(map(str, K))}',
+    run_experiment(run_name='exp1_4',
                    seed=42,
                    bs_train=128,
                    bs_test=26,

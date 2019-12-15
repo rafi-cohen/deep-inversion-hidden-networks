@@ -5,7 +5,7 @@ L = [2, 4, 8]
 K = [32, 64, 128, 256]
 
 for l, k in it.product(L, K):
-    run_experiment(run_name=f'exp1_2_L{l}_K{k}',
+    run_experiment(run_name='exp1_2',
                    seed=42,
                    bs_train=128,
                    bs_test=26,
