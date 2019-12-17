@@ -19,7 +19,7 @@ for l in L:
                    layers_per_block=l,
                    pool_every=l,
                    hidden_dims=[1024],
-                   model_type='cnn')
+                   model_type='resnet')
 
 K = [64, 128, 256]
 L = [2, 4, 8]
@@ -39,4 +39,4 @@ for l in L:
                    layers_per_block=l,
                    pool_every=l,
                    hidden_dims=[1024],
-                   model_type='cnn')
+                   model_type='resnet')
