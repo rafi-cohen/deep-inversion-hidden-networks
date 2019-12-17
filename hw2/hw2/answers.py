@@ -69,14 +69,17 @@ dropout value would be somewhere in between the 2 values we used.
 
 part2_q2 = r"""
 **Your answer:**
+Yes, it is possible. Example:
+Assuming we have 2 samples `x1`,`x2` with ground-truth labels: `Y1`,`Y2` respectively.
+It is possible that in epoch `t` the probability vectors (in the form $[Y1_{score}, Y2_{score}]$) we get for each sample
+are: $[0.4, 0.6]$ for `x1` and $[0, 1]$ for `x2`. Therefore both samples would be classified as belonging to `Y2` which
+means: accuracy = 50%, while the CE loss is: $\text{loss}=-\log(0.4)-\log(1)=0.916$.
 
+Later, it is also possible that in epoch `t+1` the probability vectors we get for each sample
+are: $[0.6, 0.4]$ for `x1` and $[0.4, 0.6]$ for `x2`. Therefore both samples would be classified correctly which
+means: accuracy = 100%, while the CE loss is: $\text{loss}=-\log(0.6)-\log(0.6)=1.021$.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Thus we have shown that while the accuracy increased from 50% to 100%, the loss also increased from 0.916 to 1.021.
 
 """
 # ==============
