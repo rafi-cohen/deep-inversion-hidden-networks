@@ -227,10 +227,62 @@ class YourCodeNet(ConvClassifier):
         super().__init__(in_size, out_classes, channels, pool_every,
                          hidden_dims)
 
-    # TODO: Change whatever you want about the ConvClassifier to try to
+    # DONE: Change whatever you want about the ConvClassifier to try to
     #  improve it's results on CIFAR-10.
     #  For example, add batchnorm, dropout, skip connections, change conv
     #  filter sizes etc.
     # ====== YOUR CODE: ======
-    # raise NotImplementedError()
+    def _make_feature_extractor(self):
+        in_channels, in_h, in_w, = tuple(self.in_size)
+
+        layers = []
+        # The feature extractor part of the model:
+        #  [(CONV -> ReLU -> BatchNorm)*P -> MaxPool -> Dropout]*(N/P)
+        N = len(self.channels)
+        P = self.pool_every
+        channels = list(self.channels)
+        prev_out_channels = in_channels
+        for _ in range(N // P):
+            for _ in range(P):
+                curr_out_channels = channels.pop(0)
+                layers.extend([nn.Conv2d(in_channels=prev_out_channels,
+                                         out_channels=curr_out_channels,
+                                         kernel_size=3,
+                                         stride=1,
+                                         padding=1,
+                                         dilation=1),
+                               nn.ReLU(),
+                               nn.BatchNorm2d(num_features=curr_out_channels)])
+                prev_out_channels = curr_out_channels
+
+            layers.extend([nn.MaxPool2d(kernel_size=2),
+                           nn.Dropout2d()])
+
+        for _ in range(N % P):
+            curr_out_channels = channels.pop(0)
+            layers.extend([nn.Conv2d(in_channels=prev_out_channels,
+                                     out_channels=curr_out_channels,
+                                     kernel_size=3,
+                                     stride=1,
+                                     padding=1,
+                                     dilation=1),
+                           nn.ReLU(),
+                           nn.BatchNorm2d(num_features=curr_out_channels)])
+            prev_out_channels = curr_out_channels
+
+        seq = nn.Sequential(*layers)
+        return seq
+
+    def _make_classifier(self):
+        in_channels, in_h, in_w, = tuple(self.in_size)
+
+        layers = []
+        # The classifier part of the model:
+        #  Linear
+        N = len(self.channels)
+        P = self.pool_every
+        prev_out_dim = ((in_h * in_w) // 2**(2*(N // P))) * self.channels[-1]
+        layers.append(nn.Linear(in_features=prev_out_dim, out_features=self.out_classes))
+        seq = nn.Sequential(*layers)
+        return seq
     # ========================
