@@ -114,13 +114,23 @@ connections and are thus less prone to vanishing.
 part3_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+By looking at the graphs, it appears that large values of `K` (large number of filters) don't work well
+in shallow networks while smaller values work fine. For example, in the case of `L`=2 and `K`=256, the network
+achieved significantly worse results, compared to configurations with other values of `K` with the same `L`.
+On the other hand, it appears that in deeper networks, smaller values of `K` don't work so well while larger
+values work fine. For example, for `L`=4 and `L`=8 the networks using the smallest possible value of
+ K` (32) achieved the worst results.
+ 
+These two conclusions might hint of a positive linear connection between the number of filters used
+in the networks and how deep it should be in order to get good results.
+ 
+It appears, in both experiments, 1.1 and 1.2, that the results of the deeper networks (`L`=8 and above)
+were not as good as the results of the shallower ones: in some cases, the deeper networks were not able
+to learn at all, and in other cases they achieved lower test accuracy scores. For example, in the case
+of `L`=8, all networks did not achieve more than 65% regardless of the value of `K`, while networks
+using lower values of `L` did get up to 70% for some values of `K`. A possible explanation for this
+phenomenon is again the possibility that the gradients in the deeper networks are less stable compared
+to the shallower networks.
 
 """
 
