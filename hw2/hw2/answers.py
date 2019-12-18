@@ -90,14 +90,25 @@ Thus we have shown that while the accuracy increased from 50% to 100%, the loss 
 part3_q1 = r"""
 **Your answer:**
 
+1. It appears that the network achieved better accuracy using smaller values of `L` (depth).
+The value of `L` which was used to achieve the best results was 2. Also, it appears that in some cases
+the network was unable to learn at all using larger values of `L`. We suspected that the reason for that
+was the exploding/vanishing gradient phenomenon which we discussed in class. After looking into the matter,
+we discovered that we are dealing here with vanishing gradient.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The values of `L` with witch the network was unable to learn are `L`=16 for both values of `K`,
+and `L`=8 for `K`=32. As stated above, the reason for that is the vanishing gradient phenomenon, which
+gets worse in deeper networks. This happens because in these networks the gradients are multiplied more times
+than in shallow networks (because of the extra layers). Thus, if the magnitudes of the values in the
+multiplications are too small (between 0 and 1), in the deeper networks the product of many small values
+might get too close to 0 which would prevent these networks from learning properly. 
 
+    One way to resolve this issue is using batch-normalization, which helps stabilizing the gradients
+as we discussed in class.
+
+    Another way is to use residual networks. These networks use skip connections, which might help
+mitigate the problems because the gradients are able to flow backwards more freely through the skip
+connections and are thus less prone to vanishing.
 """
 
 part3_q2 = r"""
