@@ -149,13 +149,20 @@ to learn due to the vanishing gradient phenomenon.
 part3_q4 = r"""
 **Your answer:**
 
+Once again, it seems that the shallowest networks achieved the best results, but this time by a significantly
+wider margin. For example, for `K`=32, the network using `L`=8 achieved about 12% better test accuracy than the
+networks with the larget `L` values. While in the case of `K`=[64, 128, 256], the network with `L`=8 acheived
+the best results and also converged the fastest. It should also be noted that for the first time, results close
+to 80% test accuracy were seen, which illustrates the advantage of ResNets over regular CNNs.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Also, the results of this experiment justify that our previous suggestion for using ResNets to as a way to deal
+with the vanishing gradient phenomenon. For example, while in experiment 1.1, the (`L`=8, `K`=32) network was
+completely unable to learn because of above phenomenon, the same architecture using ResNet performed very well,
+and was able to achieve 70% test accuracy.
+
+Furthermore, compared to experiment 1.3, where the 12-layer (`L`=4, `K`=[64,128,256]) network was unable to learn,
+the same architecture using ResNet again performed very well, and even the 24-layer (`L`=8, `K`=[64,128,256]) network
+was able to converge. This emphasizes how capable the skip connections are in preventing vanishing gradients.
 
 """
 
