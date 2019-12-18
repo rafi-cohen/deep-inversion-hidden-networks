@@ -14,9 +14,9 @@ for l, k in it.product(L, K):
                    early_stopping=5,
                    checkpoints=None,
                    lr=1e-3,
-                   reg=1e-3,
+                   reg=1e-4,
                    filters_per_layer=[k],
                    layers_per_block=l,
                    pool_every=l,
-                   hidden_dims=[1024],
+                   hidden_dims=[512],
                    model_type='cnn')
