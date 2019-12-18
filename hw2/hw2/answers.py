@@ -137,13 +137,12 @@ to the shallower networks.
 part3_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Not surprisingly, the best results in experiment 1.3 were achieved by the shallowest network (`L`=1) with
+the three convolutional layers. Not only did this network achieve the best accuracy score, it also had the
+fastest convergence rate (achieved over 70% accuracy in about 5 epochs, while for `L`=3 it took over 20
+epoch to reach the same accuracy). So overall it seems that the deeper the network, the slower its convergence
+rate was. Also, once again, it seems that once the network gets too deep (`L`=4, with 12 layers) it is unable 
+to learn due to the vanishing gradient phenomenon.
 
 """
 
