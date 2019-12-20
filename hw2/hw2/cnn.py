@@ -282,6 +282,11 @@ class YourCodeNet(ConvClassifier):
         N = len(self.channels)
         P = self.pool_every
         prev_out_dim = ((in_h * in_w) // 2**(2*(N // P))) * self.channels[-1]
+        if None not in self.hidden_dims:
+            for out_dim in self.hidden_dims:
+                layers.append(nn.Linear(in_features=prev_out_dim, out_features=out_dim))
+                layers.append(nn.ReLU())
+                prev_out_dim = out_dim
         layers.append(nn.Linear(in_features=prev_out_dim, out_features=self.out_classes))
         seq = nn.Sequential(*layers)
         return seq
