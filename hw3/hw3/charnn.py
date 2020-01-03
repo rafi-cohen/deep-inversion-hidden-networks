@@ -106,7 +106,7 @@ def chars_to_labelled_samples(text: str, char_to_idx: dict, seq_len: int,
     the number of created samples, S is the seq_len and V is the embedding
     dimension.
     """
-    # TODO:
+    # DONE:
     #  Implement the labelled samples creation.
     #  1. Embed the given text.
     #  2. Create the samples tensor by splitting to groups of seq_len.
@@ -114,7 +114,12 @@ def chars_to_labelled_samples(text: str, char_to_idx: dict, seq_len: int,
     #  3. Create the labels tensor in a similar way and convert to indices.
     #  Note that no explicit loops are required to implement this function.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    N = (len(text)-1) // seq_len
+    S = seq_len
+    V = len(char_to_idx)
+    embedded_text = chars_to_onehot(text[0:N*S], char_to_idx)
+    samples = embedded_text.reshape(N, S, V)
+    labels = torch.Tensor(list(map(lambda c: char_to_idx[c], text[1:N*S+1]))).reshape(N, S)
     # ========================
     return samples, labels
 
