@@ -40,9 +40,10 @@ def remove_chars(text: str, chars_to_remove):
         - text_clean: the text after removing the chars.
         - n_removed: Number of chars removed.
     """
-    # TODO: Implement according to the docstring.
+    # DONE: Implement according to the docstring.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    text_clean = re.sub(f"[{''.join(chars_to_remove)}]","",text)
+    n_removed = len(text) - len(text_clean)
     # ========================
     return text_clean, n_removed
 
