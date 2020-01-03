@@ -42,7 +42,7 @@ def remove_chars(text: str, chars_to_remove):
     """
     # DONE: Implement according to the docstring.
     # ====== YOUR CODE: ======
-    text_clean = re.sub(f"[{''.join(chars_to_remove)}]","",text)
+    text_clean = re.sub(f"[{''.join(chars_to_remove)}]", "", text)
     n_removed = len(text) - len(text_clean)
     # ========================
     return text_clean, n_removed
