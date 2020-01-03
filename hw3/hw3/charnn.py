@@ -61,9 +61,12 @@ def chars_to_onehot(text: str, char_to_idx: dict) -> Tensor:
     and D is the number of unique chars in the sequence. The dtype of the
     returned tensor will be torch.int8.
     """
-    # TODO: Implement the embedding.
+    # DONE: Implement the embedding.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    N = len(text)
+    D = len(char_to_idx)
+    result = torch.zeros((N, D), dtype=torch.int8)
+    result[range(N), [char_to_idx[c] for c in text]] = 1
     # ========================
     return result
 
