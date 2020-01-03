@@ -251,7 +251,21 @@ class MultilayerGRU(nn.Module):
         #      then call self.register_parameter() on them. Also make
         #      sure to initialize them. See functions in torch.nn.init.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        for i in range(n_layers):
+            in_features = in_dim if i == 0 else h_dim
+            out_features = out_dim if i == n_layers-1 else h_dim
+            layer_i_params = {
+                "xz" : nn.Linear(in_features, out_features, bias=False),
+                "hz" : nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
+                "xr": nn.Linear(in_features, out_features, bias=False),
+                "hr": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
+                "gr": nn.Linear(in_features, out_features, bias=False),
+                "gr": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
+            }
+            for param in layer_params:
+                self.add_module(param)
+            layer_i_params["dropout"] = nn.Dropout(p = dropout)
+            self.layer_params.append(layer_i_params)
         # ========================
 
     def forward(self, input: Tensor, hidden_state: Tensor = None):
