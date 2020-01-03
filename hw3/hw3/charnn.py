@@ -81,9 +81,10 @@ def onehot_to_chars(embedded_text: Tensor, idx_to_char: dict) -> str:
     :return: A string containing the text sequence represented by the
     embedding.
     """
-    # TODO: Implement the reverse-embedding.
+    # DONE: Implement the reverse-embedding.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    chars = [idx_to_char[idx.item()] for _, idx in embedded_text.nonzero()]
+    result = ''.join(chars)
     # ========================
     return result
 
