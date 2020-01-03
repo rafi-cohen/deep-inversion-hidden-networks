@@ -193,7 +193,7 @@ class SequenceBatchSampler(torch.utils.data.Sampler):
         self.batch_size = batch_size
 
     def __iter__(self):
-        # TODO:
+        # DONE:
         #  Return an iterator of indices, i.e. numbers in range(len(dataset)).
         #  dataset and represents  one  batch.
         #  The indices must be generated in a way that ensures
@@ -203,7 +203,9 @@ class SequenceBatchSampler(torch.utils.data.Sampler):
         #  you can drop it.
         idx = None  # idx should be a 1-d list of indices.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        num_batches = len(self.dataset) // self.batch_size
+        batches = [range(i, i + self.batch_size*num_batches, num_batches) for i in range(num_batches)]
+        idx = [i for batch in batches for i in batch] # flatten the list of ranges
         # ========================
         return iter(idx)
 
