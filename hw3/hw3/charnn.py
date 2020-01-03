@@ -18,12 +18,15 @@ def char_maps(text: str):
         represented by it. The reverse of the above map.
 
     """
-    # TODO:
+    # DONE:
     #  Create two maps as described in the docstring above.
     #  It's best if you also sort the chars before assigning indices, so that
     #  they're in lexical order.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    chars = set(text)
+    idxs = range(len(chars))
+    char_to_idx = dict(zip(chars, idxs))
+    idx_to_char = dict(zip(idxs, chars))
     # ========================
     return char_to_idx, idx_to_char
 
