@@ -23,7 +23,7 @@ def char_maps(text: str):
     #  It's best if you also sort the chars before assigning indices, so that
     #  they're in lexical order.
     # ====== YOUR CODE: ======
-    chars = set(text)
+    chars = sorted(set(text))
     idxs = range(len(chars))
     char_to_idx = dict(zip(chars, idxs))
     idx_to_char = dict(zip(idxs, chars))
