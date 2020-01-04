@@ -161,7 +161,7 @@ def generate_from_model(model, start_sequence, n_chars, char_maps, T):
     char_to_idx, idx_to_char = char_maps
     out_text = start_sequence
 
-    # TODO:
+    # DONE:
     #  Implement char-by-char text generation.
     #  1. Feed the start_sequence into the model.
     #  2. Sample a new char from the output distribution of the last output
@@ -173,7 +173,23 @@ def generate_from_model(model, start_sequence, n_chars, char_maps, T):
     #  necessary for this. Best to disable tracking for speed.
     #  See torch.no_grad().
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    with torch.no_grad():
+        out_text = start_sequence
+        input = chars_to_onehot(start_sequence, char_to_idx)
+        S, I = input.shape
+        input = input.reshape((1, S, I)).to(device, dtype=torch.float)
+        layer_output, hidden_state = model(input, hidden_state=None)
+        distribution = hot_softmax(layer_output.reshape((S, -1)), dim=1, temperature=T)
+        samples = torch.multinomial(distribution, num_samples=1)
+        input_char = idx_to_char[samples[-1].item()]
+        out_text += input_char
+        for _ in range(n_chars-len(start_sequence)-1):
+            input = chars_to_onehot(input_char, char_to_idx).reshape((1, 1, I)).to(device, dtype=torch.float)
+            layer_output, hidden_state = model(input, hidden_state)
+            distribution = hot_softmax(layer_output.reshape((1, -1)), dim=1, temperature=T)
+            samples = torch.multinomial(distribution, num_samples=1)
+            input_char = idx_to_char[samples[0].item()]
+            out_text += input_char
     # ========================
 
     return out_text
@@ -306,6 +322,7 @@ class MultilayerGRU(nn.Module):
         #  Tip: You can use torch.stack() to combine multiple tensors into a
         #  single tensor in a differentiable manner.
         # ====== YOUR CODE: ======
+        layer_output = torch.zeros(batch_size, seq_len, self.out_dim, dtype=input.dtype, device=input.device)
         hidden_states = []
         for k, layer_state in enumerate(layer_states):
             xz = self.layer_params[k]["xz"]
