@@ -133,9 +133,11 @@ def hot_softmax(y, dim=0, temperature=1.0):
     :param temperature: Temperature.
     :return: Softmax computed with the temperature parameter.
     """
-    # TODO: Implement based on the above.
+    # DONE: Implement based on the above.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    y = y / temperature
+    softmax = nn.Softmax(dim)
+    result = softmax(y)
     # ========================
     return result
 
