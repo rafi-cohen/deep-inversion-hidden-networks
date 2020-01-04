@@ -235,7 +235,7 @@ class MultilayerGRU(nn.Module):
         self.n_layers = n_layers
         self.layer_params = []
 
-        # TODO: Create the parameters of the model for all layers.
+        # DONE: Create the parameters of the model for all layers.
         #  To implement the affine transforms you can use either nn.Linear
         #  modules (recommended) or create W and b tensor pairs directly.
         #  Create these modules or tensors and save them per-layer in
@@ -251,21 +251,24 @@ class MultilayerGRU(nn.Module):
         #      then call self.register_parameter() on them. Also make
         #      sure to initialize them. See functions in torch.nn.init.
         # ====== YOUR CODE: ======
+        self.dropout = nn.Dropout(p=dropout)
+        self.tanh = nn.Tanh()
+        self.sigmoid = nn.Sigmoid()
         for i in range(n_layers):
             in_features = in_dim if i == 0 else h_dim
             out_features = out_dim if i == n_layers-1 else h_dim
             layer_i_params = {
-                "xz" : nn.Linear(in_features, out_features, bias=False),
-                "hz" : nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
+                "xz": nn.Linear(in_features, out_features, bias=False),
+                "hz": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
                 "xr": nn.Linear(in_features, out_features, bias=False),
                 "hr": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
-                "gr": nn.Linear(in_features, out_features, bias=False),
-                "gr": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
+                "xg": nn.Linear(in_features, out_features, bias=False),
+                "hg": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
             }
-            for param in layer_params:
-                self.add_module(param)
-            layer_i_params["dropout"] = nn.Dropout(p = dropout)
+            for name, param in layer_i_params.items():
+                self.add_module(f"{name}_{i}", param)
             self.layer_params.append(layer_i_params)
+        self.output_layer = nn.Linear(in_features=h_dim, out_features=out_dim, bias=True)
         # ========================
 
     def forward(self, input: Tensor, hidden_state: Tensor = None):
