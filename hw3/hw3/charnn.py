@@ -118,8 +118,8 @@ def chars_to_labelled_samples(text: str, char_to_idx: dict, seq_len: int,
     S = seq_len
     V = len(char_to_idx)
     embedded_text = chars_to_onehot(text[0:N*S], char_to_idx)
-    samples = embedded_text.reshape(N, S, V)
-    labels = torch.Tensor(list(map(lambda c: char_to_idx[c], text[1:N*S+1]))).reshape(N, S)
+    samples = embedded_text.reshape(N, S, V).to(device=device)
+    labels = torch.Tensor(list(map(lambda c: char_to_idx[c], text[1:N*S+1]))).reshape(N, S).to(device=device)
     # ========================
     return samples, labels
 
