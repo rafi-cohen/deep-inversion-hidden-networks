@@ -256,13 +256,12 @@ class MultilayerGRU(nn.Module):
         self.sigmoid = nn.Sigmoid()
         for i in range(n_layers):
             in_features = in_dim if i == 0 else h_dim
-            out_features = out_dim if i == n_layers-1 else h_dim
             layer_i_params = {
-                "xz": nn.Linear(in_features, out_features, bias=False),
+                "xz": nn.Linear(in_features, h_dim, bias=False),
                 "hz": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
-                "xr": nn.Linear(in_features, out_features, bias=False),
+                "xr": nn.Linear(in_features, h_dim, bias=False),
                 "hr": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
-                "xg": nn.Linear(in_features, out_features, bias=False),
+                "xg": nn.Linear(in_features, h_dim, bias=False),
                 "hg": nn.Linear(in_features=h_dim, out_features=h_dim, bias=True),
             }
             for name, param in layer_i_params.items():
