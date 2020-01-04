@@ -267,7 +267,7 @@ class MultilayerGRU(nn.Module):
             for name, param in layer_i_params.items():
                 self.add_module(f"{name}_{i}", param)
             self.layer_params.append(layer_i_params)
-        self.output_layer = nn.Linear(in_features=h_dim, out_features=out_dim, bias=True)
+        self.hy = nn.Linear(in_features=h_dim, out_features=out_dim, bias=True)
         # ========================
 
     def forward(self, input: Tensor, hidden_state: Tensor = None):
