@@ -298,12 +298,41 @@ class MultilayerGRU(nn.Module):
         layer_input = input
         layer_output = None
 
-        # TODO:
+        # DONE:
         #  Implement the model's forward pass.
         #  You'll need to go layer-by-layer from bottom to top (see diagram).
         #  Tip: You can use torch.stack() to combine multiple tensors into a
         #  single tensor in a differentiable manner.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        hidden_states = []
+        for k, layer_state in enumerate(layer_states):
+            xz = self.layer_params[k]["xz"]
+            hz = self.layer_params[k]["hz"]
+            xr = self.layer_params[k]["xr"]
+            hr = self.layer_params[k]["hr"]
+            xg = self.layer_params[k]["xg"]
+            hg = self.layer_params[k]["hg"]
+            h_prev = layer_state
+            layer_outputs = []
+            for t in range(seq_len):
+                x_t = layer_input[:, t, :]
+                z_t = self.sigmoid(xz(x_t) + hz(h_prev))
+                r_t = self.sigmoid(xr(x_t) + hr(h_prev))
+                g_t = self.tanh(xg(x_t) + hg(r_t * h_prev))
+                h_t = z_t * h_prev + (1 - z_t) * g_t
+                h_prev = h_t
+                layer_outputs.append(h_t)
+            hidden_states.append(layer_outputs[-1])
+            layer_output = torch.stack(layer_outputs, dim=1)
+            layer_input = self.dropout(layer_output)
+
+        hidden_state = torch.stack(hidden_states, dim=1)
+
+        layer_outputs = []
+        for t in range(seq_len):
+            x_t = layer_input[:, t, :]
+            y_t = self.hy(x_t)
+            layer_outputs.append(y_t)
+        layer_output = torch.stack(layer_outputs, dim=1)
         # ========================
         return layer_output, hidden_state
