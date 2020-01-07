@@ -28,9 +28,8 @@
 NUM_NODES=1
 NUM_CORES=2
 NUM_GPUS=1
-JOB_NAME="test_job"
-MAIL_USER="example@example.com"
-MAIL_TYPE=ALL # Valid values are NONE, BEGIN, END, FAIL, REQUEUE, ALL
+QUEUE=rishonPartition
+JOB_NAME="fakeShake"
 
 ###
 # Conda parameters
@@ -43,8 +42,6 @@ sbatch \
 	-c $NUM_CORES \
 	--gres=gpu:$NUM_GPUS \
 	--job-name $JOB_NAME \
-	--mail-user $MAIL_USER \
-	--mail-type $MAIL_TYPE \
 	-o 'slurm-%N-%j.out' \
 <<EOF
 #!/bin/bash
