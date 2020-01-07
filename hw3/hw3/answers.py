@@ -27,7 +27,7 @@ def part1_rnn_hyperparams():
 def part1_generation_params():
     start_seq = ""
     temperature = .0001
-    # TODO: Tweak the parameters to generate a literary masterpiece.
+    # DONE: Tweak the parameters to generate a literary masterpiece.
     # ====== YOUR CODE: ======
     start_seq = "To be, or not to be"
     temperature = .001
