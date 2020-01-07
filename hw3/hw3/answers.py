@@ -17,7 +17,7 @@ def part1_rnn_hyperparams():
     # DONE: Set the hyperparameters to train the model.
     # ====== YOUR CODE: ======
     hypers = dict(
-        batch_size=32, seq_len=64,
+        batch_size=1024, seq_len=64,
         h_dim=256, n_layers=3, dropout=0.5,
         learn_rate=0.001, lr_sched_factor=0.1, lr_sched_patience=10,
     )    # ========================

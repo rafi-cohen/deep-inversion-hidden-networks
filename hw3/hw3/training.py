@@ -79,14 +79,28 @@ class Trainer(abc.ABC):
                 verbose = True
             self._print(f'--- EPOCH {epoch+1}/{num_epochs} ---', verbose)
 
-            # TODO:
+            # DONE:
             #  Train & evaluate for one epoch
             #  - Use the train/test_epoch methods.
             #  - Save losses and accuracies in the lists above.
             #  - Implement early stopping. This is a very useful and
             #    simple regularization technique that is highly recommended.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            actual_num_epochs += 1
+            train_result = self.train_epoch(dl_train, verbose=verbose, **kw)
+            train_loss.extend(train_result.losses)
+            train_acc.append(train_result.accuracy)
+            test_result = self.test_epoch(dl_test, verbose=verbose, **kw)
+            test_loss.extend(test_result.losses)
+            test_acc.append(test_result.accuracy)
+            if best_acc is None or test_result.accuracy > best_acc:
+                best_acc = test_result.accuracy
+                epochs_without_improvement = 0
+                save_checkpoint = True
+            else:
+                epochs_without_improvement += 1
+                if epochs_without_improvement == early_stopping:
+                    break
             # ========================
 
             # Save model checkpoint if requested
@@ -213,9 +227,9 @@ class RNNTrainer(Trainer):
         return super().train_epoch(dl_train, **kw)
 
     def test_epoch(self, dl_test: DataLoader, **kw):
-        # TODO: Implement modifications to the base method, if needed.
+        # DONE: Implement modifications to the base method, if needed.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.hidden_state = None
         # ========================
         return super().test_epoch(dl_test, **kw)
 
@@ -258,13 +272,17 @@ class RNNTrainer(Trainer):
         seq_len = y.shape[1]
 
         with torch.no_grad():
-            # TODO:
+            # DONE:
             #  Evaluate the RNN model on one batch of data.
             #  - Forward pass
             #  - Loss calculation
             #  - Calculate number of correct predictions
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            layer_output, self.hidden_state = self.model(x, self.hidden_state)
+            layer_output = torch.transpose(layer_output, 1, 2)
+            loss = self.loss_fn(layer_output, y)
+            y_pred = torch.argmax(layer_output, dim=1)
+            num_correct = torch.sum(y_pred == y)
             # ========================
 
         return BatchResult(loss.item(), num_correct.item() / seq_len)
