@@ -132,7 +132,8 @@ class VAE(nn.Module):
         #     log_sigma2 (mean and log variance) of q(Z|x).
         #  2. Apply the reparametrization trick to obtain z.
         # ====== YOUR CODE: ======
-        h = self.features_encoder(x).view(1, -1)
+        N = x.shape[0]
+        h = self.features_encoder(x).view(N, -1)
         mu = self.W_h_mu(h)
         log_sigma2 = self.W_h_sigma2(h)
         sigma = torch.sqrt(torch.exp(log_sigma2))
@@ -148,7 +149,8 @@ class VAE(nn.Module):
         #  1. Convert latent z to features h with a linear layer.
         #  2. Apply features decoder.
         # ====== YOUR CODE: ======
-        h = self.latent_to_features(z).reshape(1, *self.features_shape)
+        N = z.shape[0]
+        h = self.latent_to_features(z).reshape(N, *self.features_shape)
         x_rec = self.features_decoder(h)
         # ========================
 
@@ -168,10 +170,9 @@ class VAE(nn.Module):
             #  Instead of sampling from N(psi(z), sigma2 I), we'll just take
             #  the mean, i.e. psi(z).
             # ====== YOUR CODE: ======
-            for _ in range(n):
-                z = torch.randn(size=(1, self.z_dim), device=device)
-                xr = self.decode(z).squeeze().cpu()
-                samples.append(xr)
+            zs = torch.randn(size=(n, self.z_dim), device=device)
+            xrs = self.decode(zs).cpu()
+            samples = list(xrs)
             # ========================
         return samples
 
