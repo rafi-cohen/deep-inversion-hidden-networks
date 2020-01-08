@@ -170,7 +170,7 @@ class VAE(nn.Module):
             # ====== YOUR CODE: ======
             for _ in range(n):
                 z = torch.randn(size=(1, self.z_dim), device=device)
-                xr = self.decode(z).squeeze()
+                xr = self.decode(z).squeeze().cpu()
                 samples.append(xr)
             # ========================
         return samples
