@@ -9,7 +9,7 @@ class EncoderCNN(nn.Module):
 
         modules = []
 
-        # TODO:
+        # DONE:
         #  Implement a CNN. Save the layers in the modules list.
         #  The input shape is an image batch: (N, in_channels, H_in, W_in).
         #  The output shape should be (N, out_channels, H_out, W_out).
@@ -19,7 +19,27 @@ class EncoderCNN(nn.Module):
         #  use pooling or only strides, use any activation functions,
         #  use BN or Dropout, etc.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        modules = [
+            nn.Conv2d(in_channels, out_channels=64, kernel_size=5, stride=1, padding=2, dilation=1),
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=64),
+            nn.ReLU(),
+
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=1, padding=2, dilation=1),
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=128),
+            nn.ReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=1, padding=2, dilation=1),
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=256),
+            nn.ReLU(),
+
+            nn.Conv2d(in_channels=256, out_channels=out_channels, kernel_size=5, stride=1, padding=2, dilation=1),
+            nn.MaxPool2d(kernel_size=2),
+            nn.BatchNorm2d(num_features=out_channels),
+            nn.ReLU(),
+        ]
         # ========================
         self.cnn = nn.Sequential(*modules)
 
