@@ -135,7 +135,7 @@ class VAE(nn.Module):
         mu = self.W_h_mu(h)
         log_sigma2 = self.W_h_sigma2(h)
         sigma = torch.sqrt(torch.exp(log_sigma2))
-        u = torch.randn(size=mu.size())
+        u = torch.randn(size=mu.size(), device=log_sigma2.device)
         z = mu + u*sigma
         # ========================
 
