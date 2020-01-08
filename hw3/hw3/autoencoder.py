@@ -192,13 +192,23 @@ def vae_loss(x, xr, z_mu, z_log_sigma2, x_sigma2):
     all three are scalars, averaged over the batch dimension.
     """
     loss, data_loss, kldiv_loss = None, None, None
-    # TODO:
+    # DONE:
     #  Implement the VAE pointwise loss calculation.
     #  Remember:
     #  1. The covariance matrix of the posterior is diagonal.
     #  2. You need to average over the batch dimension.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    N, C, H, W = x.shape
+    z_dim = z_mu.shape[1]
+    x_dim = C*H*W
+    u = torch.randn(size=z_mu.size(), device=z_log_sigma2.device)
+    x = x.reshape(N, -1)
+    xr = xr.reshape(N, -1)
+    data_loss = torch.mean(torch.sum((x - xr)**2, dim=1) / (x_sigma2 * x_dim))
+    Sigma = torch.exp(z_log_sigma2)
+    kldiv_loss = torch.mean(torch.sum(Sigma, dim=1) + torch.sum(z_mu**2, dim=1)
+                            - z_dim - torch.log(torch.prod(Sigma, dim=1)))
+    loss = data_loss + kldiv_loss
     # ========================
 
     return loss, data_loss, kldiv_loss
