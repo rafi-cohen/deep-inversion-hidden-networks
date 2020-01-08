@@ -109,7 +109,8 @@ class VAE(nn.Module):
 
         # TODO: Add more layers as needed for encode() and decode().
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.W_h_mu = nn.Linear(in_features=n_features, out_features=z_dim, bias=True)
+        self.W_h_sigma2 = nn.Linear(in_features=n_features, out_features=z_dim, bias=True)
         # ========================
 
     def _check_features(self, in_size):
@@ -124,13 +125,18 @@ class VAE(nn.Module):
             return h.shape[1:], torch.numel(h)//h.shape[0]
 
     def encode(self, x):
-        # TODO:
+        # DONE:
         #  Sample a latent vector z given an input x from the posterior q(Z|x).
         #  1. Use the features extracted from the input to obtain mu and
         #     log_sigma2 (mean and log variance) of q(Z|x).
         #  2. Apply the reparametrization trick to obtain z.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        h = self.features_encoder(x).view(1, -1)
+        mu = self.W_h_mu(h)
+        log_sigma2 = self.W_h_sigma2(h)
+        sigma = torch.sqrt(torch.exp(log_sigma2))
+        u = torch.randn(size=mu.size())
+        z = mu + u*sigma
         # ========================
 
         return z, mu, log_sigma2
