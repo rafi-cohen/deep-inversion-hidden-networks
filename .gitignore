@@ -1,5 +1,5 @@
 data/
-checkpoints/
+#checkpoints/
 **/results/monitor/
 
 # Created by https://www.gitignore.io/api/python,pycharm,windows,osx,linux
