@@ -107,10 +107,11 @@ class VAE(nn.Module):
 
         self.features_shape, n_features = self._check_features(in_size)
 
-        # TODO: Add more layers as needed for encode() and decode().
+        # DONE: Add more layers as needed for encode() and decode().
         # ====== YOUR CODE: ======
         self.W_h_mu = nn.Linear(in_features=n_features, out_features=z_dim, bias=True)
         self.W_h_sigma2 = nn.Linear(in_features=n_features, out_features=z_dim, bias=True)
+        self.latent_to_features = nn.Linear(in_features=z_dim, out_features=n_features, bias=True)
         # ========================
 
     def _check_features(self, in_size):
@@ -142,12 +143,13 @@ class VAE(nn.Module):
         return z, mu, log_sigma2
 
     def decode(self, z):
-        # TODO:
+        # DONE:
         #  Convert a latent vector back into a reconstructed input.
         #  1. Convert latent z to features h with a linear layer.
         #  2. Apply features decoder.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        h = self.latent_to_features(z).reshape(1, *self.features_shape)
+        x_rec = self.features_decoder(h)
         # ========================
 
         # Scale to [-1, 1] (same dynamic range as original images).
