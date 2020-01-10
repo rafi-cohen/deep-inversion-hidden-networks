@@ -82,7 +82,8 @@ class DecoderCNN(nn.Module):
             nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
             nn.BatchNorm2d(num_features=out_channels),
             nn.ReLU()
-        ]        # ========================
+        ]
+        # ========================
         self.cnn = nn.Sequential(*modules)
 
     def forward(self, h):
