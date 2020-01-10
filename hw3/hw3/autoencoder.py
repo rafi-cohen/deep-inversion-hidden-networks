@@ -20,25 +20,21 @@ class EncoderCNN(nn.Module):
         #  use BN or Dropout, etc.
         # ====== YOUR CODE: ======
         modules = [
-            nn.Conv2d(in_channels, out_channels=64, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(in_channels, out_channels=64, kernel_size=5, stride=2, padding=2, dilation=1),
             nn.BatchNorm2d(num_features=64),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=5, stride=2, padding=2, dilation=1),
             nn.BatchNorm2d(num_features=128),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(in_channels=128, out_channels=256, kernel_size=5, stride=2, padding=2, dilation=1),
             nn.BatchNorm2d(num_features=256),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.Conv2d(in_channels=256, out_channels=out_channels, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.MaxPool2d(kernel_size=2),
+            nn.Conv2d(in_channels=256, out_channels=out_channels, kernel_size=5, stride=2, padding=2, dilation=1),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(),
         ]
         # ========================
         self.cnn = nn.Sequential(*modules)
@@ -63,25 +59,20 @@ class DecoderCNN(nn.Module):
         #  inputs to the Encoder were.
         # ====== YOUR CODE: ======
         modules = [
-            nn.ConvTranspose2d(in_channels=in_channels, out_channels=256, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
+            nn.ConvTranspose2d(in_channels=in_channels, out_channels=256, kernel_size=5, stride=2, padding=2, dilation=1, output_padding=1),
             nn.BatchNorm2d(num_features=256),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
+            nn.ConvTranspose2d(in_channels=256, out_channels=128, kernel_size=5, stride=2, padding=2, dilation=1, output_padding=1),
             nn.BatchNorm2d(num_features=128),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.ConvTranspose2d(in_channels=128, out_channels=64, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
+            nn.ConvTranspose2d(in_channels=128, out_channels=64, kernel_size=5, stride=2, padding=2, dilation=1, output_padding=1),
             nn.BatchNorm2d(num_features=64),
-            nn.ReLU(),
+            nn.LeakyReLU(),
 
-            nn.ConvTranspose2d(in_channels=64, out_channels=out_channels, kernel_size=5, stride=1, padding=2, dilation=1),
-            nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True),
+            nn.ConvTranspose2d(in_channels=64, out_channels=out_channels, kernel_size=5, stride=2, padding=2, dilation=1, output_padding=1),
             nn.BatchNorm2d(num_features=out_channels),
-            nn.ReLU()
         ]
         # ========================
         self.cnn = nn.Sequential(*modules)
