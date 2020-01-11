@@ -193,20 +193,32 @@ def train_batch(dsc_model: Discriminator, gen_model: Generator,
     :return: The discriminator and generator losses.
     """
 
-    # TODO: Discriminator update
+    # DONE: Discriminator update
     #  1. Show the discriminator real and generated data
     #  2. Calculate discriminator loss
     #  3. Update discriminator parameters
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    dsc_optimizer.zero_grad()
+    batch_size = x_data.shape[0]
+    generated_data = gen_model.sample(batch_size, with_grad=False)
+    y_generated = dsc_model(generated_data)
+    y_data = dsc_model(x_data)
+    dsc_loss = dsc_loss_fn(y_data, y_generated)
+    dsc_loss.backward()
+    dsc_optimizer.step()
     # ========================
 
-    # TODO: Generator update
+    # DONE: Generator update
     #  1. Show the discriminator generated data
     #  2. Calculate generator loss
     #  3. Update generator parameters
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    gen_optimizer.zero_grad()
+    generated_data = gen_model.sample(batch_size, with_grad=True)
+    y_generated = dsc_model(generated_data)
+    gen_loss = gen_loss_fn(y_generated)
+    gen_loss.backward()
+    gen_optimizer.step()
     # ========================
 
     return dsc_loss.item(), gen_loss.item()
