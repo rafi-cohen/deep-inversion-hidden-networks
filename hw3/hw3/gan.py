@@ -169,12 +169,13 @@ def generator_loss_fn(y_generated, data_label=0):
     :return: The generator loss.
     """
     assert data_label == 1 or data_label == 0
-    # TODO:
+    # DONE:
     #  Implement the Generator loss.
     #  Think about what you need to compare the input to, in order to
     #  formulate the loss in terms of Binary Cross Entropy.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    loss_fn = nn.BCEWithLogitsLoss()
+    loss = loss_fn(y_generated, torch.ones_like(y_generated)*data_label)
     # ========================
     return loss
 
