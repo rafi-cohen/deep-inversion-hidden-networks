@@ -152,10 +152,10 @@ def discriminator_loss_fn(y_data, y_generated, data_label=0, label_noise=0.0):
     #  See pytorch's BCEWithLogitsLoss for a numerically stable implementation.
     # ====== YOUR CODE: ======
     loss = nn.BCEWithLogitsLoss()
-    y_data_true_noisy = torch.FloatTensor(len(y_data)).uniform_(data_label-(label_noise/2), data_label+(label_noise/2))
+    y_data_true_noisy = torch.empty_like(y_data).uniform_(data_label-(label_noise/2), data_label+(label_noise/2))
     loss_data = loss(y_data, y_data_true_noisy)
     gen_label = 1 - data_label
-    y_gen_true_noisy = torch.FloatTensor(len(y_generated)).uniform_(gen_label-(label_noise/2), gen_label+(label_noise/2))
+    y_gen_true_noisy = torch.empty_like(y_generated).uniform_(gen_label-(label_noise/2), gen_label+(label_noise/2))
     loss_generated = loss(y_generated, y_gen_true_noisy)
     # ========================
     return loss_data + loss_generated
