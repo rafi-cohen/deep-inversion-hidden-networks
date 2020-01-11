@@ -103,11 +103,14 @@ class Generator(nn.Module):
         :return: A batch of samples, shape (N,C,H,W).
         """
         device = next(self.parameters()).device
-        # TODO: Sample from the model.
+        # DONE: Sample from the model.
         #  Generate n latent space samples and return their reconstructions.
         #  Don't use a loop.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        torch.set_grad_enabled(with_grad)
+        zs = torch.randn(size=(n, self.z_dim), device=device, requires_grad=with_grad)
+        samples = self.forward(zs)
+        torch.set_grad_enabled(True)
         # ========================
         return samples
 
