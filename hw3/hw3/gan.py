@@ -65,12 +65,32 @@ class Generator(nn.Module):
         super().__init__()
         self.z_dim = z_dim
 
-        # TODO: Create the generator model layers.
+        # DONE: Create the generator model layers.
         #  To combine image features you can use the DecoderCNN from the VAE
         #  section or implement something new.
         #  You can assume a fixed image size.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        self.featuremap_size = featuremap_size
+        modules = []
+        kernel_size = 5
+        stride = 2
+        padding = 2
+        dilation = 1
+        output_padding = 1
+        channels = [512, 256, 128, 64, out_channels]
+        self.latent_to_features = nn.Linear(in_features=z_dim, out_features=channels[0]*(featuremap_size**2))
+
+        for in_channels, out_channels in zip(channels[:-1], channels[1:]):
+            modules.extend([
+                nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride, padding, dilation, output_padding),
+                nn.BatchNorm2d(num_features=out_channels),
+                nn.ReLU()
+            ])
+
+        modules.pop()
+        modules.append(nn.Tanh())
+
+        self.cnn = nn.Sequential(*modules)
         # ========================
 
     def sample(self, n, with_grad=False):
@@ -97,11 +117,13 @@ class Generator(nn.Module):
         :return: A batch of generated images of shape (N,C,H,W) which should be
         the shape which the Discriminator accepts.
         """
-        # TODO: Implement the Generator forward pass.
+        # DONE: Implement the Generator forward pass.
         #  Don't forget to make sure the output instances have the same
         #  dynamic range as the original (real) images.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        N = z.shape[0]
+        y = self.latent_to_features(z).reshape(N, -1, self.featuremap_size, self.featuremap_size)
+        x = self.cnn(y)
         # ========================
         return x
 
