@@ -15,13 +15,28 @@ class Discriminator(nn.Module):
         """
         super().__init__()
         self.in_size = in_size
-        # TODO: Create the discriminator model layers.
+        # DONE: Create the discriminator model layers.
         #  To extract image features you can use the EncoderCNN from the VAE
         #  section or implement something new.
         #  You can then use either an affine layer or another conv layer to
         #  flatten the features.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        modules = []
+        input_channels = in_size[0]
+        kernel_size = 5
+        stride = 2
+        padding = 2
+        dilation = 1
+        channels = [input_channels, 64, 128, 256, 512]
+        for in_channels, out_channels in zip(channels[:-1], channels[1:]):
+            modules.append(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding, dilation))
+            modules.append(nn.BatchNorm2d(num_features=out_channels))
+            modules.append(nn.LeakyReLU())
+        modules.append(nn.Flatten())
+        num_convolutions = len(channels)-1
+        output_features = ((in_size[1]*in_size[2]) // (2**(2*num_convolutions)))*channels[-1]
+        modules.append(nn.Linear(in_features=output_features, out_features=1))
+        self.cnn = nn.Sequential(*modules)
         # ========================
 
     def forward(self, x):
@@ -34,7 +49,7 @@ class Discriminator(nn.Module):
         #  No need to apply sigmoid to obtain probability - we'll combine it
         #  with the loss due to improved numerical stability.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        y = self.cnn(x)
         # ========================
         return y
 
