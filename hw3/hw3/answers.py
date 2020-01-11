@@ -164,16 +164,16 @@ def part3_gan_hyperparams():
     # DONE: Tweak the hyperparameters to train your GAN.
     # ====== YOUR CODE: ======
     hypers = dict(
-        batch_size=64, z_dim=100,
-        data_label=1, label_noise=0.2,
+        batch_size=4, z_dim=100,
+        data_label=1, label_noise=0.1,
         discriminator_optimizer=dict(
-            type='Adam',  # Any name in nn.optim like SGD, Adam
-            lr=0.001,
+            type='SGD',  # Any name in nn.optim like SGD, Adam
+            lr=0.01,
             # You an add extra args for the optimizer here
         ),
         generator_optimizer=dict(
             type='Adam',  # Any name in nn.optim like SGD, Adam
-            lr=0.001,
+            lr=0.0002,
             # You an add extra args for the optimizer here
         ),
     )
