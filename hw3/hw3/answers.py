@@ -38,52 +38,47 @@ def part1_generation_params():
 part1_q1 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+We split the corpus into sequences instead of training on the whole text for the following reasons:
+1. Running backpropagation through time on very long sequences is too computationally expensive and time demanding. 
+2. Running backpropagation through time on very long sequences might lead to vanishing/exploding gradients due to
+the many computations that are involved in the process.
 """
 
 part1_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+It is possible because the way the rnn training algorithm works, training is done sequentially on contiguous sequences
+where the last hidden state of the current iteration is used as the first hidden state of the next iteration. This 
+hidden state is what allows memory to be preserved between iterations.
 
 """
 
 part1_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+We must not shuffle the order of batches during training because as we said in our previous answer, RNN training
+is done sequentially on contiguous sequences in order to preserve memory between iterations.
 
 """
 
 part1_q4 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. During sampling, we want to choose the most likely prediction with high probability. Having a low temperature
+means the probabilities will be less uniform, and therefore the char with the highest score will have a significantly
+higher probability of being chosen. On the other hand, during training we want our model to explore new directions, and
+we do so by using a higher temperature value.
+2. When $T$ is very high the probabilities vector outputted by $softmax_T$ tends to be more uniform:
+$$
+\frac{e^{\vec{y}/T}}{\sum_k e^{y_k/T}}
+\xrightarrow[T\to\infty]{}
+\frac{\vec{1}}{\sum_k 1}
+$$
+This means the characters will be sampled from a more uniform distribution, which means that their scores will have less
+effect on their probability of being chosen. This allows the model to be less conservative and more willing to explore
+new directions.
+3. The lower $T$ is, the less uniform the char distribution becomes. This happens because for lower values of $T$ 
+probabilities of chars with higher scores get amplified more compared to chars with lower scores. This results in a more
+conservative and confident model.
 
 """
 # ==============
@@ -128,13 +123,17 @@ An equation: $e^{i\pi} -1 = 0$
 part2_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. The VAE loss consists of two terms:
+    - The Reconstruction Loss: this term tells us how well the generated points fit the data, by calculating the squared 
+    error between the original points in the instance space, and the respective points that were reconstructed from
+    them by the model.
+    - The KL Divergence Loss: This is a regularization term which is the divergence between the model posterior 
+    $q(Z|X)$ and the prior $p(Z)$. This term can be interpreted as the information gained by using the posterior
+    over the prior distribution.
+    Balancing between the effects of the two terms using x_sigma2
+2. Minimizing the KL divergence loss means optimizing how close
+3. By sampling $z$ from $q(Z|X)$ instead of $p(Z)$ we increase the chance
+$\Psi(\bb{z})$ will end up on the data manifold in the instance space.
 
 """
 
