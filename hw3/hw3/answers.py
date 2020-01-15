@@ -57,7 +57,7 @@ part1_q3 = r"""
 **Your answer:**
 
 We must not shuffle the order of batches during training because as we said in our previous answer, RNN training
-is done sequentially on contiguous sequences in order to preserve memory between iterations.
+is done **sequentially** on contiguous sequences in order to preserve memory between iterations.
 
 """
 
