@@ -110,13 +110,17 @@ def part2_vae_hyperparams():
 part2_q1 = r"""
 **Your answer:**
 
+The $\sigma^2$ hyperparameter tunes the regularization strength in the VAE loss. This hyperparameter allows us to
+choose which term of the VAE loss (reconstruction loss term vs KL divergence loss term) we want to put more emphasis on
+minimizing.
+- By using smaller values of $\sigma^2$, we give more importance to the reconstruction loss term. This should
+improve the quality of the reconstructed images.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+- By using larger values of $\sigma^2$, we give more importance to the KL divergence loss term. This should
+make the posterior $q(Z|X)$ closer to the prior $p(Z) \sim \mathcal{N}(\bb{0},\bb{I})$, and thus allows us to sample
+from a known distribution to generate new samples (as explained in the following question). A value which is too high,
+however, would mean that the model would probably not learn how to actually generate the samples (because the
+reconstruction loss term would become negligible in this case).
 
 """
 
@@ -127,13 +131,16 @@ part2_q2 = r"""
     - The Reconstruction Loss: this term tells us how well the generated points fit the data, by calculating the squared 
     error between the original points in the instance space, and the respective points that were reconstructed from
     them by the model.
-    - The KL Divergence Loss: This is a regularization term which is the divergence between the model posterior 
-    $q(Z|X)$ and the prior $p(Z)$. This term can be interpreted as the information gained by using the posterior
-    over the prior distribution.
-    Balancing between the effects of the two terms using x_sigma2
-2. Minimizing the KL divergence loss means optimizing how close
-3. By sampling $z$ from $q(Z|X)$ instead of $p(Z)$ we increase the chance
-$\Psi(\bb{z})$ will end up on the data manifold in the instance space.
+    - The KL Divergence Loss: this is a regularization term which is the divergence between the model posterior 
+    $q(Z|X)$ and the prior $p(Z)$. This term can be interpreted as the information lost when $p(Z)$ is used to
+    approximate $q(Z|X)$.
+2. By minimizing the KL divergence loss we are minimizing the difference between $q(Z|X)$ and $p(Z)$. This means that
+we are basically trying to model $q(Z|X)$ as $\mathcal{N}(\bb{0},\bb{I})$.
+
+3. By modeling the posterior with the gaussian distribution, we are making it easier for ourselves to sample $\bb{z}$
+from the latent space distribution so that with high probability $\Psi(\bb{z})$ will end up on the data manifold in the
+instance space. In other words, this is what allows us to generate new instances, because otherwise we wouldn't know
+where to sample from.
 
 """
 
