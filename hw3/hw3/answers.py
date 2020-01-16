@@ -38,10 +38,12 @@ def part1_generation_params():
 part1_q1 = r"""
 **Your answer:**
 
-We split the corpus into sequences instead of training on the whole text for the following reasons:
-1. Running backpropagation through time on very long sequences is too computationally expensive and time demanding. 
-2. Running backpropagation through time on very long sequences might lead to vanishing/exploding gradients due to
-the many computations that are involved in the process.
+We split the corpus into sequences instead of training on the whole text because as we learned in the lecture running 
+backpropagation through time on very long sequences is too computationally expensive and time demanding. 
+
+Also, we might add that for vanilla RNNs running backpropagation through
+time on very long sequences might lead to vanishing/exploding gradients due to the many computations that are
+involved in the process. GRU models (like the one we have just implemented) are a way to address this problem.
 """
 
 part1_q2 = r"""
