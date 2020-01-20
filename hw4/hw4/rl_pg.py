@@ -106,11 +106,11 @@ class PolicyAgent(object):
         :return: A tensor of shape (n_actions,) containing the probability
         of each action according to the policy.
         """
-        # TODO:
+        # DONE:
         #  Generate the distribution as described above.
         #  Notice that you should use p_net for *inference* only.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        actions_proba = self.p_net(torch.reshape(self.curr_state, (1, -1))).squeeze()
         # ========================
 
         return actions_proba
