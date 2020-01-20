@@ -48,7 +48,7 @@ class PolicyNet(nn.Module):
             layers.pop() # remove last dropout layer
         layers.pop() # remove last non-linearity
         self.fc_layers = nn.Sequential(*layers)
-        self.log_softmax = nn.LogSoftmax(dim=1)
+        self.softmax = nn.Softmax(dim=1)
         # ========================
 
     def forward(self, x):
@@ -56,7 +56,7 @@ class PolicyNet(nn.Module):
         # ====== YOUR CODE: ======
         x = x.reshape((x.shape[0], -1))
         z = self.fc_layers(x)
-        action_scores = self.log_softmax(z)
+        action_scores = self.softmax(z)
         # ========================
         return action_scores
 
