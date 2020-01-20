@@ -110,7 +110,7 @@ class PolicyAgent(object):
         #  Generate the distribution as described above.
         #  Notice that you should use p_net for *inference* only.
         # ====== YOUR CODE: ======
-        actions_proba = self.p_net(torch.reshape(self.curr_state, (1, -1))).squeeze()
+        actions_proba = self.p_net(self.curr_state.reshape(1, -1)).squeeze()
         # ========================
 
         return actions_proba
