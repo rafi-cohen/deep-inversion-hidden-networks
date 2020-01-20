@@ -120,7 +120,7 @@ class PolicyAgent(object):
         Performs a step using a policy-based action.
         :return: An Experience.
         """
-        # TODO:
+        # DONE:
         #  - Generate an action based on the policy model.
         #    Remember that the policy defines a probability *distribution* over
         #    possible actions. Make sure to treat it that way by *sampling*
@@ -131,9 +131,11 @@ class PolicyAgent(object):
         #  - Update agent state.
         #  - Generate and return a new experience.
         # ====== YOUR CODE: ======
-
-        raise NotImplementedError()
-
+        actions_proba = self.current_action_distribution()
+        action = actions_proba.multinomial(num_samples=1).item()
+        obs, reward, is_done, extra_info = self.env.step(action)
+        experience = Experience(self.curr_state, action, reward, is_done)
+        self.curr_state = obs
         # ========================
         if is_done:
             self.reset()
