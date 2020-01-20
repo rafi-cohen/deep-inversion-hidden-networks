@@ -27,15 +27,36 @@ class PolicyNet(nn.Module):
         """
         super().__init__()
 
-        # TODO: Implement a simple neural net to approximate the policy.
+        # DONE: Implement a simple neural net to approximate the policy.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        NLS = {'relu': torch.nn.ReLU, 'tanh': nn.Tanh, 'sigmoid': nn.Sigmoid, 'softmax': nn.Softmax,
+               'logsoftmax': nn.LogSoftmax}
+        layers = []
+        hidden_dims = kw.get("hidden_dims", [50, 50, 50])
+        nonlin = kw.get("nonlin", "relu")
+        dropout = kw.get("dropout", 0)
+        all_dims = [in_features, *hidden_dims, out_actions]
+        for in_dim, out_dim in zip(all_dims[:-1], all_dims[1:]):
+            layers += [
+                nn.Linear(in_dim, out_dim, bias=True),
+                NLS[nonlin]()
+            ]
+            if dropout > 0:
+                layers.append(nn.Dropout(dropout))
+
+        if isinstance(layers[-1], nn.Dropout):
+            layers.pop() # remove last dropout layer
+        layers.pop() # remove last non-linearity
+        self.fc_layers = nn.Sequential(*layers)
+        self.log_softmax = nn.LogSoftmax(dim=1)
         # ========================
 
     def forward(self, x):
-        # TODO: Implement a simple neural net to approximate the policy.
+        # DONE: Implement a simple neural net to approximate the policy.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        x = x.reshape((x.shape[0], -1))
+        z = self.fc_layers(x)
+        action_scores = self.log_softmax(z)
         # ========================
         return action_scores
 
@@ -48,9 +69,11 @@ class PolicyNet(nn.Module):
         :param kw: Extra hyperparameters.
         :return: A PolicyNet instance.
         """
-        # TODO: Implement according to docstring.
+        # DONE: Implement according to docstring.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        in_features = env.observation_space.shape[0]
+        out_actions = env.action_space.n
+        net = PolicyNet(in_features, out_actions, **kw)
         # ========================
         return net.to(device)
 
