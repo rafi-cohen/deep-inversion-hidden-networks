@@ -135,13 +135,21 @@ class TrainBatchDataset(torch.utils.data.IterableDataset):
         agent.reset()
 
         while True:
-            # TODO:
+            # DONE:
             #  - Play the environment with the agent until an episode ends.
             #  - Construct an Episode object based on the experiences generated
             #    by the agent.
             #  - Store Episodes in the curr_batch list.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            is_done = False
+            while not is_done:
+                experience = agent.step()
+                episode_experiences.append(experience)
+                episode_reward += experience.reward
+                is_done = experience.is_done
+            curr_batch.append(Episode(episode_reward, episode_experiences))
+            episode_reward = 0.0
+            episode_experiences = []
             # ========================
             if len(curr_batch) == self.episode_batch_size:
                 yield tuple(curr_batch)
