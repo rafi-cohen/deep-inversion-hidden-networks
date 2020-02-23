@@ -54,6 +54,7 @@ class PolicyNet(nn.Module):
     def forward(self, x):
         # DONE: Implement a simple neural net to approximate the policy.
         # ====== YOUR CODE: ======
+        x = torch.Tensor(x)
         x = x.reshape((x.shape[0], -1))
         z = self.fc_layers(x)
         action_scores = self.softmax(z)
