@@ -83,12 +83,26 @@ class TrainBatch(object):
         """
         train_batch = None
 
-        # TODO:
+        # DONE:
         #   - Extract states, actions and total rewards from episodes.
         #   - Calculate the q-values for states in each experience.
         #   - Construct a TrainBatch instance.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        states = []
+        actions = []
+        rewards = []
+        q_vals = []
+        for episode in episodes:
+            for experience in episode.experiences:
+                states.append(experience.state)
+                actions.append(experience.action)
+            q_vals.extend(episode.calc_qvals(gamma))
+            rewards.append(episode.total_reward)
+        states = torch.stack(states)
+        actions = torch.LongTensor(actions)
+        q_vals = torch.FloatTensor(q_vals)
+        rewards = torch.FloatTensor(rewards)
+        train_batch = TrainBatch(states, actions, q_vals, rewards)
         # ========================
         return train_batch
 
