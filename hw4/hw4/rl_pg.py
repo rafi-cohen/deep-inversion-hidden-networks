@@ -48,16 +48,13 @@ class PolicyNet(nn.Module):
             layers.pop() # remove last dropout layer
         layers.pop() # remove last non-linearity
         self.fc_layers = nn.Sequential(*layers)
-        self.softmax = nn.Softmax(dim=1)
         # ========================
 
     def forward(self, x):
         # DONE: Implement a simple neural net to approximate the policy.
         # ====== YOUR CODE: ======
-        x = torch.Tensor(x)
         x = x.reshape((x.shape[0], -1))
-        z = self.fc_layers(x)
-        action_scores = self.softmax(z)
+        action_scores = self.fc_layers(x)
         # ========================
         return action_scores
 
@@ -111,7 +108,8 @@ class PolicyAgent(object):
         #  Generate the distribution as described above.
         #  Notice that you should use p_net for *inference* only.
         # ====== YOUR CODE: ======
-        actions_proba = self.p_net(self.curr_state.reshape(1, -1)).squeeze()
+        action_scores = self.p_net(self.curr_state.reshape(1, -1)).squeeze()
+        actions_proba = torch.softmax(action_scores, dim=0)
         # ========================
 
         return actions_proba
