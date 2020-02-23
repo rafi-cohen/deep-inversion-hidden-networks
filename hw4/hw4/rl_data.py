@@ -34,12 +34,17 @@ class Episode(object):
         """
         qvals = []
 
-        # TODO:
+        # DONE:
         #  Calculate the q(s,a) value of each state in the episode.
         #  Try to implement it in O(n) runtime, where n is the number of
         #  states. Hint: change the order.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        prev_qval = 0
+        for experience in reversed(self.experiences):
+            curr_qval = gamma * prev_qval + experience.reward
+            qvals.append(curr_qval)
+            prev_qval = curr_qval
+        qvals = list(reversed(qvals))
         # ========================
         return qvals
 
