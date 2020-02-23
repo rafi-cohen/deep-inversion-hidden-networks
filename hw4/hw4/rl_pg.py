@@ -189,7 +189,8 @@ class VanillaPolicyGradientLoss(nn.Module):
         #  Use the helper methods in this class to first calculate the weights
         #  and then the loss using the weights and action scores.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        policy_weight = self._policy_weight(batch)
+        loss_p = self._policy_loss(batch, action_scores, policy_weight)
         # ========================
         return loss_p, dict(loss_p=loss_p.item())
 
@@ -198,7 +199,7 @@ class VanillaPolicyGradientLoss(nn.Module):
         #  Return the policy weight term for the causal vanilla PG loss.
         #  This is a tensor of shape (N,).
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        policy_weight = batch.q_vals
         # ========================
         return policy_weight
 
@@ -213,7 +214,10 @@ class VanillaPolicyGradientLoss(nn.Module):
         #   different episodes. So, here we'll simply average over the number
         #   of total experiences in our batch.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        log_proba = torch.log_softmax(action_scores, dim=1)
+        to_gather = torch.reshape(batch.actions, (-1, 1))
+        taken_log_proba = torch.gather(log_proba, 1, to_gather)
+        loss_p = -torch.mean(policy_weight * taken_log_proba)
         # ========================
         return loss_p
 
