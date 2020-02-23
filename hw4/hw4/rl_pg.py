@@ -136,7 +136,7 @@ class PolicyAgent(object):
         action = actions_proba.multinomial(num_samples=1).item()
         obs, reward, is_done, extra_info = self.env.step(action)
         experience = Experience(self.curr_state, action, reward, is_done)
-        self.curr_state = obs
+        self.curr_state = torch.Tensor(obs)
         # ========================
         if is_done:
             self.reset()
