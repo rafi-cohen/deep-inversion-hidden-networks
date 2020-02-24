@@ -231,20 +231,22 @@ class BaselinePolicyGradientLoss(VanillaPolicyGradientLoss):
         actions at each experience in the batch, shape (N, A).
         :return: A tuple of the loss and a dict for printing.
         """
-        # TODO:
+        # DONE:
         #  Calculate the loss and baseline.
         #  Use the helper methods in this class as before.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        policy_weight, baseline = self._policy_weight(batch)
+        loss_p = self._policy_loss(batch, action_scores, policy_weight - baseline)
         # ========================
         return loss_p, dict(loss_p=loss_p.item(), baseline=baseline.item())
 
     def _policy_weight(self, batch: TrainBatch):
-        # TODO:
+        # DONE:
         #  Calculate both the policy weight term and the baseline value for
         #  the PG loss with baseline.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        policy_weight = super()._policy_weight(batch)
+        baseline = torch.mean(policy_weight)
         # ========================
         return policy_weight, baseline
 
