@@ -426,7 +426,7 @@ class PolicyTrainer(object):
     def train_batch(self, batch: TrainBatch):
         total_loss = None
         losses_dict = {}
-        # TODO:
+        # DONE:
         #  Complete the training loop for your model.
         #  Note that this Trainer supports multiple loss functions, stored
         #  in the list self.loss_functions, each returning a loss tensor and
@@ -438,7 +438,17 @@ class PolicyTrainer(object):
         #   - Backprop.
         #   - Update model parameters.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        action_scores = self.model(batch.states)
+        self.optimizer.zero_grad()
+        for loss_fn in self.loss_functions:
+            loss_p, loss_dict = loss_fn(batch, action_scores)
+            if not total_loss:
+                total_loss = loss_p
+            else:
+                total_loss += loss_p
+            losses_dict.update(loss_dict)
+        total_loss.backward()
+        self.optimizer.step()
         # ========================
 
         return total_loss, losses_dict
