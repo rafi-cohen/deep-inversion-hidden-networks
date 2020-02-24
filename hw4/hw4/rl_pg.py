@@ -216,7 +216,7 @@ class VanillaPolicyGradientLoss(nn.Module):
         # ====== YOUR CODE: ======
         log_proba = torch.log_softmax(action_scores, dim=1)
         to_gather = torch.reshape(batch.actions, (-1, 1))
-        taken_log_proba = torch.gather(log_proba, 1, to_gather)
+        taken_log_proba = torch.gather(log_proba, 1, to_gather).squeeze()
         loss_p = -torch.mean(policy_weight * taken_log_proba)
         # ========================
         return loss_p
