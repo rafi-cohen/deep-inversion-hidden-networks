@@ -287,7 +287,7 @@ class ActionEntropyLoss(nn.Module):
             # scores are the first element in this case.
             action_scores, _ = action_scores
 
-        # TODO: Implement the entropy-based loss for the actions.
+        # DONE: Implement the entropy-based loss for the actions.
         #   Notes:
         #   - Use self.max_entropy to normalize the entropy to [0,1].
         #   - Notice that we want to maximize entropy, not minimize it.
@@ -296,7 +296,10 @@ class ActionEntropyLoss(nn.Module):
         #   - Use pytorch built-in softmax and log_softmax.
         #   - Calculate loss per experience and average over all of them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        log_proba = torch.log_softmax(action_scores, dim=1)
+        prob = torch.softmax(action_scores, dim=1)
+        n_actions = len(action_scores[0])
+        loss_e = n_actions * torch.mean(prob * log_proba) / (self.max_entropy)
         # ========================
 
         loss_e *= self.beta
