@@ -184,7 +184,7 @@ class VanillaPolicyGradientLoss(nn.Module):
         actions at each experience in the batch, shape (N, A).
         :return: A tuple of the loss and a dict for printing.
         """
-        # TODO:
+        # DONE:
         #  Calculate the loss.
         #  Use the helper methods in this class to first calculate the weights
         #  and then the loss using the weights and action scores.
@@ -195,7 +195,7 @@ class VanillaPolicyGradientLoss(nn.Module):
         return loss_p, dict(loss_p=loss_p.item())
 
     def _policy_weight(self, batch: TrainBatch):
-        # TODO:
+        # DONE:
         #  Return the policy weight term for the causal vanilla PG loss.
         #  This is a tensor of shape (N,).
         # ====== YOUR CODE: ======
@@ -204,7 +204,7 @@ class VanillaPolicyGradientLoss(nn.Module):
         return policy_weight
 
     def _policy_loss(self, batch, action_scores, policy_weight):
-        # TODO: Implement the policy gradient loss according to the formula.
+        # DONE: Implement the policy gradient loss according to the formula.
         #   - Calculate log-probabilities of the actions.
         #   - Select only the log-proba of actions that were actually taken.
         #   - Calculate the weighted average using the given weights.
