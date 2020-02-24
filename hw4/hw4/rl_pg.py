@@ -268,9 +268,9 @@ class ActionEntropyLoss(nn.Module):
         possible actions.
         """
         max_entropy = None
-        # TODO: Compute max_entropy.
+        # DONE: Compute max_entropy.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        max_entropy = np.log(n_actions)
         # ========================
         return max_entropy
 
