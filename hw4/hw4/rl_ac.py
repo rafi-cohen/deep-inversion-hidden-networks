@@ -106,7 +106,9 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         #  advantage vector per state.
         #  Use the helper functions in this class and its base.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        loss_v = self._value_loss(batch, state_values)
+        advantage = self._policy_weight(batch, state_values)
+        loss_p = self._policy_loss(batch, action_scores, advantage)
         # ========================
 
         loss_v *= self.delta
@@ -120,14 +122,14 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         #  Notice that we don't want to backprop errors from the policy
         #  loss into the state-value network.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        advantage = batch.q_vals - state_values
         # ========================
         return advantage
 
     def _value_loss(self, batch: TrainBatch, state_values: torch.Tensor):
         # TODO: Calculate the state-value loss.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        loss_v = torch.mean((batch.q_vals - state_values)**2)
         # ========================
         return loss_v
 
