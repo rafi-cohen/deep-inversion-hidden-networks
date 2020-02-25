@@ -50,9 +50,12 @@ def part1_aac_hyperparams():
               delta=1.,
               learn_rate=0.008,
               eps=1e-8,
-              hidden_dims=[5, 5],
-              nonlin='relu',
-              dropout=0
+              actor=dict(hidden_dims=[16, 16, 16],
+                         nonlin='relu',
+                         dropout=0),
+              critic=dict(hidden_dims=[16, 16],
+                          nonlin='relu',
+                          dropout=0.5)
               )
     # ========================
     return hp

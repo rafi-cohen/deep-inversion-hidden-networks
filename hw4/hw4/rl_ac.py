@@ -19,24 +19,30 @@ class AACPolicyNet(nn.Module):
         #  Implement a dual-head neural net to approximate both the
         #  policy and value. You can have a common base part, or not.
         # ====== YOUR CODE: ======
-        NLS = {'relu': torch.nn.ReLU, 'tanh': nn.Tanh, 'sigmoid': nn.Sigmoid, 'softmax': nn.Softmax,
-               'logsoftmax': nn.LogSoftmax}
-        layers = []
-        hidden_dims = kw.get("hidden_dims", [50, 50, 50])
-        nonlin = kw.get("nonlin", "relu")
-        dropout = kw.get("dropout", 0)
-        all_dims = [in_features, *hidden_dims]
-        for in_dim, out_dim in zip(all_dims[:-1], all_dims[1:]):
-            layers += [
-                nn.Linear(in_dim, out_dim, bias=True),
-                NLS[nonlin]()
-            ]
-            if dropout > 0:
-                layers.append(nn.Dropout(dropout))
+        
+        def make_net(in_features: int, out_features: int, **kw):
+            NLS = {'relu': nn.ReLU, 'tanh': nn.Tanh, 'sigmoid': nn.Sigmoid, 'softmax': nn.Softmax,
+                   'logsoftmax': nn.LogSoftmax}
+            layers = []
+            hidden_dims = kw.get("hidden_dims", [50, 50, 50])
+            nonlin = kw.get("nonlin", "relu")
+            dropout = kw.get("dropout", 0)
+            all_dims = [in_features, *hidden_dims]
+            for in_dim, out_dim in zip(all_dims[:-1], all_dims[1:]):
+                layers += [
+                    nn.Linear(in_dim, out_dim, bias=True),
+                    NLS[nonlin]()
+                ]
+                if dropout > 0:
+                    layers.append(nn.Dropout(dropout))
 
-        self.base = nn.Sequential(*layers)
-        self.scores_layer = nn.Linear(all_dims[-1], out_actions)
-        self.values_layer = nn.Linear(all_dims[-1], 1)
+            layers.append(nn.Linear(all_dims[-1], out_features))
+            return nn.Sequential(*layers)
+        
+        actor_kw = kw.get("actor", {})
+        critic_kw = kw.get("critic", {})
+        self.actor = make_net(in_features, out_actions, **actor_kw)
+        self.critic = make_net(in_features, 1, **critic_kw)
         # ========================
 
     def forward(self, x):
@@ -52,9 +58,8 @@ class AACPolicyNet(nn.Module):
         #  given state.
         # ====== YOUR CODE: ======
         x = x.reshape((x.shape[0], -1))
-        out = self.base(x)
-        action_scores = self.scores_layer(out)
-        state_values = self.values_layer(out)
+        action_scores = self.actor(x)
+        state_values = self.critic(x)
         # ========================
 
         return action_scores, state_values
@@ -121,7 +126,7 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         #  Notice that we don't want to backprop errors from the policy
         #  loss into the state-value network.
         # ====== YOUR CODE: ======
-        advantage = batch.q_vals - state_values
+        advantage = batch.q_vals - state_values.detach()
         # ========================
         return advantage
 
