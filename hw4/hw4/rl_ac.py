@@ -25,7 +25,7 @@ class AACPolicyNet(nn.Module):
         hidden_dims = kw.get("hidden_dims", [50, 50, 50])
         nonlin = kw.get("nonlin", "relu")
         dropout = kw.get("dropout", 0)
-        all_dims = [in_features, *hidden_dims, out_actions + 1]
+        all_dims = [in_features, *hidden_dims]
         for in_dim, out_dim in zip(all_dims[:-1], all_dims[1:]):
             layers += [
                 nn.Linear(in_dim, out_dim, bias=True),
@@ -34,10 +34,9 @@ class AACPolicyNet(nn.Module):
             if dropout > 0:
                 layers.append(nn.Dropout(dropout))
 
-        if isinstance(layers[-1], nn.Dropout):
-            layers.pop()  # remove last dropout layer
-        layers.pop()  # remove last non-linearity
-        self.fc_layers = nn.Sequential(*layers)
+        self.base = nn.Sequential(*layers)
+        self.scores_layer = nn.Linear(all_dims[-1], out_actions)
+        self.values_layer = nn.Linear(all_dims[-1], 1)
         # ========================
 
     def forward(self, x):
@@ -53,9 +52,9 @@ class AACPolicyNet(nn.Module):
         #  given state.
         # ====== YOUR CODE: ======
         x = x.reshape((x.shape[0], -1))
-        out = self.fc_layers(x)
-        action_scores = out[:, :-1]
-        state_values = out[:, -1]
+        out = self.base(x)
+        action_scores = self.scores_layer(out)
+        state_values = self.values_layer(out)
         # ========================
 
         return action_scores, state_values
