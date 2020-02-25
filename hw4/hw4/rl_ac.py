@@ -80,9 +80,10 @@ class AACPolicyNet(nn.Module):
 class AACPolicyAgent(PolicyAgent):
 
     def current_action_distribution(self) -> torch.Tensor:
-        # TODO: Generate the distribution as described above.
+        # DONE: Generate the distribution as described above.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        action_scores = self.p_net(self.curr_state.reshape(1, -1))[0].squeeze()
+        actions_proba = torch.softmax(action_scores, dim=0)
         # ========================
         return actions_proba
 
