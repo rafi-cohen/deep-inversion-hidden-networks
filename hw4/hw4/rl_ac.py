@@ -102,7 +102,7 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         # Get both outputs of the AAC model
         action_scores, state_values = model_output
 
-        # TODO: Calculate the policy loss loss_p, state-value loss loss_v and
+        # DONE: Calculate the policy loss loss_p, state-value loss loss_v and
         #  advantage vector per state.
         #  Use the helper functions in this class and its base.
         # ====== YOUR CODE: ======
@@ -117,7 +117,7 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
                             adv_m=advantage.mean().item())
 
     def _policy_weight(self, batch: TrainBatch, state_values: torch.Tensor):
-        # TODO:
+        # DONE:
         #  Calculate the weight term of the AAC policy gradient (advantage).
         #  Notice that we don't want to backprop errors from the policy
         #  loss into the state-value network.
@@ -127,9 +127,10 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         return advantage
 
     def _value_loss(self, batch: TrainBatch, state_values: torch.Tensor):
-        # TODO: Calculate the state-value loss.
+        # DONE: Calculate the state-value loss.
         # ====== YOUR CODE: ======
-        loss_v = torch.mean((batch.q_vals - state_values)**2)
+        mse_loss = nn.MSELoss()
+        loss_v = mse_loss(batch.q_vals, state_values)
         # ========================
         return loss_v
 
