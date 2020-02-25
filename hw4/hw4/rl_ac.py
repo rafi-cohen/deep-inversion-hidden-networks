@@ -54,8 +54,8 @@ class AACPolicyNet(nn.Module):
         # ====== YOUR CODE: ======
         x = x.reshape((x.shape[0], -1))
         out = self.fc_layers(x)
-        action_scores = out[:][:-1]
-        state_values = out[:][-1]
+        action_scores = out[:, :-1]
+        state_values = out[:, -1]
         # ========================
 
         return action_scores, state_values
