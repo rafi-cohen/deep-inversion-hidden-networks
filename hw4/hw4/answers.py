@@ -126,12 +126,21 @@ as regression targets for the state values would probably lead to a valid approx
 part1_q3 = r"""
 **Your answer:**
 
+1. Here are our conclusions from the first experiment:
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+
+First, in the mean_reward graph it is evident that as expected the Vanilla
+PG (vpg) has achieved the worst results. This is not surprising because this PG suffers from high variance and from narrow
+policy distribution which limits the agent's tendency to explore new directions. Next, it can be seen that the Entropy 
+PG (epg) has managed to get better results compared to vpg, which can be attributed to the fact the this gradient
+tries to maximize the entropy of the policy distribution, thus enforcing the agent to explore new (and maybe better)
+directions. Lastly, it appears that the best policy gradients were the Combined (cpg) and the Baseline (bpg) policy 
+gradients. This is not surprising because these gradients, unlike the other two, use a baseline to reduce their variance,
+which leads to a more stable optimization behavior and thus to faster convergence.
+
+Another interesting observation is that policy gradients which try to maximize the entropy seem to converge more slowly 
+compared to the gradients which don't (for example: cpg converges more slowly compared to bpg). This is probably 
+because maximize the entropy forces the agent to explore more directions, which is an advantage but can also slow down
+convergence in the right directions.
 
 """
