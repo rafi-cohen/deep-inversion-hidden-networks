@@ -134,7 +134,7 @@ class AACPolicyGradientLoss(VanillaPolicyGradientLoss):
         # DONE: Calculate the state-value loss.
         # ====== YOUR CODE: ======
         mse_loss = nn.MSELoss()
-        loss_v = mse_loss(batch.q_vals, state_values)
+        loss_v = mse_loss(batch.q_vals, state_values.squeeze())
         # ========================
         return loss_v
 
