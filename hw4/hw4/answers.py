@@ -78,13 +78,47 @@ An equation: $e^{i\pi} -1 = 0$
 part1_q2 = r"""
 **Your answer:**
 
+To understand why we get a valid approximation when using the estimated q-values as regression targets for the state 
+values we should recall the definitions of both functions:
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+**$v_\pi(s)$** expresses the expected value of the discounted reward that would be gained by following the policy 
+$\pi$ starting from state s:
+
+$$
+\begin{align}
+v_{\pi}(s) &= \E{g(\tau)|s_0 = s,\pi} \\
+\end{align}
+$$
+
+In contrast, **$q_{\pi}(s,a)$** expresses the expected value of the discounted reward that would be gained by following
+the policy  $\pi$ starting from state s **after fixing the first action - a**, which does **not** necessarily depend on
+$\pi$:
+
+$$
+\begin{align}
+q_{\pi}(s,a) &= \E{g(\tau)|s_0 = s,a_0=a,\pi}.
+\end{align}
+$$
+
+From here we can see that $v_\pi(s)$ can be expressed by $q_{\pi}(s,a)$ like so:
+
+$$
+\begin{align}
+v_{\pi}(s) &= \E{q_{\pi}(s,a)|s_0 = s, a\in A, \pi} \\
+\end{align}
+$$
+
+Where $A$ is the group of all possible actions.
+
+
+Finally, we should also note that in the case of AAC critic learning the first actions which define the estimated
+q-values (which are used as the regression targets) **were all selected by the policy $\pi$**. This means that the 
+probability for these actions in each respective state was the greatest compared to the other possible actions. Thus,
+by definition of expectation we get that if $a$ is the most probable action according to $\pi$ in state $s$, then the 
+expected reward gained by the trajectories starting with $a$ will have the most effect on the value of $v_{\pi}(s)$.
+Therefore, $q_{\pi}(s,a)$, which takes into account **only** the trajectories starting with $a$ from state $s$, serves 
+as a pretty good approximation for the state value of  $s$. We can therefore conclude that using the estimated q-values
+as regression targets for the state values would probably lead to a valid approximation.
 
 """
 
