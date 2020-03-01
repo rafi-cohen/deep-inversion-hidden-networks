@@ -128,19 +128,38 @@ part1_q3 = r"""
 
 1. Here are our conclusions from the first experiment:
 
+    First, in the mean_reward graph it is evident that as expected the Vanilla
+    PG (vpg) has achieved the worst results. This is not surprising because this PG suffers from high variance and from narrow
+    policy distribution which limits the agent's tendency to explore new directions. Next, it can be seen that the Entropy 
+    PG (epg) has managed to get better results compared to vpg, which can be attributed to the fact the this gradient
+    tries to maximize the entropy of the policy distribution, thus enforcing the agent to explore new (and maybe better)
+    directions. Lastly, it appears that the best policy gradients were the Combined (cpg) and the Baseline (bpg) policy 
+    gradients. This is not surprising because these gradients, unlike the other two, use a baseline to reduce variance,
+    which leads to a more stable optimization behavior and thus to faster convergence.
+    
+    Another interesting observation is that policy gradients which try to maximize the entropy seem to converge more slowly 
+    compared to the gradients which don't (for example: cpg converges more slowly compared to bpg). This is probably 
+    because maximizing the entropy forces the agent to explore more directions, which is an advantage but can also slow down
+    convergence in the right directions.
+    
+    In the baseline graph it can be seen as expected that both curves are increasing. This makes sense because the baseline
+    we used in this experiment was the the average of the estimated state-values $\hat{q}_{i,t}$, and as the policy get better
+    gradually during the learning procedure this average naturally gets higher.
+    
+    In the loss_p graph we can see as expected that all loss curves get smaller (in absolute value) as the learning 
+    procedure advances. Two interesting observations are the loss curves of the bpg and cpg which are very close to zero
+    during the entire training process and are looking significantly more stable. This makes sense since these two policy
+    gradients use a baseline which significantly reduces their variance.
+    
+    In the loss_e graph we also see that all loss curves get smaller (in absolute value) as the learning 
+    procedure advances. This makes sense since as the learning process advances and the policy improves, the policy 
+    distribution gets narrower (since the best action gets the highest probability) and thus the entropy gets smaller.
 
-First, in the mean_reward graph it is evident that as expected the Vanilla
-PG (vpg) has achieved the worst results. This is not surprising because this PG suffers from high variance and from narrow
-policy distribution which limits the agent's tendency to explore new directions. Next, it can be seen that the Entropy 
-PG (epg) has managed to get better results compared to vpg, which can be attributed to the fact the this gradient
-tries to maximize the entropy of the policy distribution, thus enforcing the agent to explore new (and maybe better)
-directions. Lastly, it appears that the best policy gradients were the Combined (cpg) and the Baseline (bpg) policy 
-gradients. This is not surprising because these gradients, unlike the other two, use a baseline to reduce their variance,
-which leads to a more stable optimization behavior and thus to faster convergence.
-
-Another interesting observation is that policy gradients which try to maximize the entropy seem to converge more slowly 
-compared to the gradients which don't (for example: cpg converges more slowly compared to bpg). This is probably 
-because maximize the entropy forces the agent to explore more directions, which is an advantage but can also slow down
-convergence in the right directions.
+2. The graphs clearly show that the aac PG is vastly superior to the rest of the policy gradients, and in particular to
+the cpg. In the mean_reward graph we can see that while cpg achieved its maximum reward value of 121.5 in about 3600
+episodes, aac was able to pass that mark in only about 1200 episodes, which illustrates how much faster it converges.
+Furthermore, in 4000 episodes aac was able to achieve a maximum reward of 241 (!), which is about double the reward
+of cpg. These gains can be attributed to aac's improved baseline, which reduces its variance even further compared
+to cpg, thus creating a more stable optimization behaviour which allows faster convergence.
 
 """
