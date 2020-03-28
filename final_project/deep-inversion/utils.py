@@ -44,7 +44,7 @@ class PriorRegularization(nn.Module):
 
 class FeatureRegularization(nn.Module):
     def __init__(self, model):
-        super.__init__()
+        super().__init__()
         self.running_means = [
             bn.running_mean for bn in model.modules() if isinstance(bn, nn.BatchNorm2d)]
         self.running_vars = [
@@ -61,7 +61,7 @@ class FeatureRegularization(nn.Module):
 
 class DIRegularization(nn.Module):
     def __init__(self, model, a_tv, a_l2, a_f):
-        super.__init__()
+        super().__init__()
         self.a_f = a_f
         self.prior = PriorRegularization(a_tv, a_l2)
         self.feature = FeatureRegularization(model)
