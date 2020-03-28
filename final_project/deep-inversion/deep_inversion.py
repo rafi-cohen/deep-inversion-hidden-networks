@@ -6,14 +6,6 @@ import numpy as np
 from PIL import Image
 from utils import DIRegularization
 
-CUDA_ENABLED = torch.cuda.is_available()
-HYPERPARAMS = dict(lr=0.05,
-                   batch_size=64,
-                   a_tv=1e-4,
-                   a_l2=0,
-                   a_f=1e-2,
-                   a_c=0.2)
-
 
 class DeepInvert:
     def __init__(self, image, cuda, a_tv, a_l2, a_f):
