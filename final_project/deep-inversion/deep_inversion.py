@@ -80,10 +80,10 @@ class DeepInvert:
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
-        transformed = torch.stack(transformed_images)
+        input = torch.stack(transformed_images)
         if self.cuda:
-            transformed = transformed.cuda()
-        input = torch.autograd.Variable(transformed, requires_grad=True)
+            input = input.cuda()
+        input.requires_grad_(True)
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([input], lr)
         output = []
