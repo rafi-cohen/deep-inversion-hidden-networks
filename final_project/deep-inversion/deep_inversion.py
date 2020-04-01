@@ -64,9 +64,9 @@ class DeepInvert:
         def hook(module, input, output):
             if isinstance(module, nn.BatchNorm2d):
                 global reg_feature
-                current_feature_map = input[0].transpose(0, 1)
-                feature_map_mean = torch.mean(current_feature_map, dim=(1, 2, 3))
-                feature_map_var = torch.var(current_feature_map, dim=(1, 2, 3), unbiased=False)
+                current_feature_map = input[0]
+                feature_map_mean = torch.mean(current_feature_map, dim=(0, 2, 3))
+                feature_map_var = torch.var(current_feature_map, dim=(0, 2, 3), unbiased=False)
                 reg_feature = reg_feature + torch.norm(feature_map_mean - module.running_mean)
                 reg_feature = reg_feature + torch.norm(feature_map_var - module.running_var)
 
@@ -75,7 +75,6 @@ class DeepInvert:
             if isinstance(module, nn.BatchNorm2d):
                 handle = module.register_forward_hook(hook)
                 handles.append(handle)
-        handles.append(list(self.model.modules())[-4].register_forward_hook(hook))
         output = self.model(input)
 
         for handle in handles:
