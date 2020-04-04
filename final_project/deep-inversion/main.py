@@ -81,6 +81,35 @@ def create_parser():
     return parser
 
 
+def parse_args():
+    parser = create_parser()
+    args = parser.parse_args()
+
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
+        if args.cuda:
+            torch.cuda.manual_seed(args.seed)
+
+        random.seed(torch.initial_seed())
+
+    args.model = MODELS[args.data_set][args.model_name](pretrained=True)
+    args.batch = torch.randn(args.batch_size, *DIMS[args.data_set])
+    args.target = torch.empty(args.batch_size, dtype=torch.long).fill_(args.target)
+    if args.cuda:
+        args.model = args.model.cuda()
+        args.batch = args.batch.cuda()
+        args.target = args.target.cuda()
+    args.mean = MEANS[args.data_set]
+    args.std = STDS[args.data_set]
+    args.reg_fn = REGULARIZATIONS[args.reg_fn]
+    if args.reg_fn:
+        # instantiate reg_fn if it is not None
+        args.reg_fn = args.reg_fn(**vars(args))
+    args.loss_fn = nn.CrossEntropyLoss()
+    return args
+
+
 CUDA_ENABLED = torch.cuda.is_available()
 if CUDA_ENABLED:
     torch.cuda.empty_cache()
