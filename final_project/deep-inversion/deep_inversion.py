@@ -13,9 +13,9 @@ if torch.cuda.is_available():
     reg_feature = reg_feature.cuda()
 
 class DeepInvert:
-    def __init__(self, model, model_mean, model_std, cuda, a_tv, a_l2, a_f):
-        self.transformMean = model_mean
-        self.transformStd = model_std
+    def __init__(self, model, mean, std, cuda, a_tv, a_l2, a_f, *args, **kwargs):
+        self.transformMean = mean
+        self.transformStd = std
 
         self.model = model
 
@@ -76,7 +76,7 @@ class DeepInvert:
 
         return output
 
-    def deepInvert(self, batch, iterations, target_criterion, lr):
+    def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -95,7 +95,7 @@ class DeepInvert:
             for i in range(iterations):
                 output = self.forward(input)
                 optimizer.zero_grad()
-                ce_loss = self.loss_fn(output, target_criterion)
+                ce_loss = self.loss_fn(output, target)
                 loss = ce_loss
                 tv_reg, l2_reg = self.reg_fn(input)
                 loss = loss + tv_reg + l2_reg
@@ -116,7 +116,7 @@ class DeepInvert:
                 pbar.update()
                 reg_feature.zero_()
                 reg_feature.detach_()
-                target_class_idx = target_criterion[0].item()
+                target_class_idx = target[0].item()
                 # print(nn.Softmax()(output)[:, target_class_idx])
                 # print(torch.argmax(nn.Softmax()(output), dim=1))
 

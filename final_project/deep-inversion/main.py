@@ -185,7 +185,7 @@ def main():
     DI = DeepInvert(model, HYPERPARAMS['mean'], HYPERPARAMS['std'], CUDA_ENABLED,
                     HYPERPARAMS['a_tv'], HYPERPARAMS['a_l2'], HYPERPARAMS['a_f'])
     images = DI.deepInvert(batch, iterations=2000,
-                           target_criterion=target_criterion, lr=HYPERPARAMS['lr'])
+                           target=target_criterion, lr=HYPERPARAMS['lr'])
     for i, image in enumerate(images):
         image.save(FILENAME_FORMAT.format(i))
 
