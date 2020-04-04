@@ -18,12 +18,7 @@ class DeepInvert:
         self.transformStd = std
 
         self.model = model
-
-        # self.model.eval()
-
-        for module in self.model.modules():
-            if isinstance(module, nn.BatchNorm2d):
-                module.eval()
+        self.model.eval()
 
         self.loss_fn = nn.CrossEntropyLoss()
         self.a_f = a_f
