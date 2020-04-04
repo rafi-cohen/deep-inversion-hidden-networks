@@ -78,6 +78,8 @@ def create_parser():
     parser.add_argument("--a-c", type=float, default=0.2, metavar="AC",
                         help="Compete regularization factor (default: 0.2)")
 
+    parser.add_argument("--output-dir", type=str, default="generated", metavar="OD",
+                        help="Directory for storing generated images (default: generated)")
     return parser
 
 
