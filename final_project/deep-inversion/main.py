@@ -112,6 +112,29 @@ def parse_args():
     return args
 
 
+def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwargs):
+    preprocess = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize(mean, std)
+    ])
+    softmax = nn.Softmax(dim=1)
+    original_model = MODELS[data_set][model_name](pretrained=True)
+    if cuda:
+        original_model.cuda()
+    for i, image in enumerate(images):
+        image = preprocess(image).unsqueeze(0)
+        if cuda:
+            image = image.cuda()
+        original_confidence, original_pred = torch.max(softmax(original_model(image)), dim=1)
+        new_confidence, new_pred = torch.max(softmax(model(image)), dim=1)
+        print(f'image #{i}')
+        print(f'original_pred = {original_pred.item()}, original_confidence = {original_confidence.item()}')
+        print(f'new_pred = {new_pred.item()}, new_confidence = {new_confidence.item()}')
+        # verify that the model was not changed during training (i.e. the results are identical)
+        assert original_pred == new_pred
+        assert original_confidence == new_confidence
+
+
 def main():
     # Load a local image:
     # batch = Image.open(path.join(OUT_DIR, '9.jpg'))
@@ -128,6 +151,7 @@ def main():
     images = DI.deepInvert(**vars(args))
     for i, image in enumerate(images):
         image.save(os.path.join(args.output_dir, f'{i}.jpg'))
+    evaluate(images, **vars(args))
 
 
 if __name__ == '__main__':
