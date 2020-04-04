@@ -1,12 +1,10 @@
 import torch
 from torch import optim
 import torch.nn as nn
-from torchvision import models, transforms
+from torchvision import transforms
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from utils import DIRegularization
-from cifar10_models import *
 
 reg_feature = torch.tensor([0.0], requires_grad=True)
 if torch.cuda.is_available():
@@ -75,20 +73,17 @@ class DeepInvert:
         return output
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
+        global reg_feature
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
         input = torch.stack(transformed_images)
-
-        #sanity check:
-        # input_class = nn.Softmax()(self.model(transformed)).argmax()
 
         input.requires_grad_(True)
         if self.cuda:
             input = input.cuda()
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([input], lr)
-        output = []
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 output = self.forward(input)
@@ -97,30 +92,16 @@ class DeepInvert:
                 loss = ce_loss
                 tv_reg, l2_reg = self.reg_fn(input)
                 loss = loss + tv_reg + l2_reg
-                global reg_feature
                 loss = loss + self.a_f * reg_feature
                 loss.backward()
                 optimizer.step()
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
-                # random horizontal flipping
-                # if torch.rand(1)[0] > 0.5:
-                #     input.data = input.data.flip(3)
+
                 desc_str = f'#{i}: total_loss = {loss.item()}'
-                # desc_str = f'#{i}: total_loss = {loss.item()} loss_ce = {ce_loss.item()} r_feature =' \
-                #            f' {self.a_f * reg_feature.item()} ' \
-                #            f'r_tv = {tv_reg.item()} r_l2 = {l2_reg.item()} '
                 pbar.set_description(desc_str)
                 pbar.update()
                 reg_feature.zero_()
                 reg_feature.detach_()
-                target_class_idx = target[0].item()
-                # print(nn.Softmax()(output)[:, target_class_idx])
-                # print(torch.argmax(nn.Softmax()(output), dim=1))
 
         return self.toImages(input)
-
-# class AdaptiveDeepInvert(DeepInvert):
-#     def __init__(self, image, cuda, a_tv, a_l2):
-#         super.__init__(image, cuda, a_tv, a_l2)
-#         self.reg_fn = ADIRegularization()

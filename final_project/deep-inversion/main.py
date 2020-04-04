@@ -3,7 +3,6 @@ import random
 import torch
 import torch.nn as nn
 import os
-from PIL import Image
 from torchvision import transforms, models
 
 import cifar10_models
@@ -136,11 +135,6 @@ def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwar
 
 
 def main():
-    # Load a local image:
-    # batch = Image.open(path.join(OUT_DIR, '9.jpg'))
-    # preprocess = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])
-    # batch = preprocess(batch).unsqueeze(0)
-
     args = parse_args()
 
     if not os.path.isdir(args.output_dir):
