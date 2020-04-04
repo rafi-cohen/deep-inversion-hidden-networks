@@ -2,7 +2,7 @@ import argparse
 import random
 import torch
 import torch.nn as nn
-from os import path
+import os
 from PIL import Image
 from torchvision import transforms, models
 
@@ -119,10 +119,15 @@ def main():
     # batch = preprocess(batch).unsqueeze(0)
 
     args = parse_args()
+
+    if not os.path.isdir(args.output_dir):
+        os.mkdir(args.output_dir)
+    assert os.path.isdir(args.output_dir), 'Could not create output directory'
+
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))
     for i, image in enumerate(images):
-        image.save(path.join(args.output_dir, f'{i}.jpg'))
+        image.save(os.path.join(args.output_dir, f'{i}.jpg'))
 
 
 if __name__ == '__main__':
