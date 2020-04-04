@@ -18,6 +18,8 @@ class DeepInvert:
         self.transformStd = std
 
         self.model = model
+        for param in self.model.parameters():
+            param.requires_grad = False
         self.model.eval()
 
         self.loss_fn = nn.CrossEntropyLoss()
