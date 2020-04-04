@@ -170,10 +170,19 @@ def main():
     batch = torch.randn(HYPERPARAMS['batch_size'], 3, *HYPERPARAMS['image_size'])
 
     target_criterion = HYPERPARAMS['target_class'] * torch.ones(HYPERPARAMS['batch_size'], dtype=torch.long)
+
+    if HYPERPARAMS['model_name'] == 'vgg11_bn':
+        model = models.vgg11_bn(pretrained=True)
+    elif HYPERPARAMS['model_name'] == 'resnet34':
+        model = models.resnet34(pretrained=True)
+    else:
+        model = models.resnet18(pretrained=True)
+
     if CUDA_ENABLED:
+        model = model.cuda()
         batch = batch.cuda()
         target_criterion = target_criterion.cuda()
-    DI = DeepInvert(HYPERPARAMS['model_name'], HYPERPARAMS['mean'], HYPERPARAMS['std'], CUDA_ENABLED,
+    DI = DeepInvert(model, HYPERPARAMS['mean'], HYPERPARAMS['std'], CUDA_ENABLED,
                     HYPERPARAMS['a_tv'], HYPERPARAMS['a_l2'], HYPERPARAMS['a_f'])
     images = DI.deepInvert(batch, iterations=2000,
                            target_criterion=target_criterion, lr=HYPERPARAMS['lr'])

@@ -13,16 +13,11 @@ if torch.cuda.is_available():
     reg_feature = reg_feature.cuda()
 
 class DeepInvert:
-    def __init__(self, model_name, model_mean, model_std, cuda, a_tv, a_l2, a_f):
+    def __init__(self, model, model_mean, model_std, cuda, a_tv, a_l2, a_f):
         self.transformMean = model_mean
         self.transformStd = model_std
 
-        if model_name == 'vgg11_bn':
-            self.model = vgg11_bn(pretrained=True)
-        elif model_name == 'resnet34':
-            self.model = resnet34(pretrained=True)
-        else:
-            self.model = models.resnet18(pretrained=True)
+        self.model = model
 
         # self.model.eval()
 
@@ -39,7 +34,6 @@ class DeepInvert:
         if cuda:
             self.tensorMean = self.tensorMean.cuda()
             self.tensorStd = self.tensorStd.cuda()
-            self.model = self.model.cuda()
         self.cuda = cuda
 
     def clip(self, image_tensor):
