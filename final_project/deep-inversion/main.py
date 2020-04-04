@@ -1,12 +1,89 @@
+import argparse
+import random
 import torch
+import torch.nn as nn
 from os import path
 from PIL import Image
+from torchvision import transforms, models
+
+import cifar10_models
 from deep_inversion import DeepInvert
-from torchvision import transforms
+from utils import PriorRegularization, DIRegularization
+
+MEANS = dict(ImageNet=[0.485, 0.456, 0.406], CIFAR10=[0.4914, 0.4822, 0.4465])
+STDS = dict(ImageNet=[0.229, 0.224, 0.225], CIFAR10=[0.2023, 0.1994, 0.2010])
+DIMS = dict(ImageNet=(3, 224, 224), CIFAR10=(3, 32, 32))
+DATASETS = list(MEANS.keys())
+
+IMAGE_NET_MODELS = dict(ResNet18=models.resnet18,
+                        ResNet34=models.resnet34,
+                        ResNet50=models.resnet50,
+                        vgg11=models.vgg11_bn,
+                        vgg13=models.vgg13_bn,
+                        vgg16=models.vgg16_bn,
+                        vgg19=models.vgg19_bn)
+CIFAR10_MODELS = dict(ResNet18=cifar10_models.resnet18,
+                      ResNet34=cifar10_models.resnet34,
+                      ResNet50=cifar10_models.resnet50,
+                      vgg11=cifar10_models.vgg11_bn,
+                      vgg13=cifar10_models.vgg13_bn,
+                      vgg16=cifar10_models.vgg16_bn,
+                      vgg19=cifar10_models.vgg19_bn)
+MODELS = dict(ImageNet=IMAGE_NET_MODELS, CIFAR10=CIFAR10_MODELS)
+MODEL_NAMES = list(IMAGE_NET_MODELS.keys())
+
+REGULARIZATIONS = dict(prior=PriorRegularization, DI=DIRegularization, none=None)
+REG_FNS = list(REGULARIZATIONS.keys())
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(description="Deep Inversion")
+
+    parser.add_argument("--iterations", type=int, default=160, metavar="I",
+                        help="number of epochs to train (default: 10)")
+
+    parser.add_argument("--batch-size", type=int, default=128, metavar="B",
+                        help="input batch size for training (default: 128)")
+
+    parser.add_argument("--no-cuda", action="store_true", default=False,
+                        help="disables CUDA training")
+
+    parser.add_argument("--seed", type=int, default=None, metavar="S",
+                        help="random seed (default: None)")
+
+    parser.add_argument("--lr", type=float, default=0.05, metavar="LR",
+                        help="learning rate (default: 0.05)")
+
+    parser.add_argument("--target", type=int, default=294, metavar="T",
+                        help="target class for image synthesis (default: 294)")
+
+    parser.add_argument("--data-set", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
+                        help="Dataset to perform synthesis on (default: ImageNet)")
+
+    parser.add_argument("--model-name", type=str, default="ResNet18", metavar="MN", choices=MODEL_NAMES,
+                        help="Name of model to use for synthesis (default: ResNet18)")
+
+    parser.add_argument("--reg-fn", type=str, default="prior", metavar="RF",
+                        choices=REG_FNS, help="Regularization function (default: prior)")
+
+    parser.add_argument("--a-tv", type=float, default=1e-4, metavar="ATV",
+                        help="TV regularization factor (default: 1e-4)")
+
+    parser.add_argument("--a-l2", type=float, default=0, metavar="AL2",
+                        help="l2-Norm regularization factor (default: 0)")
+
+    parser.add_argument("--a-f", type=float, default=1e-2, metavar="AF",
+                        help="Feature regularization factor (default: 1e-2)")
+
+    parser.add_argument("--a-c", type=float, default=0.2, metavar="AC",
+                        help="Compete regularization factor (default: 0.2)")
+
+    return parser
+
 
 CUDA_ENABLED = torch.cuda.is_available()
 if CUDA_ENABLED:
-  torch.cuda.empty_cache()
+    torch.cuda.empty_cache()
 # vgg11_bn
 # resnet18
 model_name = 'resnet18'
