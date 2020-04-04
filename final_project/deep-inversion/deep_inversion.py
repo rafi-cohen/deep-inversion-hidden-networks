@@ -12,8 +12,9 @@ reg_feature = torch.tensor([0.0], requires_grad=True)
 if torch.cuda.is_available():
     reg_feature = reg_feature.cuda()
 
+
 class DeepInvert:
-    def __init__(self, model, mean, std, cuda, a_tv, a_l2, a_f, *args, **kwargs):
+    def __init__(self, model, mean, std, cuda, loss_fn, reg_fn, a_f, *args, **kwargs):
         self.transformMean = mean
         self.transformStd = std
 
@@ -22,9 +23,9 @@ class DeepInvert:
             param.requires_grad = False
         self.model.eval()
 
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.loss_fn = loss_fn
+        self.reg_fn = reg_fn
         self.a_f = a_f
-        self.reg_fn = DIRegularization(self.model, a_tv, a_l2, a_f)
         self.transformPreprocess = transforms.Normalize(mean=self.transformMean, std=self.transformStd)
         self.tensorMean = torch.Tensor(self.transformMean)
         self.tensorStd = torch.Tensor(self.transformStd)
