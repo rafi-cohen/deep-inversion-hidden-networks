@@ -36,7 +36,7 @@ class l2NormRegularization(nn.Module):
 
 
 class PriorRegularization(nn.Module):
-    def __init__(self, a_tv, a_l2):
+    def __init__(self, a_tv, a_l2, *args, **kwargs):
         super().__init__()
         self.tv = TotalVariationRegularization()
         self.l2 = l2NormRegularization()
@@ -70,7 +70,7 @@ class PriorRegularization(nn.Module):
 
 
 class DIRegularization(nn.Module):
-    def __init__(self, model, a_tv, a_l2, a_f):
+    def __init__(self, model, a_tv, a_l2, a_f, *args, **kwargs):
         super().__init__()
         self.a_f = a_f
         self.prior = PriorRegularization(a_tv, a_l2)
