@@ -31,6 +31,7 @@ class DeepInvert:
             self.tensorMean = self.tensorMean.cuda()
             self.tensorStd = self.tensorStd.cuda()
         self.cuda = cuda
+        self.handles = []
 
     def clip(self, image_tensor):
         for c in range(3):
@@ -49,28 +50,26 @@ class DeepInvert:
                 images.append(Image.fromarray(np.uint8(clipped * 255)))
         return images
 
-    def forward(self, input):
+    @staticmethod
+    def _hook(module, input, output):
+        if isinstance(module, nn.BatchNorm2d):
+            global reg_feature
+            current_feature_map = input[0]
+            feature_map_mean = torch.mean(current_feature_map, dim=(0, 2, 3))
+            feature_map_var = torch.var(current_feature_map, dim=(0, 2, 3), unbiased=False)
+            reg_feature = reg_feature + torch.norm(feature_map_mean - module.running_mean)
+            reg_feature = reg_feature + torch.norm(feature_map_var - module.running_var)
 
-        def hook(module, input, output):
-            if isinstance(module, nn.BatchNorm2d):
-                global reg_feature
-                current_feature_map = input[0]
-                feature_map_mean = torch.mean(current_feature_map, dim=(0, 2, 3))
-                feature_map_var = torch.var(current_feature_map, dim=(0, 2, 3), unbiased=False)
-                reg_feature = reg_feature + torch.norm(feature_map_mean - module.running_mean)
-                reg_feature = reg_feature + torch.norm(feature_map_var - module.running_var)
-
-        handles = []
+    def _register_hooks(self):
+        self.handles = []
         for module in self.model.modules():
             if isinstance(module, nn.BatchNorm2d):
-                handle = module.register_forward_hook(hook)
-                handles.append(handle)
-        output = self.model(input)
+                handle = module.register_forward_hook(self._hook)
+                self.handles.append(handle)
 
-        for handle in handles:
+    def _remove_hooks(self):
+        for handle in self.handles:
             handle.remove()
-
-        return output
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
         global reg_feature
@@ -84,9 +83,10 @@ class DeepInvert:
             input = input.cuda()
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([input], lr)
+        self._register_hooks()
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
-                output = self.forward(input)
+                output = self.model(input)
                 optimizer.zero_grad()
                 ce_loss = self.loss_fn(output, target)
                 loss = ce_loss
@@ -103,5 +103,6 @@ class DeepInvert:
                 pbar.update()
                 reg_feature.zero_()
                 reg_feature.detach_()
+        self._remove_hooks()
 
         return self.toImages(input)
