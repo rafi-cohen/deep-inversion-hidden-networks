@@ -17,12 +17,6 @@ class TotalVariationRegularization(nn.Module):
         total_diff = diagonal_diff_top_left + diagonal_diff_bottom_left + vertical_diff + horizontal_diff
         return total_diff
 
-        # diagonal_diff_top_left = torch.norm(batch[:, :, :-1, :-1] - batch[:, :, 1:, 1:])
-        # diagonal_diff_bottom_left = torch.norm(batch[:, :, 1:, :-1] - batch[:, :, :-1, 1:])
-        # vertical_diff = torch.norm(batch[:, :, :-1, :] - batch[:, :, 1:, :])
-        # horizontal_diff = torch.norm(batch[:, :, :, :-1] - batch[:, :, :, 1:])
-        # total_diff = diagonal_diff_top_left + diagonal_diff_bottom_left + vertical_diff + horizontal_diff
-        # return total_diff
 
 class l2NormRegularization(nn.Module):
     def __init__(self):
