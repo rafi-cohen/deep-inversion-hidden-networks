@@ -6,9 +6,7 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 
-reg_feature = torch.tensor([0.0], requires_grad=True)
-if torch.cuda.is_available():
-    reg_feature = reg_feature.cuda()
+batch_means = batch_vars = bn_means = bn_vars = []
 
 
 class DeepInvert:
@@ -52,12 +50,12 @@ class DeepInvert:
     @staticmethod
     def _hook(module, input, output):
         if isinstance(module, nn.BatchNorm2d):
-            global reg_feature
+            global batch_means, batch_vars, bn_means, bn_vars
             current_feature_map = input[0]
-            feature_map_mean = torch.mean(current_feature_map, dim=(0, 2, 3))
-            feature_map_var = torch.var(current_feature_map, dim=(0, 2, 3), unbiased=False)
-            reg_feature = reg_feature + torch.norm(feature_map_mean - module.running_mean)
-            reg_feature = reg_feature + torch.norm(feature_map_var - module.running_var)
+            batch_means.append(torch.mean(current_feature_map, dim=(0, 2, 3)))
+            batch_vars.append(torch.var(current_feature_map, dim=(0, 2, 3), unbiased=False))
+            bn_means.append(module.running_mean)
+            bn_vars.append(module.running_var)
 
     def _register_hooks(self):
         self.handles = []
@@ -71,7 +69,7 @@ class DeepInvert:
             handle.remove()
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
-        global reg_feature
+        global batch_means, batch_vars, bn_means, bn_vars
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -87,9 +85,8 @@ class DeepInvert:
             for i in range(iterations):
                 output = self.model(input)
                 optimizer.zero_grad()
-                reg_feature.zero_()
-                reg_feature.detach_()
-                loss = self.loss_fn(output, target) + self.reg_fn(input)
+                batch_means = batch_vars = bn_means = bn_vars = []
+                loss = self.loss_fn(output, target) + self.reg_fn(input, batch_means, batch_vars, bn_means, bn_vars)
                 loss.backward()
                 optimizer.step()
                 # clip the image after every gradient step
