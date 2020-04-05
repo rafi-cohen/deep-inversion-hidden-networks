@@ -30,7 +30,7 @@ class DeepInvert:
     def clip(self, image_tensor):
         for c in range(3):
             m, s = self.transformMean[c], self.transformStd[c]
-            image_tensor[0, c] = torch.clamp(image_tensor[0, c], -m / s, (1 - m) / s)
+            image_tensor[:, c] = torch.clamp(image_tensor[:, c], -m / s, (1 - m) / s)
         return image_tensor
 
     def toImages(self, input):
