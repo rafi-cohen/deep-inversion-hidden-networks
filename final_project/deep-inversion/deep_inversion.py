@@ -32,15 +32,15 @@ class DeepInvert:
             image_tensor[:, c] = torch.clamp(image_tensor[:, c], -m / s, (1 - m) / s)
         return image_tensor
 
+    @torch.no_grad()
     def toImages(self, input):
         images = []
-        with torch.no_grad():
-            input.transpose_(1, 2)
-            input.transpose_(2, 3)
-            for image in input:
-                normalized = (image * self.tensorStd + self.tensorMean).cpu()
-                clipped = np.clip(normalized, 0, 1)
-                images.append(Image.fromarray(np.uint8(clipped * 255)))
+        input.transpose_(1, 2)
+        input.transpose_(2, 3)
+        for image in input:
+            normalized = (image * self.tensorStd + self.tensorMean).cpu()
+            clipped = np.clip(normalized, 0, 1)
+            images.append(Image.fromarray(np.uint8(clipped * 255)))
         return images
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
