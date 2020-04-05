@@ -12,7 +12,7 @@ if torch.cuda.is_available():
 
 
 class DeepInvert:
-    def __init__(self, model, mean, std, cuda, loss_fn, reg_fn, a_f, *args, **kwargs):
+    def __init__(self, model, mean, std, cuda, loss_fn, reg_fn, *args, **kwargs):
         self.transformMean = mean
         self.transformStd = std
 
@@ -23,7 +23,6 @@ class DeepInvert:
 
         self.loss_fn = loss_fn
         self.reg_fn = reg_fn
-        self.a_f = a_f
         self.transformPreprocess = transforms.Normalize(mean=self.transformMean, std=self.transformStd)
         self.tensorMean = torch.Tensor(self.transformMean)
         self.tensorStd = torch.Tensor(self.transformStd)
@@ -90,11 +89,7 @@ class DeepInvert:
                 optimizer.zero_grad()
                 reg_feature.zero_()
                 reg_feature.detach_()
-                ce_loss = self.loss_fn(output, target)
-                loss = ce_loss
-                tv_reg, l2_reg = self.reg_fn(input)
-                loss = loss + tv_reg + l2_reg
-                loss = loss + self.a_f * reg_feature
+                loss = self.loss_fn(output, target) + self.reg_fn(input)
                 loss.backward()
                 optimizer.step()
                 # clip the image after every gradient step

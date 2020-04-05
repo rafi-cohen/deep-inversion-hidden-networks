@@ -47,9 +47,7 @@ class PriorRegularization(nn.Module):
         """
         Calculates the Prior Regularization of the batch
         """
-        tv_reg = self.a_tv * self.tv(batch)
-        l2_reg = self.a_l2 * self.l2(batch)
-        return tv_reg, l2_reg
+        return self.a_tv * self.tv(batch) + self.a_l2 * self.l2(batch)
 
 
 # class FeatureRegularization(nn.Module):
