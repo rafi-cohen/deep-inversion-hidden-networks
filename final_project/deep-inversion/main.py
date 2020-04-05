@@ -5,7 +5,7 @@ import torch.nn as nn
 import os
 from torchvision import transforms, models
 
-import cifar10_models
+from cifar10_models import cifar10_models
 from deep_inversion import DeepInvert
 from utils import PriorRegularization, DIRegularization
 
