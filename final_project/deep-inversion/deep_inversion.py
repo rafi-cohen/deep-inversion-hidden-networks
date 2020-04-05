@@ -88,6 +88,8 @@ class DeepInvert:
             for i in range(iterations):
                 output = self.model(input)
                 optimizer.zero_grad()
+                reg_feature.zero_()
+                reg_feature.detach_()
                 ce_loss = self.loss_fn(output, target)
                 loss = ce_loss
                 tv_reg, l2_reg = self.reg_fn(input)
@@ -101,8 +103,6 @@ class DeepInvert:
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
-                reg_feature.zero_()
-                reg_feature.detach_()
         self._remove_hooks()
 
         return self.toImages(input)
