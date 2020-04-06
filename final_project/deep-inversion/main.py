@@ -118,6 +118,7 @@ def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwar
     ])
     softmax = nn.Softmax(dim=1)
     original_model = MODELS[data_set][model_name](pretrained=True)
+    original_model.eval()
     if cuda:
         original_model.cuda()
     for i, image in enumerate(images):
