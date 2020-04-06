@@ -58,7 +58,9 @@ class DeepInvert:
             for i in range(iterations):
                 output = self.model(input)
                 optimizer.zero_grad()
-                loss = self.loss_fn(output, target) + self.reg_fn(input)
+                loss = self.loss_fn(output, target)
+                if self.reg_fn:
+                    loss = loss + self.reg_fn(input)
                 loss.backward()
                 optimizer.step()
                 # clip the image after every gradient step
