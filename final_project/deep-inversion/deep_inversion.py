@@ -21,11 +21,6 @@ class DeepInvert:
         self.transformPostprocess = transforms.Compose([Denormalize(self.transformMean, self.transformStd),
                                                         transforms.Lambda(lambda x: x.clamp(0, 1) * 255),
                                                         transforms.ToPILImage()])
-        self.tensorMean = torch.Tensor(self.transformMean)
-        self.tensorStd = torch.Tensor(self.transformStd)
-        if cuda:
-            self.tensorMean = self.tensorMean.cuda()
-            self.tensorStd = self.tensorStd.cuda()
         self.cuda = cuda
 
     def clip(self, image_tensor):
