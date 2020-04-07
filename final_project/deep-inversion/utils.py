@@ -99,10 +99,16 @@ class DIRegularization(nn.Module):
 
 
 class Denormalize(object):
-    def __init__(self, mean, std):
+    def __init__(self, mean, std, inplace=False):
+        self.mean = mean
+        self.std = std
+        self.inplace = inplace
         self.demean = [-m/s for m, s in zip(mean, std)]
         self.destd = [1/s for s in std]
 
     def __call__(self, tensor):
-        tensor = F.normalize(tensor, self.demean, self.destd)
+        tensor = F.normalize(tensor, self.demean, self.destd, self.inplace)
         return torch.clamp(tensor, 0.0, 1.0) * 255
+
+    def __repr__(self):
+        return self.__class__.__name__ + '(mean={0}, std={1})'.format(self.mean, self.std)
