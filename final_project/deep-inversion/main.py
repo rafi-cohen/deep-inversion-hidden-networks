@@ -159,7 +159,7 @@ def main():
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))
     for i, image in enumerate(images):
-        image.save(os.path.join(args.output_dir, f'{i}.jpg'))
+        image.save(os.path.join(args.output_dir, f'{i}.png'))
     evaluate(images, **vars(args))
 
 
