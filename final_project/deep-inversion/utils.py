@@ -45,7 +45,7 @@ class PriorRegularization(nn.Module):
 
 
 class FeatureRegularization(nn.Module):
-    batch_means = batch_vars = bn_means = bn_vars = []
+    reg_value = 0
 
     def __init__(self, model):
         super().__init__()
@@ -58,10 +58,10 @@ class FeatureRegularization(nn.Module):
             current_feature_map = input[0]
             dims = list(range(current_feature_map.dim()))
             dims.pop(1)
-            FeatureRegularization.batch_means.append(torch.mean(current_feature_map, dim=dims))
-            FeatureRegularization.batch_vars.append(torch.var(current_feature_map, dim=dims, unbiased=False))
-            FeatureRegularization.bn_means.append(module.running_mean)
-            FeatureRegularization.bn_vars.append(module.running_var)
+            mean_term = (current_feature_map.mean(dim=dims) - module.running_mean).norm()
+            var_term = (current_feature_map.var(dim=dims, unbiased=False) - module.running_var).norm()
+            reg_value = mean_term + var_term
+            FeatureRegularization.reg_value = FeatureRegularization.reg_value + reg_value
 
     def _register_hooks(self, model):
         for module in model.modules():
@@ -73,18 +73,10 @@ class FeatureRegularization(nn.Module):
         for handle in self.handles:
             handle.remove()
 
-    @staticmethod
-    def _reset_running_stats():
-        FeatureRegularization.batch_means = FeatureRegularization.batch_vars = []
-        FeatureRegularization.bn_means = FeatureRegularization.bn_vars = []
-
     def forward(self, batch):
-        mean_term = [torch.norm(batch_mean - bn_mean) for batch_mean, bn_mean
-                     in zip(FeatureRegularization.batch_means, FeatureRegularization.bn_means)]
-        var_term = [torch.norm(batch_var - bn_var) for batch_var, bn_var
-                    in zip(FeatureRegularization.batch_vars, FeatureRegularization.bn_vars)]
-        self._reset_running_stats()
-        return sum(mean_term) + sum(var_term)
+        reg_value = FeatureRegularization.reg_value
+        FeatureRegularization.reg_value = 0
+        return reg_value
 
 
 class DIRegularization(nn.Module):
