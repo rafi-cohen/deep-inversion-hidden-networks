@@ -31,7 +31,7 @@ class DeepInvert:
 
     @torch.no_grad()
     def toImages(self, input):
-        return [self.transformPostprocess(image) for image in input]
+        return [self.transformPostprocess(image.cpu()) for image in input]
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
         transformed_images = []
