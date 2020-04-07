@@ -121,18 +121,32 @@ def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwar
     original_model.eval()
     if cuda:
         original_model.cuda()
+    original_preds = []
+    original_confidences = []
+    new_preds = []
+    new_confidences = []
     for i, image in enumerate(images):
         image = preprocess(image).unsqueeze(0)
         if cuda:
             image = image.cuda()
         original_confidence, original_pred = torch.max(softmax(original_model(image)), dim=1)
         new_confidence, new_pred = torch.max(softmax(model(image)), dim=1)
-        print(f'image #{i}')
-        print(f'original_pred = {original_pred.item()}, original_confidence = {original_confidence.item()}')
-        print(f'new_pred = {new_pred.item()}, new_confidence = {new_confidence.item()}')
-        # verify that the model was not changed during training (i.e. the results are identical)
-        assert original_pred == new_pred
-        assert original_confidence == new_confidence
+        original_preds.append(original_pred)
+        original_confidences.append(original_confidence)
+        new_preds.append(new_pred)
+        new_confidences.append(new_confidence)
+    # convert lists to tensor
+    original_preds = torch.stack(original_preds)
+    original_confidences = torch.stack(original_confidences)
+    new_preds = torch.stack(new_preds)
+    new_confidences = torch.stack(new_confidences)
+    # print stats
+    unique_preds, counts = original_preds.unique(return_counts=True)
+    print(*[f'(Pred: {pred}, Count: {count})' for pred, count in zip(unique_preds, counts)], sep=', ')
+    print(f'Mean confidence = {original_confidences.mean()}')
+    # verify that the model was not changed during training (i.e. all results are identical)
+    assert (original_preds == new_preds).all()
+    assert (original_confidences == new_confidences).all()
 
 
 def main():
