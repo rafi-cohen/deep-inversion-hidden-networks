@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-
+import torchvision.transforms.functional as F
 
 class TotalVariationRegularization(nn.Module):
     def __init__(self):
@@ -96,3 +96,13 @@ class DIRegularization(nn.Module):
 
     def forward(self, batch):
         return self.prior(batch) + self.a_f * self.feature(batch)
+
+
+class Denormalize(object):
+    def __init__(self, mean, std):
+        self.demean = [-m/s for m, s in zip(mean, std)]
+        self.destd = [1/s for s in std]
+
+    def __call__(self, tensor):
+        tensor = F.normalize(tensor, self.demean, self.destd)
+        return torch.clamp(tensor, 0.0, 1.0) * 255

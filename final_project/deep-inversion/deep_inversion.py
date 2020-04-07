@@ -1,10 +1,8 @@
 import torch
 from torch import optim
-import torch.nn as nn
 from torchvision import transforms
-import numpy as np
-from PIL import Image
 from tqdm import tqdm
+from utils import Denormalize
 
 
 class DeepInvert:
@@ -20,6 +18,8 @@ class DeepInvert:
         self.loss_fn = loss_fn
         self.reg_fn = reg_fn
         self.transformPreprocess = transforms.Normalize(mean=self.transformMean, std=self.transformStd)
+        self.transformPostprocess = transforms.Compose([Denormalize(self.transformMean, self.transformStd),
+                                                        transforms.ToPILImage()])
         self.tensorMean = torch.Tensor(self.transformMean)
         self.tensorStd = torch.Tensor(self.transformStd)
         if cuda:
@@ -34,14 +34,7 @@ class DeepInvert:
 
     @torch.no_grad()
     def toImages(self, input):
-        images = []
-        input.transpose_(1, 2)
-        input.transpose_(2, 3)
-        for image in input:
-            normalized = (image * self.tensorStd + self.tensorMean).cpu()
-            clipped = np.clip(normalized, 0, 1)
-            images.append(Image.fromarray(np.uint8(clipped * 255)))
-        return images
+        return [self.transformPostprocess(image) for image in input]
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
         transformed_images = []
