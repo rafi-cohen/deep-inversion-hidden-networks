@@ -23,6 +23,7 @@ class DeepInvert:
                                                         transforms.ToPILImage()])
         self.cuda = cuda
 
+    @torch.no_grad()
     def clip(self, image_tensor):
         for c, (m, s) in enumerate(zip(self.transformMean, self.transformStd)):
             image_tensor[:, c] = torch.clamp(image_tensor[:, c], -m / s, (1 - m) / s)
