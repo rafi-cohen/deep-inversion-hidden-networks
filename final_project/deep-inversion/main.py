@@ -33,6 +33,7 @@ MODEL_NAMES = list(IMAGE_NET_MODELS.keys())
 
 REGULARIZATIONS = dict(prior=PriorRegularization, DI=DIRegularization, none=None)
 REG_FNS = list(REGULARIZATIONS.keys())
+AMP_modes = ['off', 'O0', 'O1', 'O2', 'O3']
 
 
 def create_parser():
@@ -46,6 +47,9 @@ def create_parser():
 
     parser.add_argument("--no-cuda", action="store_true", default=False,
                         help="disables CUDA training")
+
+    parser.add_argument("--amp-mode", type=str, default="off", metavar="AMP", choices=AMP_modes,
+                        help="Automatic Mixed Precision mode (default: off)")
 
     parser.add_argument("--seed", type=int, default=None, metavar="S",
                         help="random seed (default: None)")
