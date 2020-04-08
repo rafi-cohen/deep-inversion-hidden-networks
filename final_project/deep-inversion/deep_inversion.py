@@ -3,10 +3,15 @@ from torch import optim
 from torchvision import transforms
 from tqdm import tqdm
 from utils import Denormalize
+try:
+    from apex import amp
+    APEX_AVAILABLE = True
+except ModuleNotFoundError:
+    APEX_AVAILABLE = False
 
 
 class DeepInvert:
-    def __init__(self, model, mean, std, cuda, loss_fn, reg_fn, *args, **kwargs):
+    def __init__(self, model, mean, std, cuda, amp_mode, loss_fn, reg_fn, *args, **kwargs):
         self.transformMean = mean
         self.transformStd = std
 
@@ -19,9 +24,11 @@ class DeepInvert:
         self.reg_fn = reg_fn
         self.transformPreprocess = transforms.Normalize(mean=self.transformMean, std=self.transformStd)
         self.transformPostprocess = transforms.Compose([Denormalize(self.transformMean, self.transformStd),
-                                                        transforms.Lambda(lambda x: x.clamp(0, 1) * 255),
+                                                        transforms.Lambda(lambda x: x.clamp(0.0, 1.0)),
                                                         transforms.ToPILImage()])
         self.cuda = cuda
+        self.use_amp = APEX_AVAILABLE and amp_mode != 'off'
+        self.amp_mode = amp_mode
 
     @torch.no_grad()
     def clip(self, image_tensor):
@@ -31,7 +38,7 @@ class DeepInvert:
 
     @torch.no_grad()
     def toImages(self, input):
-        return [self.transformPostprocess(image.cpu()) for image in input]
+        return [self.transformPostprocess(image) for image in input]
 
     def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
         transformed_images = []
@@ -44,6 +51,9 @@ class DeepInvert:
             input = input.cuda()
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([input], lr)
+        if self.use_amp:
+            self.model, optimizer = amp.initialize(self.model, optimizer, opt_level=self.amp_mode,
+                                                   keep_batchnorm_fp32=True, loss_scale="dynamic")
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 output = self.model(input)
@@ -51,7 +61,11 @@ class DeepInvert:
                 loss = self.loss_fn(output, target)
                 if self.reg_fn:
                     loss = loss + self.reg_fn(input)
-                loss.backward()
+                if self.use_amp:
+                    with amp.scale_loss(loss, optimizer) as scaled_loss:
+                        scaled_loss.backward()
+                else:
+                    loss.backward()
                 optimizer.step()
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
@@ -59,5 +73,4 @@ class DeepInvert:
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
-
-        return self.toImages(input)
+        return self.toImages(input.cpu())
