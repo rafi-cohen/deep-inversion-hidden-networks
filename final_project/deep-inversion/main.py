@@ -4,6 +4,8 @@ import torch
 import torch.nn as nn
 import os
 from torchvision import transforms, models
+from datetime import datetime
+from pprint import pprint
 
 from cifar10_models import cifar10_models
 from deep_inversion import DeepInvert
@@ -33,7 +35,7 @@ MODEL_NAMES = list(IMAGE_NET_MODELS.keys())
 
 REGULARIZATIONS = dict(prior=PriorRegularization, DI=DIRegularization, none=None)
 REG_FNS = list(REGULARIZATIONS.keys())
-AMP_modes = ['off', 'O0', 'O1', 'O2', 'O3']
+AMP_MODES = ['off', 'O0', 'O1', 'O2', 'O3']
 
 
 def create_parser():
@@ -48,7 +50,7 @@ def create_parser():
     parser.add_argument("--no-cuda", action="store_true", default=False,
                         help="disables CUDA training")
 
-    parser.add_argument("--amp-mode", type=str, default="off", metavar="AMP", choices=AMP_modes,
+    parser.add_argument("--amp-mode", type=str, default="off", metavar="AMP", choices=AMP_MODES,
                         help="Automatic Mixed Precision mode (default: off)")
 
     parser.add_argument("--seed", type=int, default=None, metavar="S",
@@ -90,6 +92,7 @@ def parse_args():
     parser = create_parser()
     args = parser.parse_args()
 
+    args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     if args.seed is not None:
         torch.manual_seed(args.seed)
@@ -157,8 +160,11 @@ def main():
     args = parse_args()
 
     if not os.path.isdir(args.output_dir):
-        os.mkdir(args.output_dir)
+        os.makedirs(args.output_dir)
     assert os.path.isdir(args.output_dir), 'Could not create output directory'
+
+    with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
+        pprint(vars(args), stream=f)
 
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))
