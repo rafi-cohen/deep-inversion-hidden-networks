@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torchvision.transforms.functional as F
 
+
 class TotalVariationRegularization(nn.Module):
     def __init__(self):
         super().__init__()
@@ -10,10 +11,10 @@ class TotalVariationRegularization(nn.Module):
         """
         Calculates the Total Variation Regularization of the batch
         """
-        diagonal_diff_top_left = (batch[:, :, :-1, :-1] - batch[:, :, 1:, 1:]).abs().sum()
-        diagonal_diff_bottom_left = (batch[:, :, 1:, :-1] - batch[:, :, :-1, 1:]).abs().sum()
-        vertical_diff = (batch[:, :, :-1, :] - batch[:, :, 1:, :]).abs().sum()
-        horizontal_diff = (batch[:, :, :, :-1] - batch[:, :, :, 1:]).abs().sum()
+        diagonal_diff_top_left = (batch[:, :, :-1, :-1] - batch[:, :, 1:, 1:]).norm()
+        diagonal_diff_bottom_left = (batch[:, :, 1:, :-1] - batch[:, :, :-1, 1:]).norm()
+        vertical_diff = (batch[:, :, :-1, :] - batch[:, :, 1:, :]).norm()
+        horizontal_diff = (batch[:, :, :, :-1] - batch[:, :, :, 1:]).norm()
         total_diff = diagonal_diff_top_left + diagonal_diff_bottom_left + vertical_diff + horizontal_diff
         return total_diff
 
