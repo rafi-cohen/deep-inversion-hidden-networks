@@ -67,9 +67,9 @@ def create_parser():
     return parser
 
 
-def parse_args():
+def parse_args(args=None):
     parser = create_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     args.cuda = not args.no_cuda and torch.cuda.is_available()
