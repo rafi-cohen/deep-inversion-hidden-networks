@@ -4,3 +4,6 @@
 [submodule "final_project/deep-inversion/cifar10_models"]
 	path = final_project/deep-inversion/cifar10_models
 	url = https://github.com/huyvnphan/PyTorch-CIFAR10
+[submodule "final_project/deep-inversion/inception_score"]
+	path = final_project/deep-inversion/inception_score
+	url = https://github.com/sbarratt/inception-score-pytorch
