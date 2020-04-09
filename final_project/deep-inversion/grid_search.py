@@ -5,6 +5,7 @@ from pprint import pprint
 import torch
 from torchvision.transforms import Compose, ToTensor, Normalize
 import numpy as np
+import os
 
 from inception_score.inception_score import inception_score
 from parsing import parse_args
@@ -43,10 +44,11 @@ def grid_search(grid):
 
         DI = DeepInvert(**vars(args))
         images = DI.deepInvert(**vars(args))
-
+        for i, image in enumerate(images):
+            image.save(os.path.join(args.output_dir, f'{i}.png'))
         images = [preprocess(image) for image in images]
         images_dataset = torch.stack(images)
-        score = inception_score(images_dataset, resize=True)
+        score = inception_score(images_dataset, resize=True, batch_size=1)[0]
 
         with open(path.join(args.output_dir, 'inception_score.txt'), 'w') as f:
             print(score, file=f)
