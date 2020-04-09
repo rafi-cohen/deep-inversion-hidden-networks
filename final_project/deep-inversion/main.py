@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import os
 from torchvision import transforms
-from pprint import pprint
 
 from parsing import parse_args
 from deep_inversion import DeepInvert
@@ -49,13 +48,6 @@ def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwar
 
 def main():
     args = parse_args()
-
-    if not os.path.isdir(args.output_dir):
-        os.makedirs(args.output_dir)
-    assert os.path.isdir(args.output_dir), 'Could not create output directory'
-
-    with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
-        pprint(vars(args), stream=f)
 
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))

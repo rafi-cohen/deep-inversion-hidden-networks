@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import os
 from datetime import datetime
+from pprint import pprint
 
 from params import (MEANS,
                     STDS,
@@ -72,6 +73,13 @@ def parse_args(args=None):
     args = parser.parse_args(args)
 
     args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+    if not os.path.isdir(args.output_dir):
+        os.makedirs(args.output_dir)
+    assert os.path.isdir(args.output_dir), 'Could not create output directory'
+
+    with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
+        pprint(vars(args), stream=f)
+
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     if args.seed is not None:
         torch.manual_seed(args.seed)
