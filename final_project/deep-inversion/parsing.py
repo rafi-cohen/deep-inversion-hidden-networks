@@ -45,8 +45,8 @@ def create_parser():
     parser.add_argument("--data-set", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
                         help="Dataset to perform synthesis on (default: ImageNet)")
 
-    parser.add_argument("--model-name", type=str, default="ResNet18", metavar="MN", choices=MODEL_NAMES,
-                        help="Name of model to use for synthesis (default: ResNet18)")
+    parser.add_argument("--model-name", type=str, default="ResNet50", metavar="MN", choices=MODEL_NAMES,
+                        help="Name of model to use for synthesis (default: ResNet50)")
 
     parser.add_argument("--jitter", type=int, default=0, metavar="J",
                         help="Amount of jitter to apply on each iteration (default: 0)")
