@@ -7,6 +7,7 @@ MEANS = dict(ImageNet=[0.485, 0.456, 0.406], CIFAR10=[0.4914, 0.4822, 0.4465])
 STDS = dict(ImageNet=[0.229, 0.224, 0.225], CIFAR10=[0.2023, 0.1994, 0.2010])
 DIMS = dict(ImageNet=(3, 224, 224), CIFAR10=(3, 32, 32))
 DATASETS = list(MEANS.keys())
+DATASETS_CLASS_COUNT = dict(ImageNet=1000, CIFAR10=10)
 
 IMAGE_NET_MODELS = dict(ResNet18=models.resnet18,
                         ResNet34=models.resnet34,

@@ -14,8 +14,8 @@ from params import (MEANS,
                     MODEL_NAMES,
                     REGULARIZATIONS,
                     REG_FNS,
-                    AMP_MODES
-                    )
+                    AMP_MODES,
+                    DATASETS_CLASS_COUNT)
 
 
 def create_parser():
@@ -80,6 +80,14 @@ def parse_args(args=None):
         os.makedirs(args.output_dir)
     assert os.path.isdir(args.output_dir), 'Could not create output directory'
 
+    if args.target == -1:
+        # randomize class targets from the dataset
+        args.target = torch.randint(low=0, high=DATASETS_CLASS_COUNT[args.dataset], size=(args.batch_size,),
+                                    dtype=torch.long)
+    else:
+        # a single class target
+        args.target = torch.empty(args.batch_size, dtype=torch.long).fill_(args.target)
+    
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
         pprint(vars(args), stream=f)
 
@@ -93,7 +101,6 @@ def parse_args(args=None):
 
     args.model = MODELS[args.dataset][args.model_name](pretrained=True)
     args.batch = torch.randn(args.batch_size, *DIMS[args.dataset])
-    args.target = torch.empty(args.batch_size, dtype=torch.long).fill_(args.target)
     if args.cuda:
         args.model = args.model.cuda()
         args.batch = args.batch.cuda()
