@@ -42,7 +42,7 @@ def create_parser():
     parser.add_argument("--target", type=int, default=294, metavar="T",
                         help="target class for image synthesis (default: 294)")
 
-    parser.add_argument("--data-set", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
+    parser.add_argument("--dataset", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
                         help="Dataset to perform synthesis on (default: ImageNet)")
 
     parser.add_argument("--model-name", type=str, default="ResNet50", metavar="MN", choices=MODEL_NAMES,
@@ -91,15 +91,15 @@ def parse_args(args=None):
 
         random.seed(torch.initial_seed())
 
-    args.model = MODELS[args.data_set][args.model_name](pretrained=True)
-    args.batch = torch.randn(args.batch_size, *DIMS[args.data_set])
+    args.model = MODELS[args.dataset][args.model_name](pretrained=True)
+    args.batch = torch.randn(args.batch_size, *DIMS[args.dataset])
     args.target = torch.empty(args.batch_size, dtype=torch.long).fill_(args.target)
     if args.cuda:
         args.model = args.model.cuda()
         args.batch = args.batch.cuda()
         args.target = args.target.cuda()
-    args.mean = MEANS[args.data_set]
-    args.std = STDS[args.data_set]
+    args.mean = MEANS[args.dataset]
+    args.std = STDS[args.dataset]
     args.reg_fn = REGULARIZATIONS[args.reg_fn]
     if args.reg_fn:
         # instantiate reg_fn if it is not None

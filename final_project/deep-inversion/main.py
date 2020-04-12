@@ -8,13 +8,13 @@ from deep_inversion import DeepInvert
 from params import MODELS
 
 
-def evaluate(images, model, data_set, model_name, mean, std, cuda, *args, **kwargs):
+def evaluate(images, model, dataset, model_name, mean, std, cuda, *args, **kwargs):
     preprocess = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize(mean, std)
     ])
     softmax = nn.Softmax(dim=1)
-    original_model = MODELS[data_set][model_name](pretrained=True)
+    original_model = MODELS[dataset][model_name](pretrained=True)
     original_model.eval()
     if cuda:
         original_model.cuda()
