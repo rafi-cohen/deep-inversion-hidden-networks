@@ -12,15 +12,17 @@ from parsing import parse_args
 from params import MEANS, STDS
 from deep_inversion import DeepInvert
 
-
-GRID = dict(a_f=list(np.logspace(start=-8, stop=0, num=9)),
-            a_tv=list(np.logspace(start=-8, stop=0, num=9)),
-            a_l2=[0, 1e-2],
-            lr=[0.05, 0.005],
+GRID = dict(a_f=list(np.linspace(start=5e-3, stop=5e-2, num=4)),
+            a_tv=list(np.linspace(start=5e-3, stop=6e-2, num=5)),
+            a_l2=[0],
+            lr=[0.05],
             reg_fn=['DI'],
-            target=[294],
+            target=[-1],
             batch_size=[50],
-            iterations=[20000])
+            iterations=[20000],
+            dataset=['ImageNet'],
+            model_name=['ResNet50'],
+            amp_mode=['off'])
 
 
 def dict_product(dictionary):
@@ -34,7 +36,8 @@ def underscore_to_dash(string):
 def grid_search(grid):
     best_score = -inf
     best_configuration = None
-    preprocess = Compose([ToTensor(), Normalize(MEANS['ImageNet'], STDS['ImageNet'])])
+    dataset = grid['dataset'][0]
+    preprocess = Compose([ToTensor(), Normalize(MEANS[dataset], STDS[dataset])])
     for configuration in dict_product(grid):
         args = []
         for key, value in configuration.items():
