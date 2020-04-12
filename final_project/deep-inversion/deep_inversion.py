@@ -40,7 +40,7 @@ class DeepInvert:
     def toImages(self, input):
         return [self.transformPostprocess(image) for image in input]
 
-    def deepInvert(self, batch, iterations, target, lr, *args, **kwargs):
+    def deepInvert(self, batch, iterations, target, lr, jitter=0, *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -56,6 +56,9 @@ class DeepInvert:
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
+                # apply jitter
+                dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
+                input.data = input.roll(dx, -1).roll(dy, -2).data
                 output = self.model(input)
                 optimizer.zero_grad()
                 loss = self.loss_fn(output, target)
@@ -69,6 +72,8 @@ class DeepInvert:
                 optimizer.step()
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
+                # unjitter
+                input.data = input.roll(-dx, -1).roll(-dy, -2).data
 
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)

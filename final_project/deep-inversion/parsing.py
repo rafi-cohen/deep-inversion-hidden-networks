@@ -48,6 +48,9 @@ def create_parser():
     parser.add_argument("--model-name", type=str, default="ResNet18", metavar="MN", choices=MODEL_NAMES,
                         help="Name of model to use for synthesis (default: ResNet18)")
 
+    parser.add_argument("--jitter", type=int, default=0, metavar="J",
+                        help="Amount of jitter to apply on each iteration (default: 0)")
+
     parser.add_argument("--reg-fn", type=str, default="prior", metavar="RF",
                         choices=REG_FNS, help="Regularization function (default: prior)")
 
