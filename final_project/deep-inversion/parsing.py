@@ -75,6 +75,14 @@ def parse_args(args=None):
     parser = create_parser()
     args = parser.parse_args(args)
 
+    args.cuda = not args.no_cuda and torch.cuda.is_available()
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
+        if args.cuda:
+            torch.cuda.manual_seed(args.seed)
+
+        random.seed(torch.initial_seed())
+    
     args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     if not os.path.isdir(args.output_dir):
         os.makedirs(args.output_dir)
@@ -90,14 +98,6 @@ def parse_args(args=None):
     
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
         pprint(vars(args), stream=f)
-
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
-    if args.seed is not None:
-        torch.manual_seed(args.seed)
-        if args.cuda:
-            torch.cuda.manual_seed(args.seed)
-
-        random.seed(torch.initial_seed())
 
     args.model = MODELS[args.dataset][args.model_name](pretrained=True)
     args.batch = torch.randn(args.batch_size, *DIMS[args.dataset])
