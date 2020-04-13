@@ -81,6 +81,54 @@
 Final Project Report
 \end_layout
 
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\reg}{\mathcal{R}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\loss}{\mathcal{L}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\rtv}{\reg_{\text{TV}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\rnorm}{\reg_{\ell_{2}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\rprior}{\reg_{\text{prior}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\rfeature}{\reg_{\text{feature}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\atv}{\alpha_{\text{tv}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\anorm}{\alpha_{\ell_{2}}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\afeature}{\alpha_{\text{feature}}}
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Abstract
 \end_layout
@@ -157,7 +205,7 @@ Recall that the purpose of Deep Inversion is to reconstruct images from
  of the form
 \begin_inset Formula 
 \begin{equation}
-\min_{\hat{x}}\mathcal{L}\left(\hat{x},y\right)+\mathcal{R}\left(\hat{x}\right)\label{eq:loss}
+\min_{\hat{x}}\loss\left(\hat{x},y\right)+\reg\left(\hat{x}\right)\label{eq:loss}
 \end{equation}
 
 \end_inset
@@ -187,13 +235,13 @@ literal "false"
  suggests the following regularization term
 \begin_inset Formula 
 \[
-\mathcal{R}_{\text{prior}}\left(\hat{x}\right)=\alpha_{\text{tv}}\mathcal{R}_{\text{TV}}\left(\hat{x}\right)+\alpha_{\ell_{2}}\mathcal{R}_{\ell_{2}}\left(\hat{x}\right)
+\rprior\left(\hat{x}\right)=\atv\rtv\left(\hat{x}\right)+\anorm\rnorm\left(\hat{x}\right)
 \]
 
 \end_inset
 
 where 
-\begin_inset Formula $\mathcal{R}_{\text{TV}}$
+\begin_inset Formula $\rtv$
 \end_inset
 
  penalizes total variation of 
@@ -202,7 +250,7 @@ where
 
 , promoting correlation between nearby pixels.
  
-\begin_inset Formula $\mathcal{R}_{\ell_{2}}$
+\begin_inset Formula $\rnorm$
 \end_inset
 
  penalizes the 
@@ -214,7 +262,7 @@ where
 \end_inset
 
 , and 
-\begin_inset Formula $\alpha_{\text{tv}},\alpha_{\ell_{2}}$
+\begin_inset Formula $\atv,\anorm$
 \end_inset
 
  are the scaling factors of these regularization terms.
