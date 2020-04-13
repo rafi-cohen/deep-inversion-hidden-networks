@@ -15,6 +15,7 @@ from deep_inversion import DeepInvert
 GRID = dict(a_f=list(np.linspace(start=5e-3, stop=5e-2, num=4)),
             a_tv=list(np.linspace(start=5e-3, stop=6e-2, num=5)),
             a_l2=[0],
+            jitter=[0],
             lr=[0.05],
             reg_fn=['DI'],
             target=[-1],
