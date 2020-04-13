@@ -155,6 +155,25 @@ status open
 Deep Inversion
 \end_layout
 
+\begin_layout Standard
+Deep Inversion is a new method for generating class-conditional images from
+ a pretrained image classification CNN.
+ It is based on Deep Dream, and introduces a new type of a regularization
+ called 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+.
+ This regularization term uses hidden data stored within the networks, which
+ characterizes the dataset it was trained on.
+ Using 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ promotes the synthesized images to have the same charactheristics as the
+ train dataset, which improves the quality of the generated images.
+\end_layout
+
 \begin_layout Subsection
 Hidden subnetworks in randomly weighted networks
 \end_layout
