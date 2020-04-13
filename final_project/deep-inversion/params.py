@@ -1,8 +1,7 @@
 from torchvision import models
-from torch.nn import CrossEntropyLoss
 
 from cifar10_models import cifar10_models
-from utils import PriorRegularization, DIRegularization, ClassScoresLoss
+from utils import PriorRegularization, DIRegularization, ClassScoresLoss, CrossEntropyLoss
 
 MEANS = dict(ImageNet=[0.485, 0.456, 0.406], CIFAR10=[0.4914, 0.4822, 0.4465])
 STDS = dict(ImageNet=[0.229, 0.224, 0.225], CIFAR10=[0.2023, 0.1994, 0.2010])

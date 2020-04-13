@@ -56,6 +56,9 @@ def create_parser():
     parser.add_argument("--loss-fn", type=str, default="CE", metavar="LF",
                         choices=LOSS_FNS, help="Loss function (default: CE)")
 
+    parser.add_argument("--temp", type=float, default=1, metavar="TMP",
+                        help="Temperature value for CrossEntropyLoss (default: 1)")
+
     parser.add_argument("--reg-fn", type=str, default="prior", metavar="RF",
                         choices=REG_FNS, help="Regularization function (default: prior)")
 
@@ -113,7 +116,10 @@ def parse_args(args=None):
         args.targets = args.targets.cuda()
     args.mean = MEANS[args.dataset]
     args.std = STDS[args.dataset]
-    args.loss_fn = LOSSES[args.loss_fn]()
+    if args.temp != 1:
+        args.loss_fn = LOSSES[args.loss_fn](args.temp)
+    else:
+        args.loss_fn = LOSSES[args.loss_fn]()
     args.reg_fn = REGULARIZATIONS[args.reg_fn]
     if args.reg_fn:
         # instantiate reg_fn if it is not None

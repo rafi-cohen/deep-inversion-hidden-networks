@@ -14,6 +14,15 @@ class ClassScoresLoss(nn.Module):
         return -batch[range(batch.shape[0]), target].mean()
 
 
+class CrossEntropyLoss(nn.CrossEntropyLoss):
+    def __init__(self, temperature):
+        super().__init__()
+        self.temperature = temperature
+
+    def forward(self, batch, target):
+        super().forward(batch / self.temperature, target)
+
+
 class TotalVariationRegularization(nn.Module):
     def __init__(self):
         super().__init__()
