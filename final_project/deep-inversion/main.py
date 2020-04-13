@@ -5,7 +5,7 @@ from torchvision import transforms
 
 from parsing import parse_args
 from deep_inversion import DeepInvert
-from params import MODELS
+from params import MODELS, LABELS
 
 
 def evaluate(images, model, dataset, model_name, mean, std, cuda, *args, **kwargs):
@@ -52,7 +52,8 @@ def main():
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))
     for i, image in enumerate(images):
-        image.save(os.path.join(args.output_dir, f'{i}.png'))
+        label = LABELS[args.dataset][args.target[i].item()]
+        image.save(os.path.join(args.output_dir, f'{i}_{label}.png'))
     evaluate(images, **vars(args))
 
 

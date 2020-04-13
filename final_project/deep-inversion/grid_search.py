@@ -9,7 +9,7 @@ import os
 
 from inception_score.inception_score import inception_score
 from parsing import parse_args
-from params import MEANS, STDS
+from params import MEANS, STDS, LABELS
 from deep_inversion import DeepInvert
 
 GRID = dict(a_f=list(np.linspace(start=5e-3, stop=5e-2, num=4)),
@@ -48,7 +48,8 @@ def grid_search(grid):
         DI = DeepInvert(**vars(args))
         images = DI.deepInvert(**vars(args))
         for i, image in enumerate(images):
-            image.save(os.path.join(args.output_dir, f'{i}.png'))
+            label = LABELS[args.dataset][args.target[i].item()]
+            image.save(os.path.join(args.output_dir, f'{i}_{label}.png'))
         images = [preprocess(image) for image in images]
         images_dataset = torch.stack(images)
         score = inception_score(images_dataset, resize=True, batch_size=1)[0]
