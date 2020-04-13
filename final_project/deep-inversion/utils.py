@@ -20,7 +20,7 @@ class CrossEntropyLoss(nn.CrossEntropyLoss):
         self.temperature = temperature
 
     def forward(self, batch, target):
-        super().forward(batch / self.temperature, target)
+        return super().forward(batch / self.temperature, target)
 
 
 class TotalVariationRegularization(nn.Module):
