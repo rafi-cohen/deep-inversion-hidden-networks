@@ -13,6 +13,8 @@ from params import (MEANS,
                     DATASETS,
                     MODELS,
                     MODEL_NAMES,
+                    LOSSES,
+                    LOSS_FNS,
                     REGULARIZATIONS,
                     REG_FNS,
                     AMP_MODES,
@@ -51,6 +53,9 @@ def create_parser():
 
     parser.add_argument("--jitter", type=int, default=0, metavar="J",
                         help="Amount of jitter to apply on each iteration (default: 0)")
+
+    parser.add_argument("--loss-fn", type=str, default="CE", metavar="LF",
+                        choices=LOSS_FNS, help="Loss function (default: CE)")
 
     parser.add_argument("--reg-fn", type=str, default="prior", metavar="RF",
                         choices=REG_FNS, help="Regularization function (default: prior)")
@@ -109,9 +114,9 @@ def parse_args(args=None):
         args.targets = args.targets.cuda()
     args.mean = MEANS[args.dataset]
     args.std = STDS[args.dataset]
+    args.loss_fn = LOSSES[args.loss_fn]()
     args.reg_fn = REGULARIZATIONS[args.reg_fn]
     if args.reg_fn:
         # instantiate reg_fn if it is not None
         args.reg_fn = args.reg_fn(**vars(args))
-    args.loss_fn = nn.CrossEntropyLoss()
     return args

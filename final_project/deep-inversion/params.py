@@ -1,7 +1,8 @@
 from torchvision import models
+from torch.nn import CrossEntropyLoss
 
 from cifar10_models import cifar10_models
-from utils import PriorRegularization, DIRegularization
+from utils import PriorRegularization, DIRegularization, ClassScoresLoss
 
 MEANS = dict(ImageNet=[0.485, 0.456, 0.406], CIFAR10=[0.4914, 0.4822, 0.4465])
 STDS = dict(ImageNet=[0.229, 0.224, 0.225], CIFAR10=[0.2023, 0.1994, 0.2010])
@@ -28,6 +29,10 @@ MODEL_NAMES = list(IMAGE_NET_MODELS.keys())
 
 REGULARIZATIONS = dict(prior=PriorRegularization, DI=DIRegularization, none=None)
 REG_FNS = list(REGULARIZATIONS.keys())
+
+LOSSES = dict(CE=CrossEntropyLoss, CS=ClassScoresLoss)
+LOSS_FNS = list(LOSSES.keys())
+
 AMP_MODES = ['off', 'O0', 'O1', 'O2', 'O3']
 
 LABELS = {'ImageNet': {0: 'tench, Tinca tinca',

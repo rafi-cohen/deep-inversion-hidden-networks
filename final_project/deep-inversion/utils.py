@@ -3,6 +3,17 @@ import torch.nn as nn
 import torchvision.transforms.functional as F
 
 
+class ClassScoresLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, batch, target):
+        """
+        Calculates the policy gradient loss function.
+        """
+        return -batch[range(batch.shape[0]), target].mean()
+
+
 class TotalVariationRegularization(nn.Module):
     def __init__(self):
         super().__init__()
