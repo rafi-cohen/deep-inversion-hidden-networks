@@ -24,6 +24,7 @@ GRID = dict(a_f=list(np.linspace(start=5e-3, stop=5e-2, num=4)),
             dataset=['ImageNet'],
             model_name=['ResNet50'],
             amp_mode=['off'])
+            seed=[42])
 
 
 def dict_product(dictionary):
