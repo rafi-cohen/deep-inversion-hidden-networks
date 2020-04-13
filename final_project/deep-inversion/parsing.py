@@ -2,7 +2,6 @@ import argparse
 import random
 import torch
 import torch.nn as nn
-import numpy as np
 import os
 from datetime import datetime
 from pprint import pprint
@@ -100,7 +99,7 @@ def parse_args(args=None):
                                      dtype=torch.long)
     else:
         # randomize class targets from the user's predefined list
-        targets = np.random.choice(args.targets, args.batch_size)
+        targets = random.choices(args.targets, k=args.batch_size)
         args.targets = torch.tensor(targets, dtype=torch.long)
 
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
