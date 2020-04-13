@@ -52,7 +52,7 @@ def main():
     DI = DeepInvert(**vars(args))
     images = DI.deepInvert(**vars(args))
     for i, image in enumerate(images):
-        label = LABELS[args.dataset][args.target[i].item()]
+        label = LABELS[args.dataset][args.targets[i].item()]
         image.save(os.path.join(args.output_dir, f'{i}_{label}.png'))
     evaluate(images, **vars(args))
 

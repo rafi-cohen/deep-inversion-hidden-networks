@@ -12,18 +12,19 @@ from parsing import parse_args
 from params import MEANS, STDS, LABELS
 from deep_inversion import DeepInvert
 
-GRID = dict(a_f=list(np.linspace(start=5e-3, stop=5e-2, num=4)),
-            a_tv=list(np.linspace(start=5e-3, stop=6e-2, num=5)),
+GRID = dict(a_f=[5e-3, 1e-2],
+            a_tv=[5e-3, 1e-3, 5e-4],
             a_l2=[0],
-            jitter=[0],
+            jitter=[30],
             lr=[0.05],
             reg_fn=['DI'],
-            target=[-1],
+            targets=[[294, 335, 985, 968, 354, 113, 572, 366, 701, 749,
+                      779, 928, 953, 954, 971, 980, 440, 486, 76, 130]],
             batch_size=[50],
             iterations=[20000],
             dataset=['ImageNet'],
             model_name=['ResNet50'],
-            amp_mode=['off'])
+            amp_mode=['off'],
             seed=[42])
 
 
@@ -43,6 +44,8 @@ def grid_search(grid):
     for configuration in dict_product(grid):
         args = []
         for key, value in configuration.items():
+            if key == 'targets':
+                value = " ".join(list(map(str, value)))
             args.extend(f'--{underscore_to_dash(key)} {value}'.split())
 
         args = parse_args(args)
@@ -50,7 +53,7 @@ def grid_search(grid):
         DI = DeepInvert(**vars(args))
         images = DI.deepInvert(**vars(args))
         for i, image in enumerate(images):
-            label = LABELS[args.dataset][args.target[i].item()]
+            label = LABELS[args.dataset][args.targets[i].item()]
             image.save(os.path.join(args.output_dir, f'{i}_{label}.png'))
         images = [preprocess(image) for image in images]
         images_dataset = torch.stack(images)

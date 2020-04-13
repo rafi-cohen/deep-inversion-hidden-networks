@@ -2,6 +2,7 @@ import argparse
 import random
 import torch
 import torch.nn as nn
+import numpy as np
 import os
 from datetime import datetime
 from pprint import pprint
@@ -39,8 +40,8 @@ def create_parser():
     parser.add_argument("--lr", type=float, default=0.05, metavar="LR",
                         help="learning rate (default: 0.05)")
 
-    parser.add_argument("--target", type=int, default=294, metavar="T",
-                        help="target class for image synthesis (default: 294)")
+    parser.add_argument("--targets", type=int, nargs='+', default=[294], metavar="T",
+                        help="target classes for image synthesis (default: 294), or -1 for randomization")
 
     parser.add_argument("--dataset", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
                         help="Dataset to perform synthesis on (default: ImageNet)")
@@ -82,20 +83,21 @@ def parse_args(args=None):
             torch.cuda.manual_seed(args.seed)
 
         random.seed(torch.initial_seed())
-    
+
     args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
     if not os.path.isdir(args.output_dir):
         os.makedirs(args.output_dir)
     assert os.path.isdir(args.output_dir), 'Could not create output directory'
 
-    if args.target == -1:
-        # randomize class targets from the dataset
-        args.target = torch.randint(low=0, high=DATASETS_CLASS_COUNT[args.dataset], size=(args.batch_size,),
-                                    dtype=torch.long)
+    if args.targets[0] == -1:
+        # randomize class targets from the entire dataset
+        args.targets = torch.randint(low=0, high=DATASETS_CLASS_COUNT[args.dataset], size=(args.batch_size,),
+                                     dtype=torch.long)
     else:
-        # a single class target
-        args.target = torch.empty(args.batch_size, dtype=torch.long).fill_(args.target)
-    
+        # randomize class targets from the user's predefined list
+        targets = np.random.choice(args.targets, args.batch_size)
+        args.targets = torch.tensor(targets, dtype=torch.long)
+
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
         pprint(vars(args), stream=f)
 
@@ -104,7 +106,7 @@ def parse_args(args=None):
     if args.cuda:
         args.model = args.model.cuda()
         args.batch = args.batch.cuda()
-        args.target = args.target.cuda()
+        args.targets = args.targets.cuda()
     args.mean = MEANS[args.dataset]
     args.std = STDS[args.dataset]
     args.reg_fn = REGULARIZATIONS[args.reg_fn]

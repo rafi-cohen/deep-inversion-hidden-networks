@@ -40,7 +40,7 @@ class DeepInvert:
     def toImages(self, input):
         return [self.transformPostprocess(image) for image in input]
 
-    def deepInvert(self, batch, iterations, target, lr, jitter=0, *args, **kwargs):
+    def deepInvert(self, batch, iterations, targets, lr, jitter=0, *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -61,7 +61,7 @@ class DeepInvert:
                 input.data = input.roll(dx, -1).roll(dy, -2).data
                 output = self.model(input)
                 optimizer.zero_grad()
-                loss = self.loss_fn(output, target)
+                loss = self.loss_fn(output, targets)
                 if self.reg_fn:
                     loss = loss + self.reg_fn(input)
                 if self.use_amp:
