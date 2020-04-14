@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.extend(['deep_inversion', 'hidden_networks'])
 
 from deep_inversion.deep_invert import DeepInvert
 from deep_inversion.params import LABELS
