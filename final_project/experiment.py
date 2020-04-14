@@ -35,7 +35,7 @@ def GetDIargs():
                   model_name='ResNet50',
                   amp_mode='off',
                   seed=42,
-                  output_dir='subnet experiments')
+                  output_dir='subnet_experiments')
     DIargs = parse_DIargs(DIargs)
     return DIargs
 
