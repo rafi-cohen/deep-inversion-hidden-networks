@@ -15,6 +15,7 @@ def GetPretrainedSubnet(config, weights):
     get_config(HNargs)
     HNargs.pretrained = weights
     HNargs.prune_rate = 0.5
+    HNargs.multigpu = [0]
     model = get_model(HNargs)
     pretrained(HNargs, model)
     return model
