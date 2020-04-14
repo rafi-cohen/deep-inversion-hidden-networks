@@ -1,11 +1,12 @@
+import os
+
 import torch
 import torch.nn as nn
-import os
 from torchvision import transforms
 
-from parsing import parse_args
 from deep_invert import DeepInvert
 from params import MODELS, LABELS
+from parsing import parse_args
 
 
 def evaluate(images, model, dataset, model_name, mean, std, cuda, *args, **kwargs):

@@ -1,16 +1,16 @@
+import os
 from itertools import product
 from math import inf
 from os import path
 from pprint import pprint
+
 import torch
 from torchvision.transforms import Compose, ToTensor, Normalize
-import numpy as np
-import os
 
-from inception_score.inception_score import inception_score
-from parsing import parse_args
-from params import MEANS, STDS, LABELS
 from deep_invert import DeepInvert
+from inception_score.inception_score import inception_score
+from params import MEANS, STDS, LABELS
+from parsing import parse_args
 
 GRID = dict(a_f=[5e-3, 1e-2],
             a_tv=[5e-3, 1e-3, 5e-4],

@@ -1,10 +1,10 @@
 import argparse
-import random
-import torch
-import torch.nn as nn
 import os
+import random
 from datetime import datetime
 from pprint import pprint
+
+import torch
 
 from params import (MEANS,
                     STDS,

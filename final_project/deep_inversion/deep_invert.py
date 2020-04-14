@@ -2,7 +2,9 @@ import torch
 from torch import optim
 from torchvision import transforms
 from tqdm import tqdm
+
 from transforms import Denormalize
+
 try:
     from apex import amp
     APEX_AVAILABLE = True
