@@ -32,23 +32,13 @@ def dict_product(dictionary):
     return (dict(zip(dictionary.keys(), values)) for values in product(*dictionary.values()))
 
 
-def underscore_to_dash(string):
-    return string.replace('_', '-')
-
-
 def grid_search(grid):
     best_score = -inf
     best_configuration = None
     dataset = grid['dataset'][0]
     preprocess = Compose([ToTensor(), Normalize(MEANS[dataset], STDS[dataset])])
     for configuration in dict_product(grid):
-        args = []
-        for key, value in configuration.items():
-            if key == 'targets':
-                value = " ".join(list(map(str, value)))
-            args.extend(f'--{underscore_to_dash(key)} {value}'.split())
-
-        args = parse_args(args)
+        args = parse_args(configuration)
 
         DI = DeepInvert(**vars(args))
         images = DI.deepInvert(**vars(args))

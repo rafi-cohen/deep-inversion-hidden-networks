@@ -79,8 +79,23 @@ def create_parser():
     return parser
 
 
+def underscore_to_dash(string):
+    return string.replace('_', '-')
+
+
+def dict_to_args(dict_args):
+    args = []
+    for key, value in dict_args.items():
+        if isinstance(value, list):
+            value = ' '.join(map(str, value))
+        args.extend(f'--{underscore_to_dash(key)} {value}'.split())
+    return args
+
+
 def parse_args(args=None):
     parser = create_parser()
+    if isinstance(args, dict):
+        args = dict_to_args(args)
     args = parser.parse_args(args)
 
     args.cuda = not args.no_cuda and torch.cuda.is_available()
