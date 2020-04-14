@@ -156,16 +156,31 @@ Deep Inversion
 \end_layout
 
 \begin_layout Standard
-Deep Inversion is a new method for generating class-conditional images from
- a pretrained image classification CNN.
- It is based on Deep Dream, and introduces a new type of a regularization
- called 
+Deep Inversion 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+ is a new method which allows reconstruction of class-conditional images
+ from a pretrained image classification CNN.
+ It adds upon Deep Dream 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "AlexanderMordvintsevChristopherOlah2015"
+literal "false"
+
+\end_inset
+
+ by introducing a new regularization term called 
 \begin_inset Formula $\rfeature$
 \end_inset
 
 .
- This regularization term uses hidden data stored within the networks, which
- characterizes the dataset it was trained on.
+ This term uses the hidden data stored within the batch normalization layers
+ , which characterizes the dataset it was trained on.
  Using 
 \begin_inset Formula $\rfeature$
 \end_inset
