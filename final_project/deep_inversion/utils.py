@@ -15,7 +15,7 @@ class ClassScoresLoss(nn.Module):
 
 
 class CrossEntropyLoss(nn.CrossEntropyLoss):
-    def __init__(self, temperature):
+    def __init__(self, temperature=1):
         super().__init__()
         self.temperature = temperature
 
