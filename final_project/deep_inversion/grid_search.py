@@ -10,7 +10,7 @@ import os
 from inception_score.inception_score import inception_score
 from parsing import parse_args
 from params import MEANS, STDS, LABELS
-from deep_inversion import DeepInvert
+from deep_invert import DeepInvert
 
 GRID = dict(a_f=[5e-3, 1e-2],
             a_tv=[5e-3, 1e-3, 5e-4],

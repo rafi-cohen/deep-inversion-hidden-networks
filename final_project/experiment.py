@@ -1,6 +1,6 @@
 import os
 
-from deep_inversion.deep_inversion import DeepInvert
+from deep_inversion.deep_invert import DeepInvert
 from deep_inversion.params import LABELS
 from deep_inversion.parsing import parse_args as parse_DIargs
 from hidden_networks.args import get_config

@@ -4,7 +4,7 @@ import os
 from torchvision import transforms
 
 from parsing import parse_args
-from deep_inversion import DeepInvert
+from deep_invert import DeepInvert
 from params import MODELS, LABELS
 
 
