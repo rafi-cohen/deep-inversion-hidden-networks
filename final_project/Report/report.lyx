@@ -127,6 +127,11 @@ Final Project Report
 \end_inset
 
 
+\begin_inset FormulaMacro
+\newcommand{\xhat}{\hat{x}}
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -139,34 +144,10 @@ Introduction
 
 \begin_layout Subsection
 Deep Dream
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-?
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsection
-Deep Inversion
 \end_layout
 
 \begin_layout Standard
-Deep Inversion 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Yin2019"
-literal "false"
-
-\end_inset
-
- is a new method which allows reconstruction of class-conditional images
- from a pretrained image classification CNN.
- It adds upon Deep Dream 
+Deep Dream 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "AlexanderMordvintsevChristopherOlah2015"
@@ -174,76 +155,118 @@ literal "false"
 
 \end_inset
 
- by introducing a new regularization term called 
-\begin_inset Formula $\rfeature$
+ is a popular method that have been proposed to visualize what a deep network
+ expects to see in an image.
+ Given a pretrained classification CNN 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ and an input image 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+, the method forwards 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+ through 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ up to a certain pre-chosen layer 
+\begin_inset Formula $\mathcal{\ell}$
+\end_inset
+
+, and then tries to maximize the activations of 
+\begin_inset Formula $\mathcal{\ell}$
+\end_inset
+
+ by using gradient ascent on the 
+\begin_inset Formula $\mathcal{\ell}_{2}$
+\end_inset
+
+ norm of these activations.
+ During this process 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ is kept fixed while the input image is gradually transformed to yield high
+ output responses for certain classes.
+ The features of the classes depicted in the output image depend on 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+ and on the visual knowledge stored in 
+\begin_inset Formula $\mathcal{N}$
 \end_inset
 
 .
- This term uses the hidden data stored within the batch normalization layers
- , which characterizes the dataset it was trained on.
- Using 
-\begin_inset Formula $\rfeature$
+ For example - if part of the 
+\begin_inset Formula $\hat{x}$
 \end_inset
 
- promotes the synthesized images to have the same charactheristics as the
- train dataset, which improves the quality of the generated images.
-\end_layout
+ looks like a dog and 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
 
-\begin_layout Subsection
-Hidden subnetworks in randomly weighted networks
-\end_layout
-
-\begin_layout Section
-Methods and Implementation
-\end_layout
-
-\begin_layout Subsection
-Deep Inversion
+ was originally trained on pictures of dogs (among others), then Deep Dream
+ will emphasize and enhance these features to look more and more like a
+ dog.
 \end_layout
 
 \begin_layout Standard
-As of today, 04/13/20, there is no implementation of Deep Inversion publicly
- available, be it official or otherwise.
- In this project, we are offering the first public implementation of Deep
- Inversion.
- Code can be found at:
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-github url
-\end_layout
-
+Apart from the above method, which is class neutral, Deep Dream also proposes
+ another method which allows enhancing an input image in a way which would
+ elicit a 
+\series bold
+particular interpretation
+\series default
+.
+ Starting from an input image 
+\begin_inset Formula $\hat{x}$
 \end_inset
 
- .
+ full of random noise, a target class 
+\begin_inset Formula $\tau$
+\end_inset
+
+ and a pretrained classification network 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+, we forward 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+ through 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ and then gradually tweak the image towards what 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ considers as 
+\begin_inset Formula $\tau$
+\end_inset
+
+.
+ This optimization process can be expressed as solving an optimization problem
+ of the form:
 \end_layout
 
 \begin_layout Standard
-Recall that the purpose of Deep Inversion is to reconstruct images from
- a pretrained CNN.
- Given a randomly initialized input (
-\begin_inset Formula $\hat{x}\in\mathbb{R}^{H\times W\times C}$
-\end_inset
-
-, 
-\begin_inset Formula $H,W,C$
-\end_inset
-
- being the height, width, and number of color channels), and an arbitrary
- target label 
-\begin_inset Formula $y$
-\end_inset
-
-, the image synthesis process can be expressed as solving an optimization
- of the form
 \begin_inset Formula 
-\begin{equation}
-\min_{\hat{x}}\loss\left(\hat{x},y\right)+\reg\left(\hat{x}\right)\label{eq:loss}
-\end{equation}
+\[
+\min_{\hat{x}}\loss\left(\hat{x},y\right)+\reg\left(\hat{x}\right)
+\]
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 where 
 \begin_inset Formula $\mathcal{L}\left(\cdot\right)$
 \end_inset
@@ -258,7 +281,164 @@ where
 \end_inset
 
 ’s visual quality.
- Deep Dream
+\end_layout
+
+\begin_layout Standard
+In order to steer the generated images away from unrealistic images that
+ are classified as 
+\begin_inset Formula $\tau$
+\end_inset
+
+ but posses no dicernible visual information, Deep Dream proposes to add
+ an image prior term 
+\begin_inset Formula $\rprior$
+\end_inset
+
+ which penalizes the total variation and 
+\begin_inset Formula $\mathcal{\ell}_{2}$
+\end_inset
+
+ norm of 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+ during the generation process.
+ This enforces the output image to have similar statistics to natural images,
+ for example by making neighboring pixels more correlated.
+\end_layout
+
+\begin_layout Subsection
+Deep Inversion
+\end_layout
+
+\begin_layout Standard
+Following in Deep Dreams's footsteps, Deep Inversion 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+ (DI) is an improved method for reconstructing class-conditional images
+ from a pretrained classification model.
+\end_layout
+
+\begin_layout Standard
+Despite the contribution of the regularization term proposed by Deep Dream,
+ images generated by this method still lack an overlap in their distribution
+ with natural (or original training) images, and thus lead to unsatisfactory
+ results for uses such as knowledge distillation.
+\end_layout
+
+\begin_layout Standard
+The creators of DI proposed to solve this problem by introducing a new term
+ to the above optimization objective: a feature distribution regularization
+ term called 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ .
+ By relying on the hidden data stored within the batch normalization 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ioffe2015"
+literal "false"
+
+\end_inset
+
+ layers of the pretrained model, this term constrains the synthesized images
+ to the same distribution as the model's original training images.
+ This greatly improves the quality of the reconstructed images.
+ 
+\end_layout
+
+\begin_layout Standard
+Apart from improving the visual quality of the reconstructed images, Yin
+ et al.
+ also manages to improve the diversity of the synthesized images by introducing
+ Adaptive Deep Inversion (ADI).
+ This improved method addes an additional 'student' model to the original
+ pretrained 'teacher' model, and then tries to maximize the Jensen-Shannon
+ divergence between the logits of the two models to enforce exploring new
+ synthesis directions.
+ Due to the already large scope of the project and to the fact that no public
+ code is available for DI, we have decided not to include the improvement
+ introduced by ADI in our project and to use DI exclusively.
+\end_layout
+
+\begin_layout Subsection
+Hidden subnetworks in randomly weighted networks
+\end_layout
+
+\begin_layout Section
+Methods 
+\end_layout
+
+\begin_layout Subsection
+Deep Inversion
+\end_layout
+
+\begin_layout Standard
+Recall that the purpose of Deep Inversion is to 'invert' images from a pretraine
+d CNN.
+ Given a randomly initialized input (
+\begin_inset Formula $\hat{x}\in\mathbb{R}^{H\times W\times C}$
+\end_inset
+
+, 
+\begin_inset Formula $H,W,C$
+\end_inset
+
+ being the height, width, and number of color channels), and an arbitrary
+ target label 
+\begin_inset Formula $y$
+\end_inset
+
+, the image synthesis process can be expressed as solving the following
+ optimization problem:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+\min_{\hat{x}}\loss\left(\hat{x},y\right)+\reg\left(\hat{x}\right)\label{eq:loss}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\mathcal{L}\left(\cdot\right)$
+\end_inset
+
+ is a classification loss such as the standard softmax cross-entropy, and
+ 
+\begin_inset Formula $\mathcal{R}\left(\cdot\right)$
+\end_inset
+
+ is an image regularization term to improve 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+’s visual quality.
+\end_layout
+
+\begin_layout Subsubsection
+Regularization Terms
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Prior Regularization
+\end_layout
+
+\begin_layout Standard
+Deep Dream
 \begin_inset CommandInset citation
 LatexCommand cite
 key "AlexanderMordvintsevChristopherOlah2015"
@@ -266,7 +446,7 @@ literal "false"
 
 \end_inset
 
- suggests the following regularization term
+ suggests the following regularization term:
 \begin_inset Formula 
 \[
 \rprior\left(\hat{x}\right)=\atv\rtv\left(\hat{x}\right)+\anorm\rnorm\left(\hat{x}\right)
@@ -274,36 +454,550 @@ literal "false"
 
 \end_inset
 
-where 
+
+\end_layout
+
+\begin_layout Standard
+The first term, 
 \begin_inset Formula $\rtv$
 \end_inset
 
- penalizes total variation of 
+, penalizes the total variation of 
 \begin_inset Formula $\hat{x}$
 \end_inset
 
-, promoting correlation between nearby pixels.
- 
+, thus promoting correlation between nearby pixels.
+ The term is defined as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\rtv(\hat{x})=\lVert\hat{x}-\hat{x}_{H}\rVert_{2}+\lVert\hat{x}-\hat{x}_{V}\rVert_{2}+\lVert\hat{x}-\hat{x}_{D_{1}}\rVert_{2}+\lVert\hat{x}-\hat{x}_{D_{2}}\rVert_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\hat{x}_{H},\hat{x}_{V},\hat{x}_{D_{1}},\hat{x}_{D_{2}}$
+\end_inset
+
+ are horizontal, vertical and diagonal shifted variants of 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+, all by a single pixel (note that 
+\begin_inset Formula $\hat{x}_{D_{1}}$
+\end_inset
+
+ and 
+\begin_inset Formula $\hat{x}_{D_{2}}$
+\end_inset
+
+ represent two 
+\bar under
+different
+\bar default
+ diagonal shifts).
+\end_layout
+
+\begin_layout Standard
+The second term, 
 \begin_inset Formula $\rnorm$
 \end_inset
 
- penalizes the 
+, is a simpler term which penalizes the 
 \begin_inset Formula $\ell_{2}$
 \end_inset
 
--norm of 
-\begin_inset Formula $\hat{x}$
+ norm of 
+\begin_inset Formula $\xhat$
 \end_inset
 
-, and 
+, and is defined as: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\rnorm(\xhat)=\lVert\xhat\rVert_{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Mahendran2014"
+literal "false"
+
+\end_inset
+
+ it is claimed that this term encourages the range of the values in the
+ image to stay within a target interval instead of diverging.
+\end_layout
+
+\begin_layout Standard
+Note that the magnitude of the above two regularization terms (as they are
+ described in the paper) grows linearily with the batch size, which makes
+ it impossible to run hyper-parameter tuning algorithms with different batch
+ sizes.
+ Thus, in order to make these terms batch-size independent we decided to
+ normalize them by dividing them by the batch size.
+\end_layout
+
+\begin_layout Standard
+Lastly, 
 \begin_inset Formula $\atv,\anorm$
 \end_inset
 
- are the scaling factors of these regularization terms.
+ are the scaling factors of the above regularization terms.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.35cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Feature Regularization
+\end_layout
+
+\begin_layout Standard
+The main advancement proposed by Deep Inversion (when compared with Deep
+ Dream) is the introduction of a new feature regularization term denoted
+ as 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Yin et al.
+ claim that the regularization terms proposed by Deep Dream provide little
+ guidance for manipulating 
+\begin_inset Formula $\xhat$
+\end_inset
+
+ to contain both low and high level features that are similar to real training
+ images.
+ To effectively enforce feature similarities at all levels, the authors
+ of DI propose to minimize the distance between the distribution of the
+ feature maps of 
+\begin_inset Formula $\xhat$
+\end_inset
+
+ and that of the original dataset 
+\begin_inset Formula $\mathcal{X}$
+\end_inset
+
+ on which the pretrained model 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ was trained.
+\end_layout
+
+\begin_layout Standard
+Assuming that feature statistics follow the Gaussian distribution across
+ batches (
+\begin_inset Formula $\sim\mathcal{N}(\mu,\sigma^{2}))$
+\end_inset
+
+, 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ is defined as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\rfeature(\xhat)=\sum_{l}\left\Vert \mu_{l}\left(\hat{x}\right)-\mathbb{E}(\mu_{l}(x)|\mathcal{\mathcal{X}})\right\Vert _{2}+\sum_{l}\left\Vert \sigma_{l}^{2}\left(\hat{x}\right)-\mathbb{E}(\text{\ensuremath{\sigma_{l}^{2}}}(x)|\mathcal{\mathcal{X}})\right\Vert _{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\mu_{l}\left(\hat{x}\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\sigma_{l}^{2}\left(\hat{x}\right)$
+\end_inset
+
+ are the batch-wise mean and variance estimates of feature maps corresponding
+ to the 
+\begin_inset Formula $l_{th}$
+\end_inset
+
+ convolutional layer of 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Obtaining 
+\begin_inset Formula $\mathbb{E}(\mu_{l}(x)|\mathcal{\mathcal{X}})$
+\end_inset
+
+ and 
+\begin_inset Formula $\mathbb{E}(\text{\ensuremath{\sigma_{l}^{2}}}(x)|\mathcal{\mathcal{X}})$
+\end_inset
+
+ might seem problematic since the original dataset 
+\begin_inset Formula $\mathcal{X}$
+\end_inset
+
+ might not be available.
+ Instead, the authors of DI suggest an intriguing solution: Using the running
+ average statistics stored in the batchnorm layers 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ioffe2015"
+literal "false"
+
+\end_inset
+
+ of the pretrained model.
+ These layers implicitly capture the channel-wise means and variances during
+ training, which allows the estimation of the above expectations by:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbb{E}(\mu_{l}(x)|\mathcal{\mathcal{X}})\simeq BN_{l}(running\_mean)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbb{E}(\sigma_{l}^{2}(x)|\mathcal{\mathcal{X}})\simeq BN_{l}(running\_variance)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since the introduction of Batch Normalization in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ioffe2015"
+literal "false"
+
+\end_inset
+
+, BN layers are now widely adopted and can today be found in almost every
+ well performing classification model.
+ This makes it possible to use Deep Inversion with almost any state of the
+ art classification model which exists today.
+\end_layout
+
+\begin_layout Standard
+Together with 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+, the entire regularization term 
+\begin_inset Formula $\mathcal{R}\left(\cdot\right)$
+\end_inset
+
+ from equation (1) can be expressed as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathcal{R}_{DI}(\xhat)=\rprior(\xhat)+\alpha_{f}\rfeature(\xhat)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\alpha_{f}$
+\end_inset
+
+ is a scaling factor for 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Image Refinement Techniques
+\end_layout
+
+\begin_layout Standard
+Deep Inversion incorporates two techniques that were first used in Deep
+ Dream to improve the quality of the reconstructed images:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.35cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Image Clipping
+\end_layout
+
+\begin_layout Standard
+Before each forward pass the synthesized images are clipped so that they
+ would conform to the mean and variance of the original training set 
+\begin_inset Formula $\mathcal{X}$
+\end_inset
+
+.
+ Maintaining the correct pixel range during training encourages the synthesis
+ process to produce valid images (whose pixels must all be in the legal
+ range).
+\end_layout
+
+\begin_layout Standard
+For a given synthesized image 
+\begin_inset Formula $\xhat$
+\end_inset
+
+ during training, the clipping process is defined as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\xhat=\min(\max(\xhat,-m/s),(1-m)/s)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Where m and s are the channel-wise RGB mean and standard deviation of 
+\begin_inset Formula $\mathcal{X}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.35cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Random Jitter
+\end_layout
+
+\begin_layout Standard
+Before each forward each synthesized image is offset by a random jitter
+ of up to 30 pixels (for 
+\begin_inset Formula $224\times224$
+\end_inset
+
+ ImageNet-size images).
+ These shifts introduce randomness into the gradient descent algorithm,
+ which slow down convergence but also help produce 
+\begin_inset Quotes eld
+\end_inset
+
+smoother
+\begin_inset Quotes erd
+\end_inset
+
+ images.
+\end_layout
+
+\begin_layout Subsubsection
+Accelerated Reconstruction Techniques
+\end_layout
+
+\begin_layout Standard
+The authors of DI also recommend the following two methods to speed up the
+ image reconstruction process:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.35cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Multi-Resolution Synthesis
+\end_layout
+
+\begin_layout Standard
+The authors of DI found out that they can speed up the synthesis process
+ by employing a multi-resolution optimization scheme.
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $224\times224$
+\end_inset
+
+ ImageNet-sized images for example, this scheme begins by first optimizing
+ an input of 
+\begin_inset Formula $112\times112$
+\end_inset
+
+ images for a few thousand iterations, then these images are upsampled to
+ 
+\begin_inset Formula $224\times224$
+\end_inset
+
+ via nearest-neighbor interpolation, and then they are optimized for a few
+ extra thousand iterations.
+ Overall this whole process requires significantly less iterations compared
+ with the original method, and most of these iterations are also faster
+ since they are required to optimize much smaller images.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{0.35cm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Automatic Mixed Precision (AMP)
+\end_layout
+
+\begin_layout Standard
+To speed up the training process and reduce GPU memory consumption the authors
+ of DI recommend training using half-precision floating point (FP16) via
+ the Nvidia Apex library
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+https://github.com/NVIDIA/apex
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Implementation
 \end_layout
 
 \begin_layout Section
 Experiments
+\end_layout
+
+\begin_layout Standard
+- elaborate a little on the experiments desribed in the paper and compare
+ their results to ours.
+ Datasets, chosen CNNs, hyper-parameters and optimizer details.
+\end_layout
+
+\begin_layout Standard
+- Empirical testing showed that neglecting to clip the images before each
+ forward pass during the training process resulted in many dark/bright zones
+ in the produced images.
+ This happens since without repeated clipping many of the pixels diverge
+ durining training outside of the legal range, and thus must be clipped
+ at the end of the reconstruction process before the resulting images can
+ be converted to PNG format.
+ On the other hand, our hypothsis is that repeated clipping during the training
+ process encourages these pixles again and again to converge to other legal
+ values within the legal range.
 \end_layout
 
 \begin_layout Section
