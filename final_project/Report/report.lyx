@@ -28,6 +28,7 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement H
 \paperfontsize default
 \spacing single
 \use_hyperref false
@@ -975,6 +976,684 @@ https://github.com/NVIDIA/apex
 
 \begin_layout Section
 Implementation
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Deep Inversion
+\end_layout
+
+\begin_layout Standard
+As of today, 04/13/20, there is no implementation of Deep Inversion publicly
+ available, be it official or otherwise.
+ In this project, we are offering the first public implementation of Deep
+ Inversion.
+ Code can be found at:
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+github url
+\end_layout
+
+\end_inset
+
+ .
+\end_layout
+
+\begin_layout Standard
+Our implementation closely follows the description in paper, and borrows
+ some details from Deep Dream.
+ First, we created a class 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+DeepInvert
+\end_layout
+
+\end_inset
+
+ that holds the relevant information for the Deep Inversion environment.
+ That is:
+\end_layout
+
+\begin_layout Itemize
+The model
+\end_layout
+
+\begin_layout Itemize
+The loss function
+\end_layout
+
+\begin_layout Itemize
+The regularization function
+\end_layout
+
+\begin_layout Itemize
+Mean and variance of the dataset the model was originally trained on, used
+ for normalizing input before pefore passing it through the model.
+\end_layout
+
+\begin_layout Standard
+The main method of our 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+DeepInvert
+\end_layout
+
+\end_inset
+
+ class is 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+deepInvert
+\end_layout
+
+\end_inset
+
+.
+ This method applies the Deep Inversion algorithm.
+ It receives:
+\end_layout
+
+\begin_layout Itemize
+A batch of images (usually random Gaussian noise)
+\end_layout
+
+\begin_layout Itemize
+Number of iterations to apply Deep Inversion
+\end_layout
+
+\begin_layout Itemize
+Target labels to synthesise
+\end_layout
+
+\begin_layout Itemize
+Optimizer class to use, along with it's hypterparameters (usually Adam with
+ a learning rate of 
+\begin_inset Formula $0.05$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+Amount of jitter to use (defaults to 0)
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+deepInvert
+\end_layout
+
+\end_inset
+
+ runs the following algorithm:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+deepInvert
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout LyX-Code
+
+\shape italic
+# Normalize the input using the mean and
+\end_layout
+
+\begin_layout LyX-Code
+
+\shape italic
+# variance of the original training dataset
+\end_layout
+
+\begin_layout LyX-Code
+input = preprocess(batch)
+\end_layout
+
+\begin_layout LyX-Code
+
+\shape italic
+# Create optimizer
+\end_layout
+
+\begin_layout LyX-Code
+optimizer = optimizer_class(params=[input],
+\end_layout
+
+\begin_layout LyX-Code
+                            optimizer_hyperparameters)
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+for
+\series default
+ i = 1 ...
+ iterations:
+\end_layout
+
+\begin_deeper
+\begin_layout LyX-Code
+apply_jitter(input, jitter)
+\end_layout
+
+\begin_layout LyX-Code
+output = model.forward(input)
+\end_layout
+
+\begin_layout LyX-Code
+optimizer.zero_grad()
+\end_layout
+
+\begin_layout LyX-Code
+loss = loss_fn(output, target_labels) + reg_fn(input)
+\end_layout
+
+\begin_layout LyX-Code
+loss.backward()
+\end_layout
+
+\begin_layout LyX-Code
+optimizer.step()
+\end_layout
+
+\begin_layout LyX-Code
+clip(input) 
+\shape italic
+# clips values out of range
+\end_layout
+
+\begin_layout LyX-Code
+unjitter(input, jitter)
+\end_layout
+
+\end_deeper
+\begin_layout LyX-Code
+
+\shape italic
+# Denormalize, clip, and convert to PIL images
+\end_layout
+
+\begin_layout LyX-Code
+
+\series bold
+return
+\series default
+ postprocess(input)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Basically - 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+deepInvert
+\end_layout
+
+\end_inset
+
+ initializes an optimizer to optimize the batch, performs the main loop
+ for the specified number of iterations, and lastly saves the generated
+ images.
+ The main loop is similar to a regular training loop - forward pass, loss
+ calculation, backward pass, and optimization step.
+ The main differences are:
+\end_layout
+
+\begin_layout Itemize
+We apply jitter before each iteration.
+ As described in the paper, this means rolling the images horizontally and
+ vertically by a random amount.
+\end_layout
+
+\begin_layout Itemize
+The regularization function is applied on the input, rather than on the
+ model's output.
+ This is because generating images requires optimizing the input itself.
+\end_layout
+
+\begin_layout Itemize
+We clip the input on each iteration.
+ This was not described in the Deep Inversion paper, but instead appeared
+ in Google's implementation of Deep Dream
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+https://github.com/google/deepdream
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Our implementation of course supports the use of CUDA, as well as the use
+ of Automatic Mixed Precision as described in the original Deep Inversion
+ paper.
+\end_layout
+
+\begin_layout Subsubsection
+Feature Regularization
+\end_layout
+
+\begin_layout Standard
+Perhaps the most important part of Deep Inversion, and the major contribution
+ of the paper, is the 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ regularization term.
+\end_layout
+
+\begin_layout Standard
+At first, we had some trouble implementing it, because it requires collecting
+ the output of the hidden layers of the network.
+ After some research, we concluded that using 
+\shape italic
+hooks
+\shape default
+ will help implementing this.
+ Our implementation of 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ registers a hook function to all of the BatchNorm layers.
+ This calls the hook function during the forward pass, i.e., every time before
+ a BatchNorm layer's 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+forward
+\end_layout
+
+\end_inset
+
+ is invoked.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+https://pytorch.org/docs/stable/nn.html#torch.nn.Module.register_forward_pre_hook
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Maybe add this as a reference instead of a footnote? Not sure.
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Change implementation to use forward_pre_hooks
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Initialy, our hook function computed the batch-wise mean and variance of
+ feature maps corresponding to the current layer, 
+\begin_inset Formula $\mu_{l}\left(\hat{x}\right),\sigma_{l}^{2}\left(\hat{x}\right)$
+\end_inset
+
+, and stored them in a list.
+ This list was later used for calculating the regularization term as it
+ appeared in the paper
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\rfeature & =\sum_{l}\left\Vert \mu_{l}\left(\hat{x}\right)-\text{BN}_{l}\left(\text{running\_mean}\right)\right\Vert _{2}\\
+ & +\sum_{l}\left\Vert \sigma_{l}^{2}\left(\hat{x}\right)-\text{BN}_{l}\left(\text{running\_variance}\right)\right\Vert _{2}
+\end{align*}
+
+\end_inset
+
+However, we noticed this was causing high GPU memory usages.
+ Due to the additive nature of 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+, we were able to change our implementation to compute 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ on the fly.
+ Therefore, our hook function performed the following update
+\begin_inset Formula 
+\begin{align*}
+\rfeature & =\rfeature\\
+ & +\left\Vert \mu_{l}\left(\hat{x}\right)-\text{BN}_{l}\left(\text{running\_mean}\right)\right\Vert _{2}\\
+ & +\left\Vert \sigma_{l}^{2}\left(\hat{x}\right)-\text{BN}_{l}\left(\text{running\_variance}\right)\right\Vert _{2}
+\end{align*}
+
+\end_inset
+
+And of course, 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ was initialized to 
+\begin_inset Formula $0$
+\end_inset
+
+, and was also reset after each time the 
+\begin_inset listings
+inline true
+status open
+
+\begin_layout Plain Layout
+
+forward
+\end_layout
+
+\end_inset
+
+ function of the regularization was invoked.
+\end_layout
+
+\begin_layout Subsubsection
+Argument Parser
+\end_layout
+
+\begin_layout Standard
+To allow easy execution of experiments, we implemented an argument parser
+ that allows running different configurations of Deep Inversion both programatic
+ally and through the command line.
+ The parser is rich in options, as can be seen by its help message:
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Remove a_c from parser, write clearer help messages
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+usage: main.py [-h] [--iterations I] [--batch-size B] [--no-cuda]
+\end_layout
+
+\begin_layout Plain Layout
+
+[--amp-mode AMP] [--seed S] [--lr LR] [--targets T [T ...]]
+\end_layout
+
+\begin_layout Plain Layout
+
+[--dataset DS] [--model-name MN] [--jitter J] [--loss-fn LF]
+\end_layout
+
+\begin_layout Plain Layout
+
+[--temp TMP] [--reg-fn RF] [--a-tv ATV] [--a-l2 AL2] [--a-f AF]
+\end_layout
+
+\begin_layout Plain Layout
+
+[--a-c AC] [--output-dir OD]
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+Deep Inversion
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+optional arguments:
+\end_layout
+
+\begin_layout Plain Layout
+
+-h, --help           show this help message and exit
+\end_layout
+
+\begin_layout Plain Layout
+
+--iterations I       number of epochs to train (default: 10)
+\end_layout
+
+\begin_layout Plain Layout
+
+--batch-size B       input batch size for training (default: 128)
+\end_layout
+
+\begin_layout Plain Layout
+
+--no-cuda            disables CUDA training
+\end_layout
+
+\begin_layout Plain Layout
+
+--amp-mode AMP       Automatic Mixed Precision mode (default: off)
+\end_layout
+
+\begin_layout Plain Layout
+
+--seed S             random seed (default: None)
+\end_layout
+
+\begin_layout Plain Layout
+
+--lr LR              learning rate (default: 0.05)
+\end_layout
+
+\begin_layout Plain Layout
+
+--targets T [T ...]  target classes for image synthesis (default: 294), or
+\end_layout
+
+\begin_layout Plain Layout
+
+                     -1 for randomization
+\end_layout
+
+\begin_layout Plain Layout
+
+--dataset DS         Dataset to perform synthesis on (default: ImageNet)
+\end_layout
+
+\begin_layout Plain Layout
+
+--model-name MN      Name of model to use for synthesis (default: ResNet50)
+\end_layout
+
+\begin_layout Plain Layout
+
+--jitter J           Amount of jitter to apply on each iteration (default:
+\end_layout
+
+\begin_layout Plain Layout
+
+                     0)
+\end_layout
+
+\begin_layout Plain Layout
+
+--loss-fn LF         Loss function (default: CE)
+\end_layout
+
+\begin_layout Plain Layout
+
+--temp TMP           Temperature value for CrossEntropyLoss (default: 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+--reg-fn RF          Regularization function (default: prior)
+\end_layout
+
+\begin_layout Plain Layout
+
+--a-tv ATV           TV regularization factor (default: 1e-4)
+\end_layout
+
+\begin_layout Plain Layout
+
+--a-l2 AL2           l2-Norm regularization factor (default: 0)
+\end_layout
+
+\begin_layout Plain Layout
+
+--a-f AF             Feature regularization factor (default: 1e-2)
+\end_layout
+
+\begin_layout Plain Layout
+
+--a-c AC             Compete regularization factor (default: 0.2)
+\end_layout
+
+\begin_layout Plain Layout
+
+--output-dir OD      Directory for storing generated images (default:
+\end_layout
+
+\begin_layout Plain Layout
+
+                     generated) 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Hidden Subnetworks
+\end_layout
+
+\begin_layout Standard
+For the Hidden Subnetworks, we used the official PyTorch implementation
+ given by the authors of the paper
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+https://github.com/allenai/hidden-networks
+\end_layout
+
+\end_inset
+
+.
+ Their implementation also includes 
+\begin_inset Quotes eld
+\end_inset
+
+pretrained
+\begin_inset Quotes erd
+\end_inset
+
+ subnetworks, i.e., well performing subnetworks of randomly initialized networks
+ which were found using their method.
+\end_layout
+
+\begin_layout Subsection
+Deep Inversion of Hidden Subnetworks
+\end_layout
+
+\begin_layout Standard
+Applying Deep Inversion on a Hidden Subnetwork proved to be a bit challenging.
+ This is because the implementation of Hidden Subnetworks was designed to
+ work solely using the command line, and heavily relied on global variables.
+ Thus, trying to extract a pretrained subnetwork from their implementation
+ required us to use hacky methods, such as modifying their global variables
+ within our code, and fooling their argument parser to receive arguments
+ programatically (instead of through the command line).
+\end_layout
+
+\begin_layout Standard
+Once we managed to extract a pretrained subnetwork, applying Deep Inversion
+ on it was pretty straight forward.
+ We just set the model used by Deep Inversion to be the subnetwork, and
+ then executed it as usual.
+ The modularity of our implementation is what allowed this simplicity.
 \end_layout
 
 \begin_layout Section
