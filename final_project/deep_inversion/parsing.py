@@ -129,6 +129,7 @@ def parse_args(args=None):
         args.model = args.model.cuda()
         args.batch = args.batch.cuda()
         args.targets = args.targets.cuda()
+        torch.backends.cudnn.benchmark = True
     args.mean = MEANS[args.dataset]
     args.std = STDS[args.dataset]
     if args.temp != 1:
