@@ -60,7 +60,7 @@ class DeepInvert:
             for i in range(iterations):
                 # apply jitter
                 dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
-                input.data = input.roll(dx, -1).roll(dy, -2).data
+                input = input.roll(shifts=(dx, dy), dims=(-1, -2))
                 output = self.model(input)
                 optimizer.zero_grad()
                 loss = self.loss_fn(output, targets)
@@ -74,8 +74,6 @@ class DeepInvert:
                 optimizer.step()
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
-                # unjitter
-                input.data = input.roll(-dx, -1).roll(-dy, -2).data
 
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
