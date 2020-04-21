@@ -81,13 +81,13 @@ class DeepInvert:
                         scaled_loss.backward()
                 else:
                     loss.backward()
+                if loss < best_loss:
+                    best_loss = loss
+                    best_input = input.data.clone()
                 optimizer.step()
                 lr_scheduler.step(loss)
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
-                if loss < best_loss:
-                    best_loss = loss
-                    best_input = input.data.clone()
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
