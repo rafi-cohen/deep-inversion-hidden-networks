@@ -67,27 +67,41 @@ class DeepInvert:
                 # apply jitter
                 dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
                 input = input.roll(shifts=(dx, dy), dims=(-1, -2))
+
+                # apply horizontal flip, if needed
                 should_flip = random.random() < flip
                 if should_flip:
-                    # horizontal flip
                     input = torch.flip(input, dims=(-1,))
+
+                # forward pass
                 output = self.model(input)
-                optimizer.zero_grad()
+
+                # loss calculation
                 loss = self.loss_fn(output, targets)
                 if self.reg_fn:
                     loss = loss + self.reg_fn(input)
+
+                # maintain best_input
+                if loss < best_loss:
+                    best_loss = loss
+                    best_input = input.data.clone()
+
+                # backward pass
+                optimizer.zero_grad()
                 if self.use_amp:
                     with amp.scale_loss(loss, optimizer) as scaled_loss:
                         scaled_loss.backward()
                 else:
                     loss.backward()
-                if loss < best_loss:
-                    best_loss = loss
-                    best_input = input.data.clone()
+
+                # step
                 optimizer.step()
                 lr_scheduler.step(loss)
-                # clip the image after every gradient step
+
+                # clip the image after every optimizer step
                 input.data = self.clip(input.data)
+
+                # update progress bar
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
