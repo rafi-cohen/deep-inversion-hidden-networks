@@ -1,5 +1,6 @@
 import torch
 from torch import optim
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchvision import transforms
 from tqdm import tqdm
 import random
@@ -43,7 +44,7 @@ class DeepInvert:
     def toImages(self, input):
         return [self.transformPostprocess(image) for image in input]
 
-    def deepInvert(self, batch, iterations, targets, lr, jitter=0, flip=0, *args, **kwargs):
+    def deepInvert(self, batch, iterations, targets, lr, jitter=0, flip=0, scheduler_patience=100, *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -54,6 +55,7 @@ class DeepInvert:
             input = input.cuda()
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([input], lr)
+        lr_scheduler = ReduceLROnPlateau(optimizer, patience=((scheduler_patience * iterations) // 100))
         if self.use_amp:
             self.model, optimizer = amp.initialize(self.model, optimizer, opt_level=self.amp_mode,
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
@@ -77,6 +79,7 @@ class DeepInvert:
                 else:
                     loss.backward()
                 optimizer.step()
+                lr_scheduler.step(loss)
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
 

@@ -41,6 +41,10 @@ def create_parser():
     parser.add_argument("--lr", type=float, default=0.05, metavar="LR",
                         help="learning rate (default: 0.05)")
 
+    parser.add_argument("--scheduler-patience", type=int, default=100, metavar="SP",
+                        help="learning rate scheduler patience in percentage relative to the number of iterations"
+                             " (default: 100) ")
+
     parser.add_argument("--targets", type=int, nargs='+', default=[294], metavar="T",
                         help="target classes for image synthesis (default: 294), or -1 for randomization")
 
