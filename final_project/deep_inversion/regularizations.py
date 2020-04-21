@@ -46,15 +46,13 @@ class PriorRegularization(nn.Module):
 
 
 class FeatureRegularization(nn.Module):
-    reg_value = 0
-
     def __init__(self, model):
         super().__init__()
+        self.reg_value = 0
         self.handles = []
         self._register_hooks(model)
 
-    @staticmethod
-    def _hook(module, input, output):
+    def _hook(self, module, input, output):
         if isinstance(module, nn.BatchNorm2d):
             current_feature_map = input[0]
             dims = list(range(current_feature_map.dim()))
@@ -62,7 +60,7 @@ class FeatureRegularization(nn.Module):
             mean_term = (current_feature_map.mean(dim=dims) - module.running_mean).norm()
             var_term = (current_feature_map.var(dim=dims, unbiased=False) - module.running_var).norm()
             reg_value = mean_term + var_term
-            FeatureRegularization.reg_value = FeatureRegularization.reg_value + reg_value
+            self.reg_value = self.reg_value + reg_value
 
     def _register_hooks(self, model):
         for module in model.modules():
@@ -75,8 +73,8 @@ class FeatureRegularization(nn.Module):
             handle.remove()
 
     def forward(self, batch):
-        reg_value = FeatureRegularization.reg_value
-        FeatureRegularization.reg_value = 0
+        reg_value = self.reg_value
+        self.reg_value = 0
         return reg_value
 
 
