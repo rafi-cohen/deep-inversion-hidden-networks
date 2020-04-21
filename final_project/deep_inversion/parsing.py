@@ -53,6 +53,9 @@ def create_parser():
     parser.add_argument("--jitter", type=int, default=0, metavar="J",
                         help="Amount of jitter to apply on each iteration (default: 0)")
 
+    parser.add_argument("--flip", type=float, default=0, metavar="FLP",
+                        help="horizontal flip probability (default: 0)")
+
     parser.add_argument("--loss-fn", type=str, default="CE", metavar="LF",
                         choices=LOSS_FNS, help="Loss function (default: CE)")
 

@@ -2,6 +2,7 @@ import torch
 from torch import optim
 from torchvision import transforms
 from tqdm import tqdm
+import random
 
 from transforms import Denormalize
 
@@ -42,7 +43,7 @@ class DeepInvert:
     def toImages(self, input):
         return [self.transformPostprocess(image) for image in input]
 
-    def deepInvert(self, batch, iterations, targets, lr, jitter=0, *args, **kwargs):
+    def deepInvert(self, batch, iterations, targets, lr, jitter=0, flip=0, *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -61,6 +62,10 @@ class DeepInvert:
                 # apply jitter
                 dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
                 input = input.roll(shifts=(dx, dy), dims=(-1, -2))
+                should_flip = random.random() < flip
+                if should_flip:
+                    # horizontal flip
+                    input = torch.flip(input, dims=(-1,))
                 output = self.model(input)
                 optimizer.zero_grad()
                 loss = self.loss_fn(output, targets)
