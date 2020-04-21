@@ -52,7 +52,7 @@ class FeatureRegularization(nn.Module):
         self.handles = []
         self._register_hooks(model)
 
-    def _hook(self, module, input, output):
+    def _hook(self, module, input):
         if isinstance(module, nn.BatchNorm2d):
             current_feature_map = input[0]
             dims = list(range(current_feature_map.dim()))
@@ -65,7 +65,7 @@ class FeatureRegularization(nn.Module):
     def _register_hooks(self, model):
         for module in model.modules():
             if isinstance(module, nn.BatchNorm2d):
-                handle = module.register_forward_hook(self._hook)
+                handle = module.register_forward_pre_hook(self._hook)
                 self.handles.append(handle)
 
     def _remove_hooks(self):
