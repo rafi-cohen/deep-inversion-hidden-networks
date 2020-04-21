@@ -2,6 +2,7 @@ import torch
 from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchvision import transforms
+from math import inf
 from tqdm import tqdm
 import random
 
@@ -59,6 +60,8 @@ class DeepInvert:
         if self.use_amp:
             self.model, optimizer = amp.initialize(self.model, optimizer, opt_level=self.amp_mode,
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
+        best_input = None
+        best_loss = inf
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 # apply jitter
@@ -82,8 +85,10 @@ class DeepInvert:
                 lr_scheduler.step(loss)
                 # clip the image after every gradient step
                 input.data = self.clip(input.data)
-
+                if loss < best_loss:
+                    best_loss = loss
+                    best_input = input.data.clone()
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
-        return self.toImages(input.cpu())
+        return self.toImages(best_input.cpu())
