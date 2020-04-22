@@ -13,18 +13,21 @@ from params import MEANS, STDS, LABELS
 from parsing import parse_args
 
 GRID = dict(a_f=[5e-3, 1e-2],
-            a_tv=[5e-3, 1e-3, 5e-4],
+            a_tv=[5e-4, 5e-3, 1e-3],
             a_l2=[0],
             jitter=[30],
-            lr=[0.05],
+            flip=[0.5],
+            lr=[0.2, 0.05],
             reg_fn=['DI'],
             targets=[[294, 335, 985, 968, 354, 113, 572, 366, 701, 749,
                       779, 928, 953, 954, 971, 980, 440, 486, 76, 130]],
             batch_size=[50],
             iterations=[20000],
+            early_stopping=[25],
+            scheduler_patience=[5],
             dataset=['ImageNet'],
             model_name=['ResNet50'],
-            amp_mode=['off'],
+            amp_mode=['O2'],
             seed=[42])
 
 
