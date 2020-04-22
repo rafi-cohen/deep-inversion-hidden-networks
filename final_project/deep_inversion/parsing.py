@@ -26,6 +26,9 @@ def create_parser():
     parser.add_argument("--iterations", type=int, default=160, metavar="I",
                         help="number of epochs to train (default: 10)")
 
+    parser.add_argument("--early-stopping", type=int, default=100, metavar="ES",
+                        help="percentage of iterations to wait before early stopping (default: 100)")
+
     parser.add_argument("--batch-size", type=int, default=128, metavar="B",
                         help="input batch size for training (default: 128)")
 

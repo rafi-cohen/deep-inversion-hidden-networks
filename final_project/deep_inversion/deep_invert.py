@@ -45,7 +45,8 @@ class DeepInvert:
     def toImages(self, input):
         return [self.transformPostprocess(image) for image in input]
 
-    def deepInvert(self, batch, iterations, targets, lr, jitter=0, flip=0, scheduler_patience=100, *args, **kwargs):
+    def deepInvert(self, batch, iterations, targets, lr, jitter=0, flip=0, scheduler_patience=100, early_stopping=100,
+                   *args, **kwargs):
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
@@ -62,6 +63,8 @@ class DeepInvert:
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
         best_batch = None
         best_loss = inf
+        iterations_since_best = 0
+        early_stopping = (early_stopping * iterations) // 100
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 # apply jitter
@@ -81,10 +84,15 @@ class DeepInvert:
                 if self.reg_fn:
                     loss = loss + self.reg_fn(input)
 
-                # maintain best_batch
+                # maintain best_batch & early-stopping
                 if loss < best_loss:
                     best_loss = loss
                     best_batch = batch.data.clone()
+                    iterations_since_best = 0
+                else:
+                    iterations_since_best += 1
+                    if iterations_since_best >= early_stopping:
+                        break
 
                 # backward pass
                 optimizer.zero_grad()
