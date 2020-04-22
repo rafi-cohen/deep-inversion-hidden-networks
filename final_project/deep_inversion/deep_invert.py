@@ -49,24 +49,24 @@ class DeepInvert:
         transformed_images = []
         for image in batch:
             transformed_images.append(self.transformPreprocess(image))
-        input = torch.stack(transformed_images)
+        batch = torch.stack(transformed_images)
 
-        input.requires_grad_(True)
+        batch.requires_grad_(True)
         if self.cuda:
-            input = input.cuda()
+            batch = batch.cuda()
         # initialize the optimizer and register the image as a parameter
-        optimizer = optim.Adam([input], lr)
+        optimizer = optim.Adam([batch], lr)
         lr_scheduler = ReduceLROnPlateau(optimizer, patience=((scheduler_patience * iterations) // 100))
         if self.use_amp:
             self.model, optimizer = amp.initialize(self.model, optimizer, opt_level=self.amp_mode,
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
-        best_input = None
+        best_batch = None
         best_loss = inf
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 # apply jitter
                 dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
-                input = input.roll(shifts=(dx, dy), dims=(-1, -2))
+                input = batch.roll(shifts=(dx, dy), dims=(-1, -2))
 
                 # apply horizontal flip, if needed
                 should_flip = random.random() < flip
@@ -81,10 +81,10 @@ class DeepInvert:
                 if self.reg_fn:
                     loss = loss + self.reg_fn(input)
 
-                # maintain best_input
+                # maintain best_batch
                 if loss < best_loss:
                     best_loss = loss
-                    best_input = input.data.clone()
+                    best_batch = batch.data.clone()
 
                 # backward pass
                 optimizer.zero_grad()
@@ -99,10 +99,10 @@ class DeepInvert:
                 lr_scheduler.step(loss)
 
                 # clip the image after every optimizer step
-                input.data = self.clip(input.data)
+                batch.data = self.clip(batch.data)
 
                 # update progress bar
                 desc_str = f'#{i}: total_loss = {loss.item()}'
                 pbar.set_description(desc_str)
                 pbar.update()
-        return self.toImages(best_input.cpu())
+        return self.toImages(best_batch.cpu())
