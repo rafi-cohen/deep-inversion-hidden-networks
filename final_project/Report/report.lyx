@@ -368,7 +368,34 @@ Apart from improving the visual quality of the reconstructed images, Yin
 \end_layout
 
 \begin_layout Subsection
-Hidden subnetworks in randomly weighted networks
+Hidden Networks
+\end_layout
+
+\begin_layout Standard
+Traditionally, deep learning involves initializing a network with random
+ weights, and then learning and optimizing the weights to achieve good performan
+ce for some given task.
+ In their paper, Ramanujan et al.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ramanujan2019"
+literal "false"
+
+\end_inset
+
+ propose an interesting take on learning.
+ They show that large networks which are initialized randomly using a properly
+ scaled distribution (e.g.
+ Kaiming) often contain smaller subnetworks that perform quite well.
+ Not only that, but they also suggest the edge-popup algorithm - an algorithm
+ that attempts to find such subnetworks by assigning scores to the edges
+ (weights) of the network, and choosing the edges with the best scores in
+ each layer.
+ The algorithm learns the scores without ever modifying the weights of the
+ network.
+ In their experiments, they were able to find a subnetwork of a randmoly
+ initialized Wide ResNet-50 network that is only 30% of its size, and performs
+ as well as a trained ResNet-34.
 \end_layout
 
 \begin_layout Section
