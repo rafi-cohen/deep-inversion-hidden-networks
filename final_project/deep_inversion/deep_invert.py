@@ -57,7 +57,8 @@ class DeepInvert:
             batch = batch.cuda()
         # initialize the optimizer and register the image as a parameter
         optimizer = optim.Adam([batch], lr)
-        lr_scheduler = ReduceLROnPlateau(optimizer, patience=((scheduler_patience * iterations) // 100))
+        lr_scheduler = ReduceLROnPlateau(optimizer, patience=((scheduler_patience * iterations) // 100), verbose=True,
+                                         threshold=0.005)
         if self.use_amp:
             self.model, optimizer = amp.initialize(self.model, optimizer, opt_level=self.amp_mode,
                                                    keep_batchnorm_fp32=True, loss_scale="dynamic")
