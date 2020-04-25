@@ -102,7 +102,7 @@ def dict_to_args(dict_args):
     return args
 
 
-def parse_args(args=None):
+def parse_args(args=None, create_output_directory=True):
     parser = create_parser()
     if isinstance(args, dict):
         args = dict_to_args(args)
@@ -116,11 +116,6 @@ def parse_args(args=None):
 
         random.seed(torch.initial_seed())
 
-    args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-    if not os.path.isdir(args.output_dir):
-        os.makedirs(args.output_dir)
-    assert os.path.isdir(args.output_dir), 'Could not create output directory'
-
     if args.targets[0] == -1:
         # randomize class targets from the entire dataset
         args.targets = torch.randint(low=0, high=DATASETS_CLASS_COUNT[args.dataset], size=(args.batch_size,),
@@ -130,6 +125,13 @@ def parse_args(args=None):
         targets = random.choices(args.targets, k=args.batch_size)
         args.targets = torch.tensor(targets, dtype=torch.long)
 
+    if create_output_directory:
+        args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        if not os.path.isdir(args.output_dir):
+            os.makedirs(args.output_dir)
+        assert os.path.isdir(args.output_dir), 'Could not create output directory'
+
+    assert os.path.isdir(args.output_dir), 'Output directory does not exist'
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
         pprint(vars(args), stream=f)
 
