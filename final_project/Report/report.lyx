@@ -797,11 +797,32 @@ For a given synthesized image
 \end_layout
 
 \begin_layout Standard
-Where m and s are the channel-wise RGB mean and standard deviation of 
+Where 
+\begin_inset Formula $m$
+\end_inset
+
+ and 
+\begin_inset Formula $s$
+\end_inset
+
+ are the channel-wise RGB mean and standard deviation of 
 \begin_inset Formula $\mathcal{X}$
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+Our empirical testing shows that neglecting to clip the images before each
+ forward pass during the training process results in many dark/bright zones
+ in the produced images.
+ This happens since without repeated clipping many of the pixels diverge
+ durining training outside of the legal range, and thus must be clipped
+ at the end of the reconstruction process before the resulting images can
+ be converted to PNG format.
+ On the other hand, our hypothsis is that repeated clipping during the training
+ process encourages these pixles again and again to converge to other legal
+ values within the legal range.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -811,8 +832,8 @@ Random Jitter
 \end_layout
 
 \begin_layout Standard
-Before each forward each synthesized image is offset by a random jitter
- of up to 30 pixels (for 
+Before each forward pass each synthesized image is temporarily offset by
+ a random jitter of up to 30 pixels (for 
 \begin_inset Formula $224\times224$
 \end_inset
 
@@ -827,6 +848,26 @@ smoother
 \end_inset
 
  images.
+\end_layout
+
+\begin_layout Subsubsection*
+
+\series bold
+Random Flipping
+\end_layout
+
+\begin_layout Standard
+Before each forward pass each synthesized image is bound for a temporary
+ horizontal flip at a probability of 0.5.
+ The logic behind these flips is that the pretrained network 
+\begin_inset Formula $\mathcal{N}$
+\end_inset
+
+ should be able to detect objects in real images regardless of whether they
+ are flipped or not.
+ Thus, flipping the synthesized images between iterations helps instill
+ this property in the synthesized images as well, and this would hopefully
+ improve their quality.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1572,30 +1613,224 @@ Once we managed to extract a pretrained subnetwork, applying Deep Inversion
 \end_layout
 
 \begin_layout Section
-Experiments
+Experiments & Results
+\end_layout
+
+\begin_layout Subsection*
+5.1 Hyper-Parameter Tuning for DeepInversion
 \end_layout
 
 \begin_layout Standard
-- elaborate a little on the experiments desribed in the paper and compare
- their results to ours.
- Datasets, chosen CNNs, hyper-parameters and optimizer details.
+After completing the implementation of DeepInversion we moved on to test
+ the method with the hyper-paremeters mentioned in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+.
+ Yin et al.
+ conducted several experiments to test the method's ability to reconstruct
+ images from models that were pretrained on the CIFAR-10 and ImageNet datasets.
+ For ImageNet, the authors claim that they were able to synthesize good
+ results using the publicly available ResNet-50 model from PyTorch.
+ They used an Adam optimizer 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kingma2014"
+literal "false"
+
+\end_inset
+
+ with a learning-rate of 
+\begin_inset Formula $0.05$
+\end_inset
+
+ and the following hyper-parameters:
 \end_layout
 
 \begin_layout Standard
-- Empirical testing showed that neglecting to clip the images before each
- forward pass during the training process resulted in many dark/bright zones
- in the produced images.
- This happens since without repeated clipping many of the pixels diverge
- durining training outside of the legal range, and thus must be clipped
- at the end of the reconstruction process before the resulting images can
- be converted to PNG format.
- On the other hand, our hypothsis is that repeated clipping during the training
- process encourages these pixles again and again to converge to other legal
- values within the legal range.
+\begin_inset Formula 
+\[
+\afeature=1\cdotp10^{-2},\atv=1\cdotp10^{-4},\anorm=1\cdotp10^{-2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Unfortunately we weren't able to reproduce the paper's results using the
+ above hyper-parameters.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+make a run with these parameters and show the bad results.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+These results indicate that DeepInversion is very sensitive to the hyper-paramet
+ers being used, and that even the slightest change in the way the method
+ is implemented might affect these parameters.
+ Unfortunately, since the official implementation of DeepInversion was not
+ yet available at the time, we realized that we had to tune the method by
+ ourselves.
+\end_layout
+
+\begin_layout Standard
+To do so we implemented a grid-search algorithm which tests the method with
+ multiple combinations of hyper-parameter values (for the parameters not
+ described above we used the values that were mentioned in the paper).
+ Then, to evaluate the synthesized images from each combination we used
+ the Inception Score 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Salimans2016"
+literal "false"
+
+\end_inset
+
+, a popular method to evaluate the image outputs of GANs, which was empirically
+ found to correlate well with human evaluation.
+ 
+\end_layout
+
+\begin_layout Standard
+After testing countless combinations using the above algorithm the best
+ parameters found for our implementation were the following: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\afeature=1\cdotp10^{-2},\atv=8\cdotp10^{-3},\anorm=1\cdotp10^{-5}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It should be noted, however, that the computational limitations imposed
+ on us by the faculty's server (a single shared NVIDIA Titan X 12GB) did
+ not allow us to match the batch size that were used in the experiments
+ in the paper.
+ While the authors of DeepInverison used a batch size of 
+\begin_inset Formula $1,216$
+\end_inset
+
+ using 8 NVIDIA V100 GPUs, our GPU's memory constraints limited us to test
+ the method with a batch size of only 60-80 (or slightly more using AMP).
+ We hypothesize that using a larget batch size might lead to better results,
+ since a bigger batch would be able to better fit to the distrubtion imposed
+ by 
+\begin_inset Formula $\rfeature$
+\end_inset
+
+ during synthesis.
+\end_layout
+
+\begin_layout Standard
+Below we present some of the images synthesized using our implementation
+ with a ResNet-50 model pretrained on ImageNet:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+complete this
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+5.2 Evaluation of the Synthesized Images 
+\end_layout
+
+\begin_layout Standard
+In this section we propose a way to evaluate the quality of the images synthesiz
+ed using our implementation of DeepInversion.
+\end_layout
+
+\begin_layout Standard
+We hand-picked 20 categories from ImageNet, and for each category we synthesized
+ 500 images using our implemention with a pretrained ResNet-50.
+\end_layout
+
+\begin_layout Standard
+Then, we used a pretrained ResNet-152 (which has a 
+\begin_inset Formula $78.31\%/94.06\%$
+\end_inset
+
+ top-1/top-5 accuracy respectively on ImageNet) to classify the synthesized
+ images.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+complete the results here
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+5.3 Knowledge Distillation Using the Synthesized Images
+\end_layout
+
+\begin_layout Standard
+One of the obvious utilizations of DeepInversion is knowledge distillation.
+ As shown in the paper, the method enables transferring knowledge from a
+ pretrained teacher to a randomly initialized student CNN without needing
+ the original dataset the teacher was trained on.
+\end_layout
+
+\begin_layout Standard
+To test the knowledge distillation potential of our synthesized images,
+ we used the dataset we synthesized in section 5.2 (10,000 images for 20
+ hand-picked classes) to train a randomly initialized ResNet-50 from scratch.
+ Then, we evaluated the trained model using a test set of 1,000 image originated
+ from the original test set of ImageNet.
+ Our test set contained 50 images for each hand-picked class.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+complete the results: top-1/top-5 accuracy etc.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
-Results
+Conclusion
 \end_layout
 
 \begin_layout Standard
