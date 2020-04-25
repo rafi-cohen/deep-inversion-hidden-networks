@@ -27,7 +27,7 @@ class l2NormRegularization(nn.Module):
         Calculates the l2-Norm Regularization of the batch
         """
         batch_size = batch.shape[0]
-        return batch.norm() / batch_size
+        return batch.view(batch_size, -1).norm(dim=1).mean()
 
 
 class PriorRegularization(nn.Module):
