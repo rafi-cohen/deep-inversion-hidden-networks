@@ -102,7 +102,7 @@ def dict_to_args(dict_args):
     return args
 
 
-def parse_args(args=None, create_output_directory=True):
+def parse_args(args=None, add_timestamp=True):
     parser = create_parser()
     if isinstance(args, dict):
         args = dict_to_args(args)
@@ -125,13 +125,12 @@ def parse_args(args=None, create_output_directory=True):
         targets = random.choices(args.targets, k=args.batch_size)
         args.targets = torch.tensor(targets, dtype=torch.long)
 
-    if create_output_directory:
+    if add_timestamp:
         args.output_dir = os.path.join(args.output_dir, datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-        if not os.path.isdir(args.output_dir):
-            os.makedirs(args.output_dir)
-        assert os.path.isdir(args.output_dir), 'Could not create output directory'
+    if not os.path.isdir(args.output_dir):
+        os.makedirs(args.output_dir)
+    assert os.path.isdir(args.output_dir), 'Could not create output directory'
 
-    assert os.path.isdir(args.output_dir), 'Output directory does not exist'
     with open(os.path.join(args.output_dir, 'args.txt'), 'w') as f:
         pprint(vars(args), stream=f)
 

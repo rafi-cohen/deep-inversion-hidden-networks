@@ -32,7 +32,7 @@ def generate_dataset(params):
     batch_count = DATASET_SIZE // batch_size
     for i in range(batch_count):
         params['seed'] = i
-        args = parse_args(params, create_output_directory=False)
+        args = parse_args(params, add_timestamp=False)
         args.targets = torch.tensor(np.repeat(params['targets'], images_per_target))
         if args.cuda:
             args.targets = args.targets.cuda()
