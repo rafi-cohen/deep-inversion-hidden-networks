@@ -86,7 +86,7 @@ class DeepInvert:
                     loss = loss + self.reg_fn(input)
 
                 # maintain best_batch & early-stopping
-                if loss < best_loss:
+                if loss < 0.9 * best_loss:
                     best_loss = loss
                     best_batch = batch.data.clone()
                     iterations_since_best = 0
