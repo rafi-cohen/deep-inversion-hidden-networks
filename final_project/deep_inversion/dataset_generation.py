@@ -34,6 +34,8 @@ def generate_dataset(params):
         params['seed'] = i
         args = parse_args(params, create_output_directory=False)
         args.targets = torch.tensor(np.repeat(params['targets'], images_per_target))
+        if args.cuda:
+            args.targets = args.targets.cuda()
         DI = DeepInvert(**vars(args))
         images = DI.deepInvert(**vars(args))
         for j, image in enumerate(images):
