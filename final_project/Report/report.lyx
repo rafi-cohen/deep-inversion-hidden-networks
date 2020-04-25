@@ -376,6 +376,7 @@ Traditionally, deep learning involves initializing a network with random
  weights, and then learning and optimizing the weights to achieve good performan
 ce for some given task.
  In their paper, Ramanujan et al.
+ 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Ramanujan2019"
@@ -465,7 +466,7 @@ Prior Regularization
 \end_layout
 
 \begin_layout Standard
-Deep Dream
+Deep Dream 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "AlexanderMordvintsevChristopherOlah2015"
@@ -1667,7 +1668,7 @@ Initialy, our hook function computed the batch-wise mean and variance of
 
 , and stored them in a list.
  This list was later used for calculating the regularization term as it
- appeared in the paper
+ appeared in the paper 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Yin2019"
