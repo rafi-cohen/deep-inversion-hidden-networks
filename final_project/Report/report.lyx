@@ -961,6 +961,329 @@ https://github.com/NVIDIA/apex
 .
 \end_layout
 
+\begin_layout Subsection
+Hidden Networks
+\end_layout
+
+\begin_layout Standard
+The method for finding well performing subnetworks which are hidden in randomly
+ initialized subnetworks is based on the work of Zhou et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zhou2019"
+literal "false"
+
+\end_inset
+
+.
+ In their algorithm, they essentially replace each weight 
+\begin_inset Formula $w$
+\end_inset
+
+ of the network with 
+\begin_inset Formula $\tilde{w}=wX$
+\end_inset
+
+, where 
+\begin_inset Formula $X$
+\end_inset
+
+ is a 
+\begin_inset Formula $\text{Bernoulli}\left(p\right)$
+\end_inset
+
+ random variable, i.e.
+ 
+\begin_inset Formula $X=\begin{cases}
+1 & \text{with probability }p\\
+0 & \text{with probability }1-p
+\end{cases}$
+\end_inset
+
+.
+ The value of 
+\begin_inset Formula $p$
+\end_inset
+
+ for each weight is then learned using SGD.
+ The random variables can be thought of as binary masks for the weights,
+ and define the subnetwork.
+ Masks corresponding to subnetworks that perform better than the original
+ untrained network are referred to as 
+\begin_inset Quotes eld
+\end_inset
+
+Supermasks
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Ramanujan et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ramanujan2019"
+literal "false"
+
+\end_inset
+
+ build on this idea, but claim that the stochasticity of the method proposed
+ by Zhou et al.
+ limits the performance of the final subnetworks.
+ Instead, Ramanujan et al.
+ suggest assigning a popup score 
+\begin_inset Formula $s$
+\end_inset
+
+ to each weight 
+\begin_inset Formula $w$
+\end_inset
+
+ in the network, and then choosing the mask such that only the weights with
+ the top-
+\begin_inset Formula $k\%$
+\end_inset
+
+ scores of each layer are selected (
+\begin_inset Formula $k$
+\end_inset
+
+ is some predefined value, and can be different for each layer).
+\end_layout
+
+\begin_layout Standard
+But how would the score be chosen? First, the scores are initialized randomly
+ using a Kaiming uniform distribution 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "He2015"
+literal "false"
+
+\end_inset
+
+.
+ Then, suppose we are looking at weight 
+\begin_inset Formula $w_{uv}$
+\end_inset
+
+, which connects node 
+\begin_inset Formula $u$
+\end_inset
+
+ to node 
+\begin_inset Formula $v$
+\end_inset
+
+.
+ The idea is to perform backpropagation on the loss function, look at the
+ gradients of 
+\begin_inset Formula $v$
+\end_inset
+
+'s input and the weighted output of node 
+\begin_inset Formula $u$
+\end_inset
+
+, and increasing 
+\begin_inset Formula $s_{uv}$
+\end_inset
+
+ if the negative gradient of 
+\begin_inset Formula $v$
+\end_inset
+
+'s input is aligned with 
+\begin_inset Formula $u$
+\end_inset
+
+'s weighted output.
+ Essentially, this means we check how the loss 
+\begin_inset Quotes eld
+\end_inset
+
+wants
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Formula $v$
+\end_inset
+
+'s input to change, and increase the score of 
+\begin_inset Formula $w_{uv}$
+\end_inset
+
+ if 
+\begin_inset Formula $u$
+\end_inset
+
+'s weighted output takes it there.
+ This translates into the following update rule, which can be performed
+ using SGD
+\begin_inset Formula 
+\[
+s_{uv}\leftarrow s_{uv}-\alpha\frac{\partial\mathcal{L}}{\partial\mathcal{I}_{v}}\mathcal{Z}_{u}w_{uv}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where:
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\alpha$
+\end_inset
+
+ is the learning rate
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{L}$
+\end_inset
+
+ is the loss function
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{I}_{v}$
+\end_inset
+
+ is the input of node 
+\begin_inset Formula $v$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{Z}_{u}$
+\end_inset
+
+ is the output of node 
+\begin_inset Formula $u$
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $\mathcal{Z}_{u}=\sigma\left(\mathcal{I}_{u}\right)$
+\end_inset
+
+, where 
+\begin_inset Formula $\sigma$
+\end_inset
+
+ is some activation function (e.g.
+ ReLU)
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+There is one important caveat here.
+ The loss function is calculated on the output of a subnetwork of the original
+ network.
+ This can be done by using a mask similar to that used by Zhou et al., except
+ here instead of a 
+\begin_inset Formula $\text{Bernoulli}\left(p\right)$
+\end_inset
+
+ random variable, the mask is deterministic and denoted by 
+\begin_inset Formula $h\left(s_{uv}\right)$
+\end_inset
+
+.
+ i.e., the input 
+\begin_inset Formula $\mathcal{I}_{v}$
+\end_inset
+
+ of layer 
+\begin_inset Formula $\ell$
+\end_inset
+
+ is calculated as
+\begin_inset Formula 
+\[
+\mathcal{I}_{v}=\sum_{u\in\mathcal{V}^{\left(\ell-1\right)}}w_{uv}\mathcal{Z}_{u}h\left(s_{uv}\right)
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathcal{V}^{\left(\ell-1\right)}$
+\end_inset
+
+ is the set of neurons on the previous layer.
+ The masking function 
+\begin_inset Formula $h$
+\end_inset
+
+ takes the value of 
+\begin_inset Formula $1$
+\end_inset
+
+ if 
+\begin_inset Formula $s_{uv}$
+\end_inset
+
+ is in the top-
+\begin_inset Formula $k\%$
+\end_inset
+
+ scores of layer 
+\begin_inset Formula $\ell$
+\end_inset
+
+, and 
+\begin_inset Formula $0$
+\end_inset
+
+ otherwise.
+\end_layout
+
+\begin_layout Standard
+This poses a new problem, because the gradient of 
+\begin_inset Formula $h$
+\end_inset
+
+ is always 
+\begin_inset Formula $0$
+\end_inset
+
+.
+ To deal with this, the straight-through gradient estimator 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Bengio2013"
+literal "false"
+
+\end_inset
+
+ was proposed.
+ This estimator basically skips 
+\begin_inset Quotes eld
+\end_inset
+
+straight through
+\begin_inset Quotes erd
+\end_inset
+
+ 
+\begin_inset Formula $h$
+\end_inset
+
+ in the backwards pass, by ignoring its gradient and treating it as an identity.
+\end_layout
+
 \begin_layout Section
 Implementation
 \end_layout
