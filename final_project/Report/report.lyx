@@ -457,6 +457,13 @@ where
 
 \begin_layout Subsubsection
 Regularization Terms
+\begin_inset CommandInset label
+LatexCommand label
+name "Method:Regularizations"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -2176,6 +2183,111 @@ status open
 
 \begin_layout Plain Layout
 complete the results: top-1/top-5 accuracy etc.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Deep Inversion of Hidden Subnetworks
+\end_layout
+
+\begin_layout Standard
+After experimenting on our implementation of Deep Inversion, we finally
+ got to run it on a well performing subnetwork that was extracted using
+ the edge-popup algorithm 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ramanujan2019"
+literal "false"
+
+\end_inset
+
+.
+ Our results are as follows:
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Experiments/DI + HiddenSubnets.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples from applying Deep Inversion on a Hidden Subnetwork
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As we can see, the results resemble colored noise and are not distinguishable
+ at all.
+ We actually expected this experiment to fail due to one major reason: The
+ hidden subnetworks extracted using the edge-popup algorithm do not contain
+ the BatchNorm statistics mention in the Feature Regularization in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Method:Regularizations"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ We can see that regurlarization terms did have some effect on the output,
+ for example, the Total Variation Regularzation caused nearby pixels to
+ have similar color.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Not sure if to include the following
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+One could then ask why our results do not resemble those of Deep Dream,
+ then? The reason for that is that the loss function used in Deep Dream
+ is usually the raw output of some layer (or the class scores, in case of
+ the last layers).
+ In Deep Inversion, the loss function is the Cross Entropy loss function.
+ We believe that what happened here is that instead of maximizing the probabilty
+ that the image will have a specific label, it instead minimized the probability
+ of it being any other of the 1000 labels.
 \end_layout
 
 \end_inset
