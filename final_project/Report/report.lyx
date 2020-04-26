@@ -2098,6 +2098,13 @@ complete this
 
 \begin_layout Subsection
 Evaluation of the Synthesized Images 
+\begin_inset CommandInset label
+LatexCommand label
+name "Experiment:Evalute-synthesized"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2145,8 +2152,18 @@ One of the obvious utilizations of DeepInversion is knowledge distillation.
 
 \begin_layout Standard
 To test the knowledge distillation potential of our synthesized images,
- we used the dataset we synthesized in section 5.2 (10,000 images for 20
- hand-picked classes) to train a randomly initialized ResNet-50 from scratch.
+ we used the dataset we synthesized in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Experiment:Evalute-synthesized"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ (10,000 images for 20 hand-picked classes) to train a randomly initialized
+ ResNet-50 from scratch.
  Then, we evaluated the trained model using a test set of 1,000 image originated
  from the original test set of ImageNet.
  Our test set contained 50 images for each hand-picked class.
