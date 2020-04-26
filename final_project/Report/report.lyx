@@ -460,8 +460,6 @@ Regularization Terms
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Prior Regularization
 \end_layout
 
@@ -591,8 +589,6 @@ Lastly,
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Feature Regularization
 \end_layout
 
@@ -788,8 +784,6 @@ Deep Inversion incorporates two techniques that were first used in Deep
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Image Clipping
 \end_layout
 
@@ -854,8 +848,6 @@ Our empirical testing shows that neglecting to clip the images before each
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Random Jitter
 \end_layout
 
@@ -879,8 +871,6 @@ smoother
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Random Flipping
 \end_layout
 
@@ -908,8 +898,6 @@ The authors of DI also recommend the following two methods to speed up the
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Multi-Resolution Synthesis
 \end_layout
 
@@ -941,8 +929,6 @@ For
 \end_layout
 
 \begin_layout Subsubsection*
-
-\series bold
 Automatic Mixed Precision (AMP)
 \end_layout
 
@@ -1967,8 +1953,8 @@ Once we managed to extract a pretrained subnetwork, applying Deep Inversion
 Experiments & Results
 \end_layout
 
-\begin_layout Subsection*
-5.1 Hyper-Parameter Tuning for DeepInversion
+\begin_layout Subsection
+Hyper-Parameter Tuning for DeepInversion
 \end_layout
 
 \begin_layout Standard
@@ -2110,8 +2096,8 @@ complete this
 
 \end_layout
 
-\begin_layout Subsection*
-5.2 Evaluation of the Synthesized Images 
+\begin_layout Subsection
+Evaluation of the Synthesized Images 
 \end_layout
 
 \begin_layout Standard
@@ -2146,8 +2132,8 @@ complete the results here
 
 \end_layout
 
-\begin_layout Subsection*
-5.3 Knowledge Distillation Using the Synthesized Images
+\begin_layout Subsection
+Knowledge Distillation Using the Synthesized Images
 \end_layout
 
 \begin_layout Standard
