@@ -1631,26 +1631,6 @@ https://pytorch.org/docs/stable/nn.html#torch.nn.Module.register_forward_pre_hoo
 \end_inset
 
 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Maybe add this as a reference instead of a footnote? Not sure.
-\end_layout
-
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Change implementation to use forward_pre_hooks
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -1730,16 +1710,6 @@ To allow easy execution of experiments, we implemented an argument parser
  that allows running different configurations of Deep Inversion both programatic
 ally and through the command line.
  The parser is rich in options, as can be seen by its help message:
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Remove a_c from parser, write clearer help messages
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
