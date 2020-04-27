@@ -23,69 +23,67 @@ from params import (MEANS,
 def create_parser():
     parser = argparse.ArgumentParser(description="Deep Inversion")
 
-    parser.add_argument("--iterations", type=int, default=160, metavar="I",
-                        help="number of epochs to train (default: 10)")
+    parser.add_argument("--iterations", type=int, default=20000, metavar="I",
+                        help="number of epochs to run Deep Inversion for (default: 20000)")
 
-    parser.add_argument("--early-stopping", type=int, default=100, metavar="ES",
-                        help="percentage of iterations to wait before early stopping (default: 100)")
+    parser.add_argument("--early-stopping", type=int, default=15, metavar="ES",
+                        help="percentage of iterations with no improvement"
+                             " to wait before early stopping (default: 15)")
 
     parser.add_argument("--batch-size", type=int, default=128, metavar="B",
-                        help="input batch size for training (default: 128)")
+                        help="number of images to generate in a batch (default: 128)")
 
     parser.add_argument("--no-cuda", action="store_true", default=False,
-                        help="disables CUDA training")
+                        help="disable CUDA")
 
-    parser.add_argument("--amp-mode", type=str, default="off", metavar="AMP", choices=AMP_MODES,
-                        help="Automatic Mixed Precision mode (default: off)")
+    parser.add_argument("--amp-mode", type=str, default="O2", metavar="AMP", choices=AMP_MODES,
+                        help="Automatic Mixed Precision mode (default: O2)")
 
     parser.add_argument("--seed", type=int, default=None, metavar="S",
                         help="random seed (default: None)")
 
-    parser.add_argument("--lr", type=float, default=0.05, metavar="LR",
-                        help="learning rate (default: 0.05)")
+    parser.add_argument("--lr", type=float, default=0.2, metavar="LR",
+                        help="learning rate (default: 0.2)")
 
-    parser.add_argument("--scheduler-patience", type=int, default=100, metavar="SP",
-                        help="learning rate scheduler patience in percentage relative to the number of iterations"
-                             " (default: 100) ")
+    parser.add_argument("--scheduler-patience", type=int, default=5, metavar="SP",
+                        help="learning rate scheduler patience in percentage"
+                             " relative to the number of iterations (default: 5)")
 
-    parser.add_argument("--targets", type=int, nargs='+', default=[294], metavar="T",
-                        help="target classes for image synthesis (default: 294), or -1 for randomization")
+    parser.add_argument("--targets", type=int, nargs='+', default=[-1], metavar="T",
+                        help="target classes for image synthesis, or -1 for randomization (default: -1)")
 
     parser.add_argument("--dataset", type=str, default="ImageNet", metavar="DS", choices=DATASETS,
-                        help="Dataset to perform synthesis on (default: ImageNet)")
+                        help="dataset to perform synthesis on (default: ImageNet)")
 
     parser.add_argument("--model-name", type=str, default="ResNet50", metavar="MN", choices=MODEL_NAMES,
-                        help="Name of model to use for synthesis (default: ResNet50)")
+                        help="name of model to use for synthesis (default: ResNet50)")
 
-    parser.add_argument("--jitter", type=int, default=0, metavar="J",
-                        help="Amount of jitter to apply on each iteration (default: 0)")
+    parser.add_argument("--jitter", type=int, default=30, metavar="J",
+                        help="amount of jitter to apply on each iteration (default: 30)")
 
-    parser.add_argument("--flip", type=float, default=0, metavar="FLP",
-                        help="horizontal flip probability (default: 0)")
+    parser.add_argument("--flip", type=float, default=0.5, metavar="FLP",
+                        help="horizontal flip probability (default: 0.5)")
 
     parser.add_argument("--loss-fn", type=str, default="CE", metavar="LF",
-                        choices=LOSS_FNS, help="Loss function (default: CE)")
+                        choices=LOSS_FNS, help="loss function (default: CE)")
 
     parser.add_argument("--temp", type=float, default=1, metavar="TMP",
-                        help="Temperature value for CrossEntropyLoss (default: 1)")
+                        help="temperature value for CrossEntropyLoss (default: 1)")
 
-    parser.add_argument("--reg-fn", type=str, default="prior", metavar="RF",
-                        choices=REG_FNS, help="Regularization function (default: prior)")
+    parser.add_argument("--reg-fn", type=str, default="DI", metavar="RF",
+                        choices=REG_FNS, help="regularization function (default: DI)")
 
-    parser.add_argument("--a-tv", type=float, default=1e-4, metavar="ATV",
-                        help="TV regularization factor (default: 1e-4)")
+    parser.add_argument("--a-tv", type=float, default=8e-3, metavar="ATV",
+                        help="TV regularization factor (default: 8e-3)")
 
-    parser.add_argument("--a-l2", type=float, default=0, metavar="AL2",
-                        help="l2-Norm regularization factor (default: 0)")
+    parser.add_argument("--a-l2", type=float, default=1e-5, metavar="AL2",
+                        help="l2-norm regularization factor (default: 1e-5)")
 
     parser.add_argument("--a-f", type=float, default=1e-2, metavar="AF",
-                        help="Feature regularization factor (default: 1e-2)")
-
-    parser.add_argument("--a-c", type=float, default=0.2, metavar="AC",
-                        help="Compete regularization factor (default: 0.2)")
+                        help="feature regularization factor (default: 1e-2)")
 
     parser.add_argument("--output-dir", type=str, default="generated", metavar="OD",
-                        help="Directory for storing generated images (default: generated)")
+                        help="directory for storing generated images (default: generated)")
     return parser
 
 

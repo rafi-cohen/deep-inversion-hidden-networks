@@ -1749,27 +1749,34 @@ status open
 
 \begin_layout Plain Layout
 
-usage: main.py [-h] [--iterations I] [--batch-size B] [--no-cuda]
+usage: main.py [-h] [--iterations I] [--early-stopping ES] [--batch-size
+ B]
 \end_layout
 
 \begin_layout Plain Layout
 
-[--amp-mode AMP] [--seed S] [--lr LR] [--targets T [T ...]]
+               [--no-cuda] [--amp-mode AMP] [--seed S] [--lr LR]
 \end_layout
 
 \begin_layout Plain Layout
 
-[--dataset DS] [--model-name MN] [--jitter J] [--loss-fn LF]
+               [--scheduler-patience SP] [--targets T [T ...]] [--dataset DS]
 \end_layout
 
 \begin_layout Plain Layout
 
-[--temp TMP] [--reg-fn RF] [--a-tv ATV] [--a-l2 AL2] [--a-f AF]
+               [--model-name MN] [--jitter J] [--flip FLP] [--loss-fn LF]
 \end_layout
 
 \begin_layout Plain Layout
 
-[--a-c AC] [--output-dir OD]
+               [--temp TMP] [--reg-fn RF] [--a-tv ATV] [--a-l2 AL2] [--a-f
+ AF]
+\end_layout
+
+\begin_layout Plain Layout
+
+               [--output-dir OD]
 \end_layout
 
 \begin_layout Plain Layout
@@ -1792,112 +1799,145 @@ optional arguments:
 
 \begin_layout Plain Layout
 
--h, --help           show this help message and exit
+  -h, --help            show this help message and exit
 \end_layout
 
 \begin_layout Plain Layout
 
---iterations I       number of epochs to train (default: 10)
+  --iterations I        number of epochs to run Deep Inversion for (default:
 \end_layout
 
 \begin_layout Plain Layout
 
---batch-size B       input batch size for training (default: 128)
+                        20000)
 \end_layout
 
 \begin_layout Plain Layout
 
---no-cuda            disables CUDA training
+  --early-stopping ES   percentage of iterations with no improvement to
+ wait
 \end_layout
 
 \begin_layout Plain Layout
 
---amp-mode AMP       Automatic Mixed Precision mode (default: off)
+                        before early stopping (default: 15)
 \end_layout
 
 \begin_layout Plain Layout
 
---seed S             random seed (default: None)
+  --batch-size B        number of images to generate in a batch (default:
+ 128)
 \end_layout
 
 \begin_layout Plain Layout
 
---lr LR              learning rate (default: 0.05)
+  --no-cuda             disable CUDA
 \end_layout
 
 \begin_layout Plain Layout
 
---targets T [T ...]  target classes for image synthesis (default: 294), or
+  --amp-mode AMP        Automatic Mixed Precision mode (default: O2)
 \end_layout
 
 \begin_layout Plain Layout
 
-                     -1 for randomization
+  --seed S              random seed (default: None)
 \end_layout
 
 \begin_layout Plain Layout
 
---dataset DS         Dataset to perform synthesis on (default: ImageNet)
+  --lr LR               learning rate (default: 0.2)
 \end_layout
 
 \begin_layout Plain Layout
 
---model-name MN      Name of model to use for synthesis (default: ResNet50)
+  --scheduler-patience SP
 \end_layout
 
 \begin_layout Plain Layout
 
---jitter J           Amount of jitter to apply on each iteration (default:
+                        learning rate scheduler patience in percentage
 \end_layout
 
 \begin_layout Plain Layout
 
-                     0)
+                        relative to the number of iterations (default: 5)
 \end_layout
 
 \begin_layout Plain Layout
 
---loss-fn LF         Loss function (default: CE)
+  --targets T [T ...]   target classes for image synthesis, or -1 for
 \end_layout
 
 \begin_layout Plain Layout
 
---temp TMP           Temperature value for CrossEntropyLoss (default: 1)
+                        randomization (default: -1)
 \end_layout
 
 \begin_layout Plain Layout
 
---reg-fn RF          Regularization function (default: prior)
+  --dataset DS          dataset to perform synthesis on (default: ImageNet)
 \end_layout
 
 \begin_layout Plain Layout
 
---a-tv ATV           TV regularization factor (default: 1e-4)
+  --model-name MN       name of model to use for synthesis (default: ResNet50)
 \end_layout
 
 \begin_layout Plain Layout
 
---a-l2 AL2           l2-Norm regularization factor (default: 0)
+  --jitter J            amount of jitter to apply on each iteration (default:
 \end_layout
 
 \begin_layout Plain Layout
 
---a-f AF             Feature regularization factor (default: 1e-2)
+                        30)
 \end_layout
 
 \begin_layout Plain Layout
 
---a-c AC             Compete regularization factor (default: 0.2)
+  --flip FLP            horizontal flip probability (default: 0.5)
 \end_layout
 
 \begin_layout Plain Layout
 
---output-dir OD      Directory for storing generated images (default:
+  --loss-fn LF          loss function (default: CE)
 \end_layout
 
 \begin_layout Plain Layout
 
-                     generated) 
+  --temp TMP            temperature value for CrossEntropyLoss (default:
+ 1)
+\end_layout
+
+\begin_layout Plain Layout
+
+  --reg-fn RF           regularization function (default: DI)
+\end_layout
+
+\begin_layout Plain Layout
+
+  --a-tv ATV            TV regularization factor (default: 8e-3)
+\end_layout
+
+\begin_layout Plain Layout
+
+  --a-l2 AL2            l2-norm regularization factor (default: 1e-5)
+\end_layout
+
+\begin_layout Plain Layout
+
+  --a-f AF              feature regularization factor (default: 1e-2)
+\end_layout
+
+\begin_layout Plain Layout
+
+  --output-dir OD       directory for storing generated images (default:
+\end_layout
+
+\begin_layout Plain Layout
+
+                        generated) 
 \end_layout
 
 \end_inset
