@@ -62,8 +62,8 @@ def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', ep
             test_loss, test_accuracy = test_set_evaluation(test_dataset_loader, model)
             test_loss_list.append(test_loss)
             test_accuracy_list.append(test_accuracy)
-            epoch_pbar.set_description_str(f'Epoch: {epoch_idx} Train Loss: {total_epoch_loss} '
-                                           f'Test Loss {test_loss} Test Accuracy {test_accuracy}')
+            epoch_pbar.set_description_str(f'Epoch: {epoch_idx+1} Train Loss: {total_epoch_loss} '
+                                           f'Test Loss: {test_loss} Test Accuracy: {test_accuracy}%')
             epoch_pbar.update()
 
     # save the trained model parameters:
