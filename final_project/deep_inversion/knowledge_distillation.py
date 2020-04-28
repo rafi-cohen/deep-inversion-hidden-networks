@@ -58,7 +58,7 @@ def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', ep
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
-                scheduler.step(loss)
+            scheduler.step(total_epoch_loss)
             test_loss, test_accuracy = test_set_evaluation(test_dataset_loader, model)
             test_loss_list.append(test_loss)
             test_accuracy_list.append(test_accuracy)
