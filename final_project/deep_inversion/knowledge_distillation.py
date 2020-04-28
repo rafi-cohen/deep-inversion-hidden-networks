@@ -29,7 +29,7 @@ def test_set_evaluation(test_dataset_loader, model):
     return test_loss, test_accuracy
 
 
-def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', epochs=100, batch_size=64, lr=0.1):
+def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', epochs=100, batch_size=32, lr=0.1):
     mean, std = MEANS['ImageNet'], STDS['ImageNet']
     transform_preprocess = transforms.Compose(
         [transforms.Resize((224, 224)),
