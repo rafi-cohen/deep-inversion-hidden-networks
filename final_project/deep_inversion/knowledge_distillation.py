@@ -32,7 +32,7 @@ def test_set_evaluation(test_dataset_loader, model):
 def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', epochs=100, batch_size=64, lr=0.1):
     mean, std = MEANS['ImageNet'], STDS['ImageNet']
     transform_preprocess = transforms.Compose(
-        [transforms.Resize(224),
+        [transforms.Resize((224, 224)),
          transforms.ToTensor(),
          transforms.Normalize(mean=mean, std=std)])
     train_dataset = datasets.ImageFolder(train_set_dir, transform=transform_preprocess)
