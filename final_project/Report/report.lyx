@@ -2278,8 +2278,14 @@ noprefix "false"
 
  (5,000 images for 10 hand-picked classes) to train a randomly initialized
  'student' ResNet-50 from scratch.
- Then, we evaluated the trained model using a test set of 500 images (50
- images per class) originated from the validation set of ImageNet.
+ For this experiment we used the PyTorch implementation of ResNet-50, but
+ since the model was originally designed for ImageNet, we had to replace
+ its fully connected layer with a layer which fits our smaller dataset.
+\end_layout
+
+\begin_layout Standard
+After training we evaluated the trained model using a test set of 500 images
+ (50 images per class) originated from the validation set of ImageNet.
  Note that the pretrained model we used to synthesize our dataset with was
  
 \bar under
