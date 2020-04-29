@@ -215,9 +215,16 @@ literal "false"
 \end_layout
 
 \begin_layout Standard
-Apart from the above method, which is class neutral, Deep Dream proposes
- another method which allows enhancing an input image in a way which would
- elicit a 
+Apart from the above method, which is class neutral, another method is mentioned
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "AlexanderMordvintsevChristopherOlah2015"
+literal "false"
+
+\end_inset
+
+ which allows enhancing an input image in a way which would elicit a 
 \series bold
 particular interpretation
 \series default
@@ -2006,6 +2013,13 @@ Experiments & Results
 
 \begin_layout Subsection
 Hyper-Parameter Tuning for DeepInversion
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Hyper-Parameter-Tuning-for"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2053,17 +2067,6 @@ literal "false"
 \begin_layout Standard
 Unfortunately we weren't able to reproduce the paper's results using the
  above hyper-parameters.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-make a run with these parameters and show the bad results.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2071,7 +2074,7 @@ These results indicate that DeepInversion is very sensitive to the hyper-paramet
 ers being used, and that even the slightest change in the way the method
  is implemented might affect these parameters.
  This unfortunately made us realize that we had to tune our implementation
- by ourselves, which later proved to be a 
+ by ourselves, which eventually proved to be a 
 \bar under
 very
 \bar default
@@ -2097,8 +2100,9 @@ literal "false"
 \end_layout
 
 \begin_layout Standard
-After testing countless combinations using the above algorithm the best
- parameters found for our implementation were the following: 
+After running the grid-search algorithm for several days and testing a decent
+ number of combinations the best parameters found for our implementation
+ were the following: 
 \end_layout
 
 \begin_layout Standard
@@ -2116,20 +2120,42 @@ After testing countless combinations using the above algorithm the best
 It should be noted, however, that the computational limitations imposed
  on us by the faculty's server (a single shared NVIDIA Titan X 12GB) did
  not allow us to match the batch size that were used in the experiments
- in the paper.
- While the authors of DeepInverison used a batch size of 
+ in the paper, or to run the grid-search algorithm as extensively as we
+ would have liked.
+ 
+\end_layout
+
+\begin_layout Standard
+While the authors of DeepInverison used a batch size of 
 \begin_inset Formula $1,216$
 \end_inset
 
  using 8 NVIDIA V100 GPUs, our GPU's memory constraints limited us to test
  the method with a batch size of only 60-80 (or slightly more using AMP).
- We hypothesize that using a larget batch size might lead to better results,
+ We hypothesize that using a larger batch size might lead to better results,
  since a bigger batch would be able to better fit to the distrubtion imposed
  by 
 \begin_inset Formula $\rfeature$
 \end_inset
 
  during synthesis.
+ 
+\end_layout
+
+\begin_layout Standard
+Also, the results from our grid-search experiment empirically showed that
+ the hyper-parameter to Inception Score function we were trying to optimize
+ was 
+\bar under
+highly non-convex
+\bar default
+.
+ This, along with the fact that our model is highly sensitive to hyper-parameter
+s, makes us believe that a significantly better set of hyper-parameters
+ can be found for our implementation.
+ However, that would require running the tuning algorithm on a grid with
+ a much finer paramerter resolution, and that could unfortunately take weeks
+ using our limited hardware.
 \end_layout
 
 \begin_layout Standard
@@ -2138,16 +2164,45 @@ Below we present some of the images synthesized using our implementation
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
+\begin_inset Float figure
+wide false
+sideways false
 status open
 
 \begin_layout Plain Layout
-complete this
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Experiments/DI Image Examples.png
+	scale 40
+	BoundingBox 0bp 0bp 851bp 573bp
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples from applying Deep Inversion on ResNet-50 pretrained on ImageNet
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We would like to emphasize, however, that not all of the images synthesized
+ using our implementation with the above hyper-parameter turned out to be
+ of high quality.
+ We state again that further tuning is still required to obtain stable high-qual
+ity batches.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -2167,7 +2222,7 @@ ed using our implementation of DeepInversion.
 \end_layout
 
 \begin_layout Standard
-We hand-picked 20 categories from ImageNet, and for each category we synthesized
+We hand-picked 10 categories from ImageNet, and for each category we synthesized
  500 images using our implemention with a pretrained ResNet-50.
 \end_layout
 
@@ -2181,16 +2236,11 @@ Then, we used a pretrained ResNet-152 (which has a
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-complete the results here
-\end_layout
-
+The model achieved 
+\begin_inset Formula $97.02\%/99.32\%$
 \end_inset
 
-
+ top-1/top-5 accuracy respectively on our synthesized dataset.
 \end_layout
 
 \begin_layout Subsection
@@ -2201,9 +2251,17 @@ Knowledge Distillation Using the Synthesized Images
 One of the most intriguing utilizations of DeepInversion is knowledge distillati
 on.
  Yin et al.
- claims that the method enables transferring knowledge from a pretrained
- teacher to a randomly initialized student CNN without needing the original
- dataset the teacher was trained on.
+ claim in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+ that the method enables transferring knowledge from a pretrained teacher
+ to a randomly initialized student CNN without needing the original dataset
+ the teacher was trained on.
 \end_layout
 
 \begin_layout Standard
@@ -2218,25 +2276,50 @@ noprefix "false"
 
 \end_inset
 
- (10,000 images for 20 hand-picked classes) to train a randomly initialized
- ResNet-50 from scratch.
- Then, we evaluated the trained model using a test set of 1,000 image originated
- from the original test set of ImageNet.
- Our test set contained 50 images for each hand-picked class.
+ (5,000 images for 10 hand-picked classes) to train a randomly initialized
+ 'student' ResNet-50 from scratch.
+ Then, we evaluated the trained model using a test set of 500 images (50
+ images per class) originated from the validation set of ImageNet.
+ Note that the pretrained model we used to synthesize our dataset with was
+ 
+\bar under
+not
+\bar default
+ trained on these images.
  
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-complete the results: top-1/top-5 accuracy etc.
-\end_layout
+Unfortunately, as we stated in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Hyper-Parameter-Tuning-for"
+plural "false"
+caps "false"
+noprefix "false"
 
 \end_inset
 
+ our hardware limitations made it very difficult for us to tune our DI model,
+ and thus we suspected that the quality of the images in our synthesized
+ dataset would not be high enough for knowledge distillation purposes.
+ 
+\end_layout
 
+\begin_layout Standard
+Testing the above student model on the test test validated our suspicions,
+ as it was only able to achieve 
+\begin_inset Formula $38.8\%/62.4\%$
+\end_inset
+
+ top-1/top-3 accuracy respectively on the test set.
+\end_layout
+
+\begin_layout Standard
+Still, we believe that these results show the potential of our implementation,
+ and we think that they can be much improved by tuning our DI model even
+ further while using a bigger batch size during synthesis (both would require
+ better hardware, however).
 \end_layout
 
 \begin_layout Subsection
@@ -2346,6 +2429,21 @@ One could then ask why our results do not resemble those of Deep Dream,
 
 \begin_layout Section
 Conclusion
+\end_layout
+
+\begin_layout Standard
+In this project we have presented the first public implementation of DeepInversi
+on, a method which allows reconstructing high-quality class-conditional
+ images from a pretrained CNN using the hidden data stored in its batch
+ normalization layers.
+ 
+\end_layout
+
+\begin_layout Standard
+We believe that our results demonstrate the potential of the method for
+ purposes such as knowledge distillation, but have also concluded that in
+ order to unlock this full potential one would first have to further tune
+ the model - a very challenging and time demanding task.
 \end_layout
 
 \begin_layout Standard
