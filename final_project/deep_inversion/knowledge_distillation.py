@@ -29,7 +29,7 @@ def test_set_evaluation(test_dataset_loader, model):
     return test_loss, test_accuracy
 
 
-def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', epochs=250, batch_size=50, lr=0.1):
+def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', epochs=250, batch_size=32, lr=0.1):
     mean, std = MEANS['ImageNet'], STDS['ImageNet']
     train_preprocess = transforms.Compose(
         [transforms.ToTensor(),
@@ -44,13 +44,13 @@ def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', ep
     train_dataset_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_dataset_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
     # a randomly initialized ResNet50 R-CNN
-    model = models.resnet18()
+    model = models.resnet50()
     targets_count = len(train_dataset.classes)
     cnn_features = model.fc.in_features
     # replace the fc part of the model so it would fit the targets count of our synthesized dataset
-    model.fc = nn.Sequential(nn.Linear(cnn_features, 128, bias=True),
+    model.fc = nn.Sequential(nn.Linear(cnn_features, 512, bias=True),
                              nn.ReLU(inplace=True),
-                             nn.Linear(128, targets_count, bias=True))
+                             nn.Linear(512, targets_count, bias=True))
     model = model.to(device)
     optimizer = Adam(params=model.parameters(), lr=lr)
     scheduler = ReduceLROnPlateau(optimizer, factor=0.2, patience=7, threshold=1e-2, verbose=True, min_lr=1e-6)
