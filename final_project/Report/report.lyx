@@ -215,7 +215,7 @@ literal "false"
 \end_layout
 
 \begin_layout Standard
-Apart from the above method, which is class neutral, Deep Dream also proposes
+Apart from the above method, which is class neutral, Deep Dream proposes
  another method which allows enhancing an input image in a way which would
  elicit a 
 \series bold
@@ -332,7 +332,7 @@ Despite the contribution of the regularization term proposed by Deep Dream,
 \end_layout
 
 \begin_layout Standard
-The creators of DI proposed to solve this problem by introducing a new term
+The creators of DI propose to solve this problem by introducing a new term
  to the above optimization objective: a feature distribution regularization
  term called 
 \begin_inset Formula $\rfeature$
@@ -356,7 +356,7 @@ literal "false"
 \begin_layout Standard
 Apart from improving the visual quality of the reconstructed images, Yin
  et al.
- also manages to improve the diversity of the synthesized images by introducing
+ also manage to improve the diversity of the synthesized images by introducing
  Adaptive Deep Inversion (ADI).
  This improved method addes an additional 'student' model to the original
  pretrained 'teacher' model, and then tries to maximize the Jensen-Shannon
@@ -410,11 +410,11 @@ Deep Inversion
 \begin_layout Standard
 Recall that the purpose of Deep Inversion is to 'invert' images from a pretraine
 d CNN.
- Given a randomly initialized input (
+ Given a randomly initialized input 
 \begin_inset Formula $\hat{x}\in\mathbb{R}^{H\times W\times C}$
 \end_inset
 
-, 
+ (
 \begin_inset Formula $H,W,C$
 \end_inset
 
@@ -620,8 +620,8 @@ Yin et al.
  to contain both low and high level features that are similar to real training
  images.
  To effectively enforce feature similarities at all levels, the authors
- of DI propose to minimize the distance between the distribution of the
- feature maps of 
+ of DI propose to minimize the distance between the feature map statistics
+ of 
 \begin_inset Formula $\xhat$
 \end_inset
 
@@ -637,7 +637,7 @@ Yin et al.
 \end_layout
 
 \begin_layout Standard
-Assuming that feature statistics follow the Gaussian distribution across
+Assuming that the feature statistics follow a Gaussian distribution across
  batches (
 \begin_inset Formula $\sim\mathcal{N}(\mu,\sigma^{2}))$
 \end_inset
@@ -740,7 +740,7 @@ literal "false"
 
 \end_inset
 
-, BN layers are now widely adopted and can today be found in almost every
+ BN layers have become widely adopted and can today be found in almost every
  well performing classification model.
  This makes it possible to use Deep Inversion with almost any state of the
  art classification model which exists today.
@@ -849,9 +849,9 @@ Our empirical testing shows that neglecting to clip the images before each
  durining training outside of the legal range, and thus must be clipped
  at the end of the reconstruction process before the resulting images can
  be converted to PNG format.
- On the other hand, our hypothsis is that repeated clipping during the training
- process encourages these pixles again and again to converge to other legal
- values within the legal range.
+ Our hypothsis is that repeated clipping during the training process encourages
+ these pixles over and over again to converge to legal values within the
+ legal range.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -865,8 +865,9 @@ Before each forward pass each synthesized image is temporarily offset by
 \end_inset
 
  ImageNet-size images).
- These shifts introduce randomness into the gradient descent algorithm,
- which slow down convergence but also help produce 
+ Our hypothesis is that these shifts introduce randomness into the gradient
+ descent algorithm, which slows down convergence but also helps produce
+ 
 \begin_inset Quotes eld
 \end_inset
 
@@ -891,8 +892,8 @@ Before each forward pass each synthesized image is bound for a temporary
  should be able to detect objects in real images regardless of whether they
  are flipped or not.
  Thus, flipping the synthesized images between iterations helps instill
- this property in the synthesized images as well, and this would hopefully
- improve their quality.
+ this property in the synthesized images as well with the intention of improving
+ their quality.
 \end_layout
 
 \begin_layout Subsubsection
@@ -918,12 +919,12 @@ For
 \begin_inset Formula $224\times224$
 \end_inset
 
- ImageNet-sized images for example, this scheme begins by first optimizing
+ ImageNet-sized images for example, the scheme begins by first optimizing
  an input of 
 \begin_inset Formula $112\times112$
 \end_inset
 
- images for a few thousand iterations, then these images are upsampled to
+ images for a few thousand iterations, then the images are upsampled to
  
 \begin_inset Formula $224\times224$
 \end_inset
@@ -942,7 +943,7 @@ Automatic Mixed Precision (AMP)
 \begin_layout Standard
 To speed up the training process and reduce GPU memory consumption the authors
  of DI recommend training using half-precision floating point (FP16) via
- the Nvidia Apex library
+ the NVIDIA Apex library
 \begin_inset Foot
 status collapsed
 
@@ -1001,8 +1002,8 @@ literal "false"
 \end_inset
 
  for each weight is then learned using SGD.
- The random variables can be thought of as binary masks for the weights,
- and define the subnetwork.
+ These random variables can be thought of as binary masks for the weights,
+ and they effectively define the subnetwork.
  Masks corresponding to subnetworks that perform better than the original
  untrained network are referred to as 
 \begin_inset Quotes eld
@@ -1082,7 +1083,7 @@ literal "false"
 \begin_inset Formula $u$
 \end_inset
 
-, and increasing 
+, and increase 
 \begin_inset Formula $s_{uv}$
 \end_inset
 
@@ -1305,7 +1306,7 @@ github url
 \end_layout
 
 \begin_layout Standard
-Our implementation closely follows the description in paper, and borrows
+Our implementation closely follows the description in the paper, and borrows
  some details from Deep Dream.
  First, we created a class 
 \begin_inset listings
@@ -1337,7 +1338,7 @@ The regularization function
 
 \begin_layout Itemize
 Mean and variance of the dataset the model was originally trained on, used
- for normalizing input before pefore passing it through the model.
+ for normalizing the input before passing it through the model.
 \end_layout
 
 \begin_layout Standard
@@ -1388,7 +1389,17 @@ Optimizer class to use, along with it's hypterparameters (usually Adam with
 \begin_inset Formula $0.05$
 \end_inset
 
-)
+) 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+the method does not receive the optimizer in its current form
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Itemize
@@ -1407,7 +1418,17 @@ deepInvert
 
 \end_inset
 
- runs the following algorithm:
+ runs the following algorithm: 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Maybe add random flipping to the algorithm?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1561,8 +1582,8 @@ The regularization function is applied on the input, rather than on the
 
 \begin_layout Itemize
 We clip the input on each iteration.
- This was not described in the Deep Inversion paper, but instead appeared
- in Google's implementation of Deep Dream
+ As we mentioned earlier this method was originally used in Google's implementat
+ion of Deep Dream
 \begin_inset Foot
 status open
 
@@ -1607,8 +1628,8 @@ hooks
 \end_inset
 
  registers a hook function to all of the BatchNorm layers.
- This calls the hook function during the forward pass, i.e., every time before
- a BatchNorm layer's 
+ This way, the hook function is called during the forward pass, i.e., every
+ time before a BatchNorm layer's 
 \begin_inset listings
 inline true
 status open
@@ -1699,6 +1720,19 @@ forward
 \end_inset
 
  function of the regularization was invoked.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I think we should elaborate a bit more on the difference between the two
+ implementations for the hooks.
+ Why exactly is the second one better?
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1952,8 +1986,8 @@ Deep Inversion of Hidden Subnetworks
 Applying Deep Inversion on a Hidden Subnetwork proved to be a bit challenging.
  This is because the implementation of Hidden Subnetworks was designed to
  work solely using the command line, and heavily relied on global variables.
- Thus, trying to extract a pretrained subnetwork from their implementation
- required us to use hacky methods, such as modifying their global variables
+ Thus, trying to extract a pretrained subnetwork from the original implementatio
+n required us to use hacky methods, such as modifying their global variables
  within our code, and fooling their argument parser to receive arguments
  programatically (instead of through the command line).
 \end_layout
@@ -1988,8 +2022,8 @@ literal "false"
  Yin et al.
  conducted several experiments to test the method's ability to reconstruct
  images from models that were pretrained on the CIFAR-10 and ImageNet datasets.
- For ImageNet, the authors claim that they were able to synthesize good
- results using the publicly available ResNet-50 model from PyTorch.
+ For ImageNet, the authors claim that they were able to synthesize quality
+ images using the publicly available ResNet-50 model from PyTorch.
  They used an Adam optimizer 
 \begin_inset CommandInset citation
 LatexCommand cite
@@ -2036,14 +2070,17 @@ make a run with these parameters and show the bad results.
 These results indicate that DeepInversion is very sensitive to the hyper-paramet
 ers being used, and that even the slightest change in the way the method
  is implemented might affect these parameters.
- Unfortunately, since the official implementation of DeepInversion was not
- yet available at the time, we realized that we had to tune the method by
- ourselves.
+ This unfortunately made us realize that we had to tune our implementation
+ by ourselves, which later proved to be a 
+\bar under
+very
+\bar default
+ difficult and time-demanding task.
 \end_layout
 
 \begin_layout Standard
 To do so we implemented a grid-search algorithm which tests the method with
- multiple combinations of hyper-parameter values (for the parameters not
+ different combinations of hyper-parameter values (for the parameters not
  described above we used the values that were mentioned in the paper).
  Then, to evaluate the synthesized images from each combination we used
  the Inception Score 
@@ -2161,10 +2198,12 @@ Knowledge Distillation Using the Synthesized Images
 \end_layout
 
 \begin_layout Standard
-One of the obvious utilizations of DeepInversion is knowledge distillation.
- As shown in the paper, the method enables transferring knowledge from a
- pretrained teacher to a randomly initialized student CNN without needing
- the original dataset the teacher was trained on.
+One of the most intriguing utilizations of DeepInversion is knowledge distillati
+on.
+ Yin et al.
+ claims that the method enables transferring knowledge from a pretrained
+ teacher to a randomly initialized student CNN without needing the original
+ dataset the teacher was trained on.
 \end_layout
 
 \begin_layout Standard
@@ -2256,7 +2295,7 @@ Samples from applying Deep Inversion on a Hidden Subnetwork
 \end_layout
 
 \begin_layout Standard
-As we can see, the results resemble colored noise and are not distinguishable
+As shown above, the results resemble colored noise and are not distinguishable
  at all.
  We actually expected this experiment to fail due to one major reason: The
  hidden subnetworks extracted using the edge-popup algorithm do not contain
@@ -2272,9 +2311,9 @@ noprefix "false"
 \end_inset
 
 .
- We can see that regurlarization terms did have some effect on the output,
- for example, the Total Variation Regularzation caused nearby pixels to
- have similar color.
+ We can see however that the other regurlarization terms did have some effect
+ on the output, for example, the Total Variation regularization caused nearby
+ pixels to have similar color.
  
 \begin_inset Note Note
 status open
