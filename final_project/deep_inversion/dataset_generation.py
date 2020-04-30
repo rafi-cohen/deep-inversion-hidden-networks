@@ -1,6 +1,8 @@
 import os
+
 import numpy as np
 import torch
+
 from deep_invert import DeepInvert
 from parsing import parse_args
 

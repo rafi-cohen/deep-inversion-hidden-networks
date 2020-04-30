@@ -1,11 +1,7 @@
 import os
 
-import torch
-import torch.nn as nn
-from torchvision import transforms
-
 from deep_invert import DeepInvert
-from params import MODELS, LABELS
+from params import LABELS
 from parsing import parse_args
 
 

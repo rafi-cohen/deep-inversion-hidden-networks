@@ -1,10 +1,11 @@
+import random
+from math import inf
+
 import torch
 from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torchvision import transforms
-from math import inf
 from tqdm import tqdm
-import random
 
 from transforms import Denormalize
 

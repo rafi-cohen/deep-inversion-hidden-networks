@@ -1,10 +1,12 @@
-import torch
-from torchvision import datasets, transforms, models
-from torch.utils.data import DataLoader
-import torch.nn as nn
 import os
 from os import path
+
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms, models
 from tqdm import tqdm
+
 from params import MEANS, STDS
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

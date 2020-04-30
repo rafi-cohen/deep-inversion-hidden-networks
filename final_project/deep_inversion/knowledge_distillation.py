@@ -1,11 +1,13 @@
+from os import path
+
 import torch
-from torchvision import datasets, transforms, models
-from torch.utils.data import DataLoader
+import torch.nn as nn
 from torch.optim import Adam
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-import torch.nn as nn
-from os import path
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms, models
 from tqdm import tqdm
+
 from params import MEANS, STDS
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
