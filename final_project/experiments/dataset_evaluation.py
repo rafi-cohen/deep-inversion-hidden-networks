@@ -54,7 +54,7 @@ def evaluate_synthesized_dataset(dataset_path='dataset'):
 
 
 def main():
-    evaluate_synthesized_dataset(dataset_path='dataset')
+    evaluate_synthesized_dataset()
 
 
 if __name__ == '__main__':
