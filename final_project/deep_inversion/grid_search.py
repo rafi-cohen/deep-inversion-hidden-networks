@@ -59,8 +59,8 @@ def grid_search(grid):
             best_score = score
             best_configuration = configuration
 
-        print(f'Best score is {best_score}, with the configuration:')
-        pprint(best_configuration)
+    print(f'Best score is {best_score}, with the configuration:')
+    pprint(best_configuration)
 
 
 if __name__ == '__main__':
