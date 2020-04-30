@@ -144,6 +144,95 @@ Final Project Report
 Abstract
 \end_layout
 
+\begin_layout Standard
+In this project we present a full implementation for DeepInversion, a method
+ which allows reconstructing high-quality class-conditional images from
+ a pretrained CNN using the hidden data stored in its batch normalization
+ layers.
+ The method was first introduced by Yin et al.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Yin2019"
+literal "false"
+
+\end_inset
+
+ in December 2019, and no public implementation was available for it during
+ our time working on this project.
+ After attempting to tune the method (a very challenging and time-demanding
+ task), we demonstrate how our implementation is able to yield decent quality
+ images.
+ We also explore some of DeepInversion's usages, such as image synthesis
+ for knowledge distillation purposes.
+ Under our computational limitations, we synthesize a small dataset from
+ a 
+\begin_inset Quotes eld
+\end_inset
+
+teacher
+\begin_inset Quotes erd
+\end_inset
+
+ CNN pretrained on ImageNet and then use the synthesized images to train
+ a new 
+\begin_inset Quotes eld
+\end_inset
+
+student
+\begin_inset Quotes erd
+\end_inset
+
+ model from scratch.
+ We conclude, however, that in order to achieve good results one would have
+ to tune our implementation even further and synthesize a much larger training
+ set, but that would require more powerful hardware than what was available
+ to us.
+\end_layout
+
+\begin_layout Standard
+Finally, we take a look at the findings of Ramanujan et al.
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ramanujan2019"
+literal "false"
+
+\end_inset
+
+, who have recently introduced the edge-popup algorithm for finding well
+ performing subnetworks that are hidden within randomly initialized deep
+ networks.
+ Specifically, we take a well performing convolutional subnetwork that was
+ discovered using the edge-pop algorithm and attempt to see 
+\begin_inset Quotes eld
+\end_inset
+
+what
+\begin_inset Quotes erd
+\end_inset
+
+ it has learned by 
+\begin_inset Quotes eld
+\end_inset
+
+inverting
+\begin_inset Quotes erd
+\end_inset
+
+ it using DeepInversion.
+ Unfortunately, we conclude that since these subnetworks do not contain
+ the hidden data required for DeepInversion, 
+\begin_inset Quotes eld
+\end_inset
+
+inverting
+\begin_inset Quotes erd
+\end_inset
+
+ them does not lead to informative results.
+\end_layout
+
 \begin_layout Section
 Introduction
 \end_layout
