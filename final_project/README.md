@@ -114,3 +114,23 @@ cd src/experiments
 python subnet_inversion.py
 ```
 This will generate 50 images by applying DeepInversion on the pretrained hidden subnetwork.
+
+# Requirements
+```text
+absl-py==0.9.0
+grpcio==1.28.1
+Markdown==3.2.1
+numpy==1.18.1
+Pillow==6.2.2
+protobuf==3.11.3
+pytorch-lightning==0.7.1
+PyYAML==5.3.1
+scipy==1.3.2
+six==1.13.0
+tensorboard==2.2.1
+torch==1.3.0
+torchvision==0.4.1
+tqdm==4.41.1
+Werkzeug==1.0.1
+```
+[Apex](https://github.com/NVIDIA/apex) is supported, but is optional.
