@@ -234,7 +234,7 @@ particular interpretation
 \end_inset
 
  full of random noise, a target class 
-\begin_inset Formula $\tau$
+\begin_inset Formula $y$
 \end_inset
 
  and a pretrained classification network 
@@ -254,7 +254,7 @@ particular interpretation
 \end_inset
 
  considers as 
-\begin_inset Formula $\tau$
+\begin_inset Formula $y$
 \end_inset
 
 .
@@ -278,8 +278,8 @@ where
 \begin_inset Formula $\mathcal{L}\left(\cdot\right)$
 \end_inset
 
- is a classification loss such as the standard softmax cross-entropy, and
- 
+ is a classification loss (e.g.
+ standard softmax cross-entropy), and 
 \begin_inset Formula $\mathcal{R}\left(\cdot\right)$
 \end_inset
 
@@ -293,10 +293,10 @@ where
 \begin_layout Standard
 In order to steer the generated images away from unrealistic images that
  are classified as 
-\begin_inset Formula $\tau$
+\begin_inset Formula $y$
 \end_inset
 
- but posses no dicernible visual information, Deep Dream proposes to add
+ but posses no discernible visual information, Deep Dream proposes to add
  an image prior term 
 \begin_inset Formula $\rprior$
 \end_inset
@@ -365,7 +365,7 @@ Apart from improving the visual quality of the reconstructed images, Yin
  et al.
  also manage to improve the diversity of the synthesized images by introducing
  Adaptive Deep Inversion (ADI).
- This improved method addes an additional 'student' model to the original
+ This improved method adds an additional 'student' model to the original
  pretrained 'teacher' model, and then tries to maximize the Jensen-Shannon
  divergence between the logits of the two models to enforce exploring new
  synthesis directions.
@@ -394,16 +394,36 @@ literal "false"
  propose an interesting take on learning.
  They show that large networks which are initialized randomly using a properly
  scaled distribution (e.g.
- Kaiming) often contain smaller subnetworks that perform quite well.
+ Kaiming 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+reference
+\end_layout
+
+\end_inset
+
+) often contain smaller subnetworks that perform quite well.
  Not only that, but they also suggest the edge-popup algorithm - an algorithm
  that attempts to find such subnetworks by assigning scores to the edges
  (weights) of the network, and choosing the edges with the best scores in
  each layer.
  The algorithm learns the scores without ever modifying the weights of the
  network.
- In their experiments, they were able to find a subnetwork of a randmoly
- initialized Wide ResNet-50 network that is only 30% of its size, and performs
- as well as a trained ResNet-34.
+ In their experiments, they were able to find a subnetwork of a randomly
+ initialized Wide ResNet-50 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+reference
+\end_layout
+
+\end_inset
+
+ network that is only 30% of its size, and performs as well as a trained
+ ResNet-34.
 \end_layout
 
 \begin_layout Section
@@ -587,7 +607,7 @@ literal "false"
 
 \begin_layout Standard
 Note that the magnitude of the above two regularization terms (as they are
- described in the paper) grows linearily with the batch size, which makes
+ described in the paper) grows linearly with the batch size, which makes
  it impossible to run hyper-parameter tuning algorithms with different batch
  sizes.
  Thus, in order to make these terms batch-size independent we decided to
@@ -678,10 +698,10 @@ where
 
  are the batch-wise mean and variance estimates of feature maps corresponding
  to the 
-\begin_inset Formula $l_{th}$
+\begin_inset Formula $l$
 \end_inset
 
- convolutional layer of 
+-th convolutional layer of 
 \begin_inset Formula $\mathcal{N}$
 \end_inset
 
@@ -747,7 +767,7 @@ literal "false"
 
 \end_inset
 
- BN layers have become widely adopted and can today be found in almost every
+ BN layers have become widely adopted and can be found today in almost every
  well performing classification model.
  This makes it possible to use Deep Inversion with almost any state of the
  art classification model which exists today.
@@ -853,11 +873,11 @@ Our empirical testing shows that neglecting to clip the images before each
  forward pass during the training process results in many dark/bright zones
  in the produced images.
  This happens since without repeated clipping many of the pixels diverge
- durining training outside of the legal range, and thus must be clipped
- at the end of the reconstruction process before the resulting images can
- be converted to PNG format.
- Our hypothsis is that repeated clipping during the training process encourages
- these pixles over and over again to converge to legal values within the
+ during training outside of the legal range, and thus must be clipped at
+ the end of the reconstruction process before the resulting images can be
+ converted to PNG format.
+ Our hypothesis is that repeated clipping during the training process encourages
+ these pixels over and over again to converge to legal values within the
  legal range.
 \end_layout
 
@@ -867,11 +887,15 @@ Random Jitter
 
 \begin_layout Standard
 Before each forward pass each synthesized image is temporarily offset by
- a random jitter of up to 30 pixels (for 
-\begin_inset Formula $224\times224$
+ a random jitter of up to 
+\begin_inset Formula $j$
 \end_inset
 
- ImageNet-size images).
+ pixels (where 
+\begin_inset Formula $j$
+\end_inset
+
+ is a hyper-parameter).
  Our hypothesis is that these shifts introduce randomness into the gradient
  descent algorithm, which slows down convergence but also helps produce
  
@@ -891,7 +915,15 @@ Random Flipping
 
 \begin_layout Standard
 Before each forward pass each synthesized image is bound for a temporary
- horizontal flip at a probability of 0.5.
+ horizontal flip at a probability of 
+\begin_inset Formula $p_{f}$
+\end_inset
+
+ (where 
+\begin_inset Formula $p_{f}$
+\end_inset
+
+ is a hyper-parameter).
  The logic behind these flips is that the pretrained network 
 \begin_inset Formula $\mathcal{N}$
 \end_inset
@@ -940,7 +972,7 @@ For
  extra thousand iterations.
  Overall this whole process requires significantly less iterations compared
  with the original method, and most of these iterations are also faster
- since they are required to optimize much smaller images.
+ since they optimize much smaller images.
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1080,7 +1112,7 @@ literal "false"
 \begin_inset Formula $v$
 \end_inset
 
-.
+ in the network.
  The idea is to perform backpropagation on the loss function, look at the
  gradients of 
 \begin_inset Formula $v$
@@ -1271,7 +1303,7 @@ literal "false"
 \end_inset
 
  was proposed.
- This estimator basically skips 
+ This estimator simply skips 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1283,7 +1315,8 @@ straight through
 \begin_inset Formula $h$
 \end_inset
 
- in the backwards pass, by ignoring its gradient and treating it as an identity.
+ in the backwards pass, by ignoring its gradient and treating it as an identity
+ operator.
 \end_layout
 
 \begin_layout Section
@@ -1295,10 +1328,12 @@ Deep Inversion
 \end_layout
 
 \begin_layout Standard
-As of today, 04/13/20, there is no implementation of Deep Inversion publicly
- available, be it official or otherwise.
- In this project, we are offering the first public implementation of Deep
- Inversion.
+First, we would like to emphasize that while we were working on this project,
+ no implementation of Deep Inversion was publicly available, be it official
+ or otherwise.
+ Thus, even though our implementation tries to follow the description in
+ the paper as closely as possible, we borrowed some details from Deep Dream
+ and used our own judgement whenever something was vaguely described.
  Code can be found at:
 \begin_inset Note Note
 status open
@@ -1309,13 +1344,11 @@ github url
 
 \end_inset
 
- .
+.
 \end_layout
 
 \begin_layout Standard
-Our implementation closely follows the description in the paper, and borrows
- some details from Deep Dream.
- First, we created a class 
+First, we created a class 
 \begin_inset listings
 inline true
 status open
@@ -1345,7 +1378,7 @@ The regularization function
 
 \begin_layout Itemize
 Mean and variance of the dataset the model was originally trained on, used
- for normalizing the input before passing it through the model.
+ for normalizing and clipping the input before passing it through the model.
 \end_layout
 
 \begin_layout Standard
@@ -1387,30 +1420,19 @@ Number of iterations to apply Deep Inversion
 \end_layout
 
 \begin_layout Itemize
-Target labels to synthesise
+Target labels to synthesize
 \end_layout
 
 \begin_layout Itemize
-Optimizer class to use, along with it's hypterparameters (usually Adam with
- a learning rate of 
-\begin_inset Formula $0.05$
-\end_inset
-
-) 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-the method does not receive the optimizer in its current form
-\end_layout
-
-\end_inset
-
-
+Hyper-parameters for the Adam optimizer
 \end_layout
 
 \begin_layout Itemize
 Amount of jitter to use (defaults to 0)
+\end_layout
+
+\begin_layout Itemize
+Probability of random flipping
 \end_layout
 
 \begin_layout Standard
@@ -1426,16 +1448,6 @@ deepInvert
 \end_inset
 
  runs the following algorithm: 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Maybe add random flipping to the algorithm?
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -1443,10 +1455,6 @@ Maybe add random flipping to the algorithm?
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Caption Standard
@@ -1483,7 +1491,7 @@ input = preprocess(batch)
 \end_layout
 
 \begin_layout LyX-Code
-optimizer = optimizer_class(params=[input],
+optimizer = Adam(params=[input],
 \end_layout
 
 \begin_layout LyX-Code
@@ -1501,7 +1509,7 @@ for
 
 \begin_deeper
 \begin_layout LyX-Code
-apply_jitter(input, jitter)
+apply_jitter_and_flip(input, jitter, flip)
 \end_layout
 
 \begin_layout LyX-Code
@@ -1531,7 +1539,7 @@ clip(input)
 \end_layout
 
 \begin_layout LyX-Code
-unjitter(input, jitter)
+unjitter_and_unflip(input, jitter, flip)
 \end_layout
 
 \end_deeper
@@ -1662,7 +1670,7 @@ https://pytorch.org/docs/stable/nn.html#torch.nn.Module.register_forward_pre_hoo
 \end_layout
 
 \begin_layout Standard
-Initialy, our hook function computed the batch-wise mean and variance of
+Initially, our hook function computed the batch-wise mean and variance of
  feature maps corresponding to the current layer, 
 \begin_inset Formula $\mu_{l}\left(\hat{x}\right),\sigma_{l}^{2}\left(\hat{x}\right)$
 \end_inset
@@ -1728,18 +1736,6 @@ forward
 
  function of the regularization was invoked.
  
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-I think we should elaborate a bit more on the difference between the two
- implementations for the hooks.
- Why exactly is the second one better?
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
@@ -1748,9 +1744,19 @@ Argument Parser
 
 \begin_layout Standard
 To allow easy execution of experiments, we implemented an argument parser
- that allows running different configurations of Deep Inversion both programatic
-ally and through the command line.
- The parser is rich in options, as can be seen by its help message:
+ that allows running different configurations of Deep Inversion both programmati
+cally and through the command line.
+ The parser is rich in options, as can be seen by its help message: 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+fix the margins of this section
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1996,7 +2002,7 @@ Applying Deep Inversion on a Hidden Subnetwork proved to be a bit challenging.
  Thus, trying to extract a pretrained subnetwork from the original implementatio
 n required us to use hacky methods, such as modifying their global variables
  within our code, and fooling their argument parser to receive arguments
- programatically (instead of through the command line).
+ programmatically (instead of through the command line).
 \end_layout
 
 \begin_layout Standard
@@ -2024,7 +2030,7 @@ name "subsec:Hyper-Parameter-Tuning-for"
 
 \begin_layout Standard
 After completing the implementation of DeepInversion we moved on to test
- the method with the hyper-paremeters mentioned in 
+ the method with the hyper-parameters mentioned in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Yin2019"
@@ -2050,7 +2056,7 @@ literal "false"
 \begin_inset Formula $0.05$
 \end_inset
 
- and the following hyper-parameters:
+, and the following hyper-parameters:
 \end_layout
 
 \begin_layout Standard
@@ -2119,21 +2125,21 @@ After running the grid-search algorithm for several days and testing a decent
 \begin_layout Standard
 It should be noted, however, that the computational limitations imposed
  on us by the faculty's server (a single shared NVIDIA Titan X 12GB) did
- not allow us to match the batch size that were used in the experiments
- in the paper, or to run the grid-search algorithm as extensively as we
- would have liked.
+ not allow us to match the batch size that was used in the experiments in
+ the paper, or to run the grid-search algorithm as extensively as we would
+ have liked.
  
 \end_layout
 
 \begin_layout Standard
-While the authors of DeepInverison used a batch size of 
+While the authors of DeepInversion used a batch size of 
 \begin_inset Formula $1,216$
 \end_inset
 
  using 8 NVIDIA V100 GPUs, our GPU's memory constraints limited us to test
  the method with a batch size of only 60-80 (or slightly more using AMP).
  We hypothesize that using a larger batch size might lead to better results,
- since a bigger batch would be able to better fit to the distrubtion imposed
+ since a bigger batch would be able to better fit to the distribution imposed
  by 
 \begin_inset Formula $\rfeature$
 \end_inset
@@ -2154,7 +2160,7 @@ highly non-convex
 s, makes us believe that a significantly better set of hyper-parameters
  can be found for our implementation.
  However, that would require running the tuning algorithm on a grid with
- a much finer paramerter resolution, and that could unfortunately take weeks
+ a much finer parameter resolution, and that could unfortunately take weeks
  using our limited hardware.
 \end_layout
 
@@ -2183,7 +2189,8 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Samples from applying Deep Inversion on ResNet-50 pretrained on ImageNet
+Labeled samples from applying Deep Inversion on ResNet-50 pretrained on
+ ImageNet
 \end_layout
 
 \end_inset
@@ -2198,8 +2205,8 @@ Samples from applying Deep Inversion on ResNet-50 pretrained on ImageNet
 
 \begin_layout Standard
 We would like to emphasize, however, that not all of the images synthesized
- using our implementation with the above hyper-parameter turned out to be
- of high quality.
+ using our implementation with the above hyper-parameters turned out to
+ be of high quality.
  We state again that further tuning is still required to obtain stable high-qual
 ity batches.
  
@@ -2223,7 +2230,7 @@ ed using our implementation of DeepInversion.
 
 \begin_layout Standard
 We hand-picked 10 categories from ImageNet, and for each category we synthesized
- 500 images using our implemention with a pretrained ResNet-50.
+ 500 images using our implementation with a pretrained ResNet-50.
 \end_layout
 
 \begin_layout Standard
@@ -2313,12 +2320,12 @@ noprefix "false"
 \end_layout
 
 \begin_layout Standard
-Testing the above student model on the test test validated our suspicions,
+Testing the above student model on the test set validated our suspicions,
  as it was only able to achieve 
 \begin_inset Formula $38.8\%/62.4\%$
 \end_inset
 
- top-1/top-3 accuracy respectively on the test set.
+ top-1/top-3 accuracy respectively on the set.
 \end_layout
 
 \begin_layout Standard
@@ -2334,8 +2341,8 @@ Deep Inversion of Hidden Subnetworks
 
 \begin_layout Standard
 After experimenting on our implementation of Deep Inversion, we finally
- got to run it on a well performing subnetwork that was extracted using
- the edge-popup algorithm 
+ got to run it on a well performing subnetwork of a randomly initialized
+ ResNet-50 that was extracted using the edge-popup algorithm 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Ramanujan2019"
@@ -2366,7 +2373,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Samples from applying Deep Inversion on a Hidden Subnetwork
+Labeled samples from applying Deep Inversion on a Hidden Subnetwork
 \end_layout
 
 \end_inset
@@ -2388,7 +2395,7 @@ As shown above, the results resemble colored noise and are not distinguishable
  at all.
  We actually expected this experiment to fail due to one major reason: The
  hidden subnetworks extracted using the edge-popup algorithm do not contain
- the BatchNorm statistics mention in the Feature Regularization in section
+ the BatchNorm statistics mentioned in the Feature Regularization in section
  
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -2400,37 +2407,42 @@ noprefix "false"
 \end_inset
 
 .
- We can see however that the other regurlarization terms did have some effect
+ We can see however that the other regularization terms did have some effect
  on the output, for example, the Total Variation regularization caused nearby
  pixels to have similar color.
  
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Not sure if to include the following
 \end_layout
 
-\end_inset
-
-
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
+\begin_layout Standard
 One could then ask why our results do not resemble those of Deep Dream,
- then? The reason for that is that the loss function used in Deep Dream
- is usually the raw output of some layer (or the class scores, in case of
- the last layers).
- In Deep Inversion, the loss function is the Cross Entropy loss function.
- We believe that what happened here is that instead of maximizing the probabilty
- that the image will have a specific label, it instead minimized the probability
- of it being any other of the 1000 labels.
-\end_layout
+ then? We believe the reason for that is that while the loss function used
+ in Deep Dream is usually the raw output of some layer (or the class scores,
+ in case of the last layer), In Deep Inversion on the other hand the loss
+ function is the Cross Entropy loss.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Simonyan2014"
+literal "false"
 
 \end_inset
 
+ it is claimed that on top of maximizing the probability that the image
+ will belong to a specific label, using the Cross Entropy loss 
+\bar under
+also
+\bar default
+ tries to minimize the probability of it belonging to any of the other labels,
+ which could potentially insert unwanted noise into the image.
+ Furthermore, we believe that using Deep Inversion without 
+\begin_inset Formula $\rfeature$
+\end_inset
 
+ (which is effectively the case here) would require re-tuning the rest of
+ the hyper-parameters in order to maximize the quality of the synthesized
+ images.
+ However, both suggestions (changing the loss function and re-tuning the
+ hyper-parameters) are outside the scope of the project.
 \end_layout
 
 \begin_layout Section
