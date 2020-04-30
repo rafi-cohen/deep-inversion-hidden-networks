@@ -4,7 +4,7 @@ import torch
 from deep_invert import DeepInvert
 from parsing import parse_args
 
-DATASET_SIZE = 10000
+DATASET_SIZE = 5000
 PARAMS = dict(a_f=1e-2,
               a_tv=8e-3,
               a_l2=1e-5,
@@ -12,8 +12,7 @@ PARAMS = dict(a_f=1e-2,
               flip=0.5,
               lr=0.2,
               reg_fn='DI',
-              targets=[294, 1, 933, 980, 63, 92, 107, 985, 207, 270, 277, 283, 360, 968, 440,
-                       417, 590, 762, 920, 574],
+              targets=[1, 92, 107, 207, 270, 277, 294, 440, 920, 933],
               batch_size=100,
               iterations=20000,
               early_stopping=12,
