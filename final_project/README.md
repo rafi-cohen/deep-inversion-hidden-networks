@@ -15,7 +15,7 @@ src/
 │                          Taken from https://github.com/sbarratt/inception-score-pytorch
 ├── hidden_networks/ - PyTorch implementation of the edge-popup algorithm (Ramanujan et al., 2019)
 │                      Taken from https://github.com/allenai/hidden-networks
-└── Experiments/ - Experiment scripts
+└── experiments/ - Experiment scripts
     ├── grid_search.py - Hyper-parameter tuning for DeepInversion
     ├── dataset_generation.py - Invert 5000 images (from 10 classes) from a ResNet-50 pretrained on ImageNet
     ├── dataset_evaluation.py - Calculate top-1/top-5 accuracy on the above generated dataset using a pretrained ResNet-152
@@ -40,7 +40,7 @@ Use `python main.py --help` to see the various options in our implementation
 ## To run the grid search
 Running the grid search used for the hyper-parameter tuning is as simple as:
 ```shell script
-cd src/deep_inversion
+cd src/experiments
 python grid_search.py
 ```
 This script will run all possible configurations according to a pre-defined grid,
@@ -52,7 +52,7 @@ To use a different grid, simply modify the `GRID` variable within the script.
 ## To synthesize a dataset of specific labels
 The script for this experiment is located at `src/deep_inversion/dataset_generation.py`. Again, to run use:
 ```shell script
-cd src/deep_inversion
+cd src/experiments
 python dataset_generation.py
 ```
 This script generates a dataset of 5000 images consisting of 10 different classes,
@@ -67,8 +67,8 @@ our results [here](https://drive.google.com/open?id=1-6vmNG2DAukQVvYETdRgs0tXIRN
 Place this folder in `src/deep_inversion`, i.e., the structure should look like
 ```text
 src/
-└── deep_inversion/
-    ├── knowledge_distillation.py
+└── experiments/
+    ├── dataset_evaluation.py
     ⋮
     └── dataset/
         ├── label1/
@@ -78,7 +78,7 @@ src/
 ```
 Then, run as usual:
 ```shell script
-cd src/deep_inversion
+cd src/experiments
 python dataset_evaluation.py
 ```
 This script will output the top-1/top-5 accuracy of a pretrained ResNet-152 on the dataset
@@ -90,7 +90,7 @@ test dataset, and is available [here](https://drive.google.com/open?id=1ZPhalD29
 It should be located alongside the `dataset` folder.
 To run:
 ```shell script
-cd src/deep_inversion
+cd src/experiments
 python knowledge_distillation.py
 ```
 This will train a ResNet-50 from scratch using our synthesized dataset, and will output for each epoch:
@@ -110,6 +110,7 @@ https://prior-pretrained-models.s3-us-west-2.amazonaws.com/hidden-networks/resne
 The file should be placed at `src/hidden_networks/checkpoints/resnet50_usc_unsigned.pth`
 Then, run the experiment by:
 ```shell script
+cd src/experiments
 python subnet_inversion.py
 ```
 This will generate 50 images by applying DeepInversion on the pretrained hidden subnetwork.
