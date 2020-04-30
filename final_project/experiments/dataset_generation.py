@@ -1,11 +1,14 @@
 import imghdr
 import os
+import sys
 
 import numpy as np
 import torch
 
-from deep_invert import DeepInvert
-from parsing import parse_args
+sys.path.extend(['..', '../deep_inversion'])
+
+from deep_inversion.deep_invert import DeepInvert
+from deep_inversion.parsing import parse_args
 
 DATASET_SIZE = 5000
 PARAMS = dict(a_f=1e-2,
