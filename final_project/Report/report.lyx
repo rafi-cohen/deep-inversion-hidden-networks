@@ -31,7 +31,16 @@
 \float_placement H
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry true
 \use_package amsmath 1
@@ -489,12 +498,10 @@ literal "false"
  They show that large networks which are initialized randomly using a properly
  scaled distribution (e.g.
  Kaiming 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-reference
-\end_layout
+\begin_inset CommandInset citation
+LatexCommand cite
+key "He2015"
+literal "false"
 
 \end_inset
 
@@ -507,12 +514,10 @@ reference
  network.
  In their experiments, they were able to find a subnetwork of a randomly
  initialized Wide ResNet-50 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-reference
-\end_layout
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Zagoruyko2016"
+literal "false"
 
 \end_inset
 
@@ -1428,17 +1433,6 @@ First, we would like to emphasize that while we were working on this project,
  Thus, even though our implementation tries to follow the description in
  the paper as closely as possible, we borrowed some details from Deep Dream
  and used our own judgment whenever something was vaguely described.
- Code can be found at:
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-github url
-\end_layout
-
-\end_inset
-
-.
 \end_layout
 
 \begin_layout Standard
@@ -1840,17 +1834,7 @@ Argument Parser
 To allow easy execution of experiments, we implemented an argument parser
  that allows running different configurations of DeepInversion both programmatic
 ally and through the command line.
- The parser is rich in options, as can be seen by its help message: 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-fix the margins of this section
-\end_layout
-
-\end_inset
-
-
+ The parser is rich in options, as can be seen by its help message:
 \end_layout
 
 \begin_layout Standard
