@@ -1,9 +1,9 @@
-[submodule "final_project/deep-inversion/cifar10_models"]
-	path = final_project/deep_inversion/cifar10_models
-	url = https://github.com/huyvnphan/PyTorch-CIFAR10
-[submodule "final_project/deep-inversion/inception_score"]
-	path = final_project/deep_inversion/inception_score
-	url = https://github.com/sbarratt/inception-score-pytorch
 [submodule "final_project/hidden_networks"]
 	path = final_project/hidden_networks
-	url = https://github.com/RafiTechnion/hidden-networks
+	url = https://github.com/allenai/hidden-networks
+[submodule "final_project/deep_inversion/cifar10_models"]
+	path = final_project/deep_inversion/cifar10_models
+	url = https://github.com/huyvnphan/PyTorch_CIFAR10
+[submodule "final_project/deep_inversion/inception_score"]
+	path = final_project/deep_inversion/inception_score
+	url = https://github.com/sbarratt/inception-score-pytorch
