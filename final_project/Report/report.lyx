@@ -1427,7 +1427,7 @@ First, we would like to emphasize that while we were working on this project,
  or otherwise.
  Thus, even though our implementation tries to follow the description in
  the paper as closely as possible, we borrowed some details from Deep Dream
- and used our own judgement whenever something was vaguely described.
+ and used our own judgment whenever something was vaguely described.
  Code can be found at:
 \begin_inset Note Note
 status open
@@ -1589,7 +1589,7 @@ optimizer = Adam(params=[input],
 \end_layout
 
 \begin_layout LyX-Code
-                            optimizer_hyperparameters)
+                 optimizer_hyperparameters)
 \end_layout
 
 \begin_layout LyX-Code
@@ -1838,8 +1838,8 @@ Argument Parser
 
 \begin_layout Standard
 To allow easy execution of experiments, we implemented an argument parser
- that allows running different configurations of Deep Inversion both programmati
-cally and through the command line.
+ that allows running different configurations of DeepInversion both programmatic
+ally and through the command line.
  The parser is rich in options, as can be seen by its help message: 
 \begin_inset Note Note
 status open
@@ -2424,8 +2424,8 @@ Testing the above student model on the test set validated our suspicions,
 \begin_layout Standard
 Still, we believe that these results show the potential of our implementation,
  and we think that they can be much improved by tuning our DI model even
- further while using a bigger batch size during synthesis (both would require
- better hardware, however).
+ further, synthesizing a larger training set and using a larger batch size
+ during synthesis (all three would require better hardware, however).
 \end_layout
 
 \begin_layout Subsection
@@ -2455,7 +2455,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Experiments/DI + HiddenSubnets.png
-	scale 50
+	scale 40
 
 \end_inset
 
