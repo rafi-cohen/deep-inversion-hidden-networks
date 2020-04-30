@@ -12,22 +12,6 @@ from params import MEANS, STDS
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def rearrange_images_in_subfolders(dataset_dir):
-    """
-    Sorts images in a dataset folder into class-specific sub-folders (as required by torch.datasets.ImageFolder).
-    Expected image filename format: 'batch_i_image_j_label_k.png'
-    :param dataset_dir: the dataset's folder path
-    """
-    for image_filename in os.listdir(dataset_dir):
-        image_label = image_filename.replace('_', '.').split('.')[5]
-        label_dir_path = path.join(dataset_dir, image_label)
-        if not path.isdir(label_dir_path):
-            os.mkdir(label_dir_path)
-        original_image_path = path.join(dataset_dir, image_filename)
-        new_image_path = path.join(label_dir_path, image_filename)
-        os.replace(original_image_path, new_image_path)
-
-
 def get_top_k_results(probabilities, targets, k):
     # get the top-k predictions for each image
     top_k_classes = torch.topk(probabilities, k=k).indices
@@ -68,7 +52,6 @@ def evaluate_synthesized_dataset(dataset_path='dataset'):
 
 
 def main():
-    # rearrange_images_in_subfolders('dataset')
     evaluate_synthesized_dataset(dataset_path='dataset')
 
 

@@ -1,3 +1,4 @@
+import imghdr
 import os
 
 import numpy as np
@@ -22,7 +23,29 @@ PARAMS = dict(a_f=1e-2,
               dataset='ImageNet',
               model_name='ResNet50',
               amp_mode='O2',
-              output_dir='generated')
+              output_dir='dataset')
+
+
+def is_image(filename):
+    return imghdr.what(filename) is not None
+
+
+def rearrange_images_in_subfolders(dataset_dir):
+    """
+    Sorts images in a dataset folder into class-specific sub-folders (as required by torch.datasets.ImageFolder).
+    Expected image filename format: 'batch_i_image_j_label_k.png'
+    :param dataset_dir: the dataset's folder path
+    """
+    for image_filename in os.listdir(dataset_dir):
+        if not is_image(image_filename):
+            continue
+        image_label = image_filename.replace('_', '.').split('.')[5]
+        label_dir_path = os.path.join(dataset_dir, image_label)
+        if not os.path.isdir(label_dir_path):
+            os.mkdir(label_dir_path)
+        original_image_path = os.path.join(dataset_dir, image_filename)
+        new_image_path = os.path.join(label_dir_path, image_filename)
+        os.replace(original_image_path, new_image_path)
 
 
 def generate_dataset(params):
@@ -44,5 +67,10 @@ def generate_dataset(params):
             image.save(os.path.join(args.output_dir, f'batch_{i}_image_{j}_label_{label}.png'))
 
 
-if __name__ == '__main__':
+def main():
     generate_dataset(PARAMS)
+    rearrange_images_in_subfolders(PARAMS['output_dir'])
+
+
+if __name__ == '__main__':
+    main()
