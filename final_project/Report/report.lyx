@@ -315,11 +315,11 @@ In order to steer the generated images away from unrealistic images that
 \end_layout
 
 \begin_layout Subsection
-Deep Inversion
+DeepInversion
 \end_layout
 
 \begin_layout Standard
-Following in Deep Dreams's footsteps, Deep Inversion 
+Following in Deep Dreams's footsteps, DeepInversion 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Yin2019"
@@ -364,7 +364,7 @@ literal "false"
 Apart from improving the visual quality of the reconstructed images, Yin
  et al.
  also manage to improve the diversity of the synthesized images by introducing
- Adaptive Deep Inversion (ADI).
+ Adaptive DeepInversion (ADI).
  This improved method adds an additional 'student' model to the original
  pretrained 'teacher' model, and then tries to maximize the Jensen-Shannon
  divergence between the logits of the two models to enforce exploring new
@@ -431,12 +431,12 @@ Methods
 \end_layout
 
 \begin_layout Subsection
-Deep Inversion
+DeepInversion
 \end_layout
 
 \begin_layout Standard
-Recall that the purpose of Deep Inversion is to 'invert' images from a pretraine
-d CNN.
+Recall that the purpose of DeepInversion is to 'invert' images from a pretrained
+ CNN.
  Given a randomly initialized input 
 \begin_inset Formula $\hat{x}\in\mathbb{R}^{H\times W\times C}$
 \end_inset
@@ -627,7 +627,7 @@ Feature Regularization
 \end_layout
 
 \begin_layout Standard
-The main advancement proposed by Deep Inversion (when compared with Deep
+The main advancement proposed by DeepInversion (when compared with Deep
  Dream) is the introduction of a new feature regularization term denoted
  as 
 \begin_inset Formula $\rfeature$
@@ -769,7 +769,7 @@ literal "false"
 
  BN layers have become widely adopted and can be found today in almost every
  well performing classification model.
- This makes it possible to use Deep Inversion with almost any state of the
+ This makes it possible to use DeepInversion with almost any state of the
  art classification model which exists today.
 \end_layout
 
@@ -813,8 +813,8 @@ Image Refinement Techniques
 \end_layout
 
 \begin_layout Standard
-Deep Inversion incorporates two techniques that were first used in Deep
- Dream to improve the quality of the reconstructed images:
+DeepInversion incorporates two techniques that were first used in Deep Dream
+ to improve the quality of the reconstructed images:
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1324,12 +1324,12 @@ Implementation
 \end_layout
 
 \begin_layout Subsection
-Deep Inversion
+DeepInversion
 \end_layout
 
 \begin_layout Standard
 First, we would like to emphasize that while we were working on this project,
- no implementation of Deep Inversion was publicly available, be it official
+ no implementation of DeepInversion was publicly available, be it official
  or otherwise.
  Thus, even though our implementation tries to follow the description in
  the paper as closely as possible, we borrowed some details from Deep Dream
@@ -1360,7 +1360,7 @@ DeepInvert
 
 \end_inset
 
- that holds the relevant information for the Deep Inversion environment.
+ that holds the relevant information for the DeepInversion environment.
  That is:
 \end_layout
 
@@ -1407,7 +1407,7 @@ deepInvert
 \end_inset
 
 .
- This method applies the Deep Inversion algorithm.
+ This method applies the DeepInversion algorithm.
  It receives:
 \end_layout
 
@@ -1416,7 +1416,7 @@ A batch of images (usually random Gaussian noise)
 \end_layout
 
 \begin_layout Itemize
-Number of iterations to apply Deep Inversion
+Number of iterations to apply DeepInversion
 \end_layout
 
 \begin_layout Itemize
@@ -1613,7 +1613,7 @@ https://github.com/google/deepdream
 
 \begin_layout Standard
 Our implementation of course supports the use of CUDA, as well as the use
- of Automatic Mixed Precision as described in the original Deep Inversion
+ of Automatic Mixed Precision as described in the original DeepInversion
  paper.
 \end_layout
 
@@ -1622,7 +1622,7 @@ Feature Regularization
 \end_layout
 
 \begin_layout Standard
-Perhaps the most important part of Deep Inversion, and the major contribution
+Perhaps the most important part of DeepInversion, and the major contribution
  of the paper, is the 
 \begin_inset Formula $\rfeature$
 \end_inset
@@ -1802,7 +1802,7 @@ usage: main.py [-h] [--iterations I] [--early-stopping ES] [--batch-size
 
 \begin_layout Plain Layout
 
-Deep Inversion
+DeepInversion
 \end_layout
 
 \begin_layout Plain Layout
@@ -1821,7 +1821,7 @@ optional arguments:
 
 \begin_layout Plain Layout
 
-  --iterations I        number of epochs to run Deep Inversion for (default:
+  --iterations I        number of epochs to run DeepInversion for (default:
 \end_layout
 
 \begin_layout Plain Layout
@@ -1992,11 +1992,11 @@ pretrained
 \end_layout
 
 \begin_layout Subsection
-Deep Inversion of Hidden Subnetworks
+DeepInversion of Hidden Subnetworks
 \end_layout
 
 \begin_layout Standard
-Applying Deep Inversion on a Hidden Subnetwork proved to be a bit challenging.
+Applying DeepInversion on a Hidden Subnetwork proved to be a bit challenging.
  This is because the implementation of Hidden Subnetworks was designed to
  work solely using the command line, and heavily relied on global variables.
  Thus, trying to extract a pretrained subnetwork from the original implementatio
@@ -2006,10 +2006,10 @@ n required us to use hacky methods, such as modifying their global variables
 \end_layout
 
 \begin_layout Standard
-Once we managed to extract a pretrained subnetwork, applying Deep Inversion
+Once we managed to extract a pretrained subnetwork, applying DeepInversion
  on it was pretty straight forward.
- We just set the model used by Deep Inversion to be the subnetwork, and
- then executed it as usual.
+ We just set the model used by DeepInversion to be the subnetwork, and then
+ executed it as usual.
  The modularity of our implementation is what allowed this simplicity.
 \end_layout
 
@@ -2189,8 +2189,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Labeled samples from applying Deep Inversion on ResNet-50 pretrained on
- ImageNet
+Labeled samples from applying DeepInversion on ResNet-50 pretrained on ImageNet
 \end_layout
 
 \end_inset
@@ -2336,13 +2335,13 @@ Still, we believe that these results show the potential of our implementation,
 \end_layout
 
 \begin_layout Subsection
-Deep Inversion of Hidden Subnetworks
+DeepInversion of Hidden Subnetworks
 \end_layout
 
 \begin_layout Standard
-After experimenting on our implementation of Deep Inversion, we finally
- got to run it on a well performing subnetwork of a randomly initialized
- ResNet-50 that was extracted using the edge-popup algorithm 
+After experimenting on our implementation of DeepInversion, we finally got
+ to run it on a well performing subnetwork of a randomly initialized ResNet-50
+ that was extracted using the edge-popup algorithm 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "Ramanujan2019"
@@ -2373,7 +2372,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Labeled samples from applying Deep Inversion on a Hidden Subnetwork
+Labeled samples from applying DeepInversion on a Hidden Subnetwork
 \end_layout
 
 \end_inset
@@ -2417,7 +2416,7 @@ noprefix "false"
 One could then ask why our results do not resemble those of Deep Dream,
  then? We believe the reason for that is that while the loss function used
  in Deep Dream is usually the raw output of some layer (or the class scores,
- in case of the last layer), In Deep Inversion on the other hand the loss
+ in case of the last layer), In DeepInversion on the other hand the loss
  function is the Cross Entropy loss.
  In 
 \begin_inset CommandInset citation
@@ -2434,7 +2433,7 @@ also
 \bar default
  tries to minimize the probability of it belonging to any of the other labels,
  which could potentially insert unwanted noise into the image.
- Furthermore, we believe that using Deep Inversion without 
+ Furthermore, we believe that using DeepInversion without 
 \begin_inset Formula $\rfeature$
 \end_inset
 
