@@ -106,7 +106,7 @@ def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', ep
 
 
 def main():
-    train_student_model('dataset')
+    train_student_model()
 
 
 if __name__ == '__main__':
