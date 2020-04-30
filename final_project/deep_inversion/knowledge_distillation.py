@@ -86,7 +86,7 @@ def train_student_model(train_set_dir='dataset', test_set_dir='test_dataset', ep
             test_loss, test_accuracy = test_set_evaluation(test_dataset_loader, model)
             test_loss_list.append(test_loss)
             test_accuracy_list.append(test_accuracy)
-            epoch_pbar.set_description_str(f'Epoch: {epoch_idx+1} Train Loss: {train_loss}'
+            epoch_pbar.set_description_str(f'Epoch: {epoch_idx + 1} Train Loss: {train_loss}'
                                            f' Train Accuracy: {train_accuracy}'
                                            f'Test Loss: {test_loss} Test Accuracy: {test_accuracy}')
             epoch_pbar.update()

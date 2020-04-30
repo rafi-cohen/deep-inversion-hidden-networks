@@ -70,7 +70,7 @@ class DeepInvert:
         with tqdm(total=iterations) as pbar:
             for i in range(iterations):
                 # apply jitter
-                dx, dy = torch.randint(-jitter, jitter+1, size=(2,)).tolist()
+                dx, dy = torch.randint(-jitter, jitter + 1, size=(2,)).tolist()
                 input = batch.roll(shifts=(dx, dy), dims=(-1, -2))
 
                 # apply horizontal flip, if needed

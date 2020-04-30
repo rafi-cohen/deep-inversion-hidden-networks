@@ -6,8 +6,8 @@ class Denormalize(object):
         self.mean = mean
         self.std = std
         self.inplace = inplace
-        self.demean = [-m/s for m, s in zip(mean, std)]
-        self.destd = [1/s for s in std]
+        self.demean = [-m / s for m, s in zip(mean, std)]
+        self.destd = [1 / s for s in std]
 
     def __call__(self, tensor):
         return F.normalize(tensor, self.demean, self.destd, self.inplace)
