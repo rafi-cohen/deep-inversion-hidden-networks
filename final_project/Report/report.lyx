@@ -2454,18 +2454,23 @@ Conclusion
 \end_layout
 
 \begin_layout Standard
-In this project we have presented the first public implementation of DeepInversi
-on, a method which allows reconstructing high-quality class-conditional
- images from a pretrained CNN using the hidden data stored in its batch
- normalization layers.
- 
+In this project we have presented an implementation of DeepInversion, a
+ method which allows reconstructing high-quality class-conditional images
+ from a pretrained CNN using the hidden data stored in its batch normalization
+ layers.
 \end_layout
 
 \begin_layout Standard
-We believe that our results demonstrate the potential of the method for
- purposes such as knowledge distillation, but have also concluded that in
- order to unlock this full potential one would first have to further tune
- the model - a very challenging and time demanding task.
+We have shown that since Hidden Subnetworks do not contain said hidden data,
+ applying DeepInversion on them results in unsatisfactory results.
+\end_layout
+
+\begin_layout Standard
+Additionally, we believe that our results on DeepInversion demonstrate the
+ potential of the method for purposes such as knowledge distillation, but
+ have also concluded that in order to unlock this full potential one would
+ first have to further tune the model - a very challenging and time demanding
+ task.
 \end_layout
 
 \begin_layout Standard
