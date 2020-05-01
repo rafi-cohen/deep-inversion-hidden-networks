@@ -93,7 +93,83 @@
 \begin_body
 
 \begin_layout Title
-Final Project Report
+
+\size huge
+A Journey Inside DeepInversion
+\size default
+
+\begin_inset Newline newline
+\end_inset
+
+
+\size larger
+236781 - Final Project Report
+\end_layout
+
+\begin_layout Author
+Adam Botach
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{
+\end_layout
+
+\end_inset
+
+botach@cs.technion.ac.il
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\backslash
+and 
+\end_layout
+
+\end_inset
+
+Rafi Cohen
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+texttt{
+\end_layout
+
+\end_inset
+
+raficohen@cs.technion.ac.il
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
