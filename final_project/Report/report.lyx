@@ -2257,17 +2257,62 @@ status open
 \noindent
 \align center
 \begin_inset Graphics
-	filename Figures/Experiments/DI Image Examples.png
-	scale 40
-	BoundingBox 0bp 0bp 851bp 573bp
+	filename Figures/Experiments/DI Image Examples (1).png
+	width 100line%
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Plain Layout
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Labeled samples from applying DeepInversion on ResNet-50 pretrained on ImageNet
+Samples from applying DeepInversion on ResNet-50 pretrained on ImageNet.
+ Classes top to bottom: jellyfish, golden retriever, brown bear, otter,
+ beer bottle, golf ball, hand-held computer.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Figures/Experiments/DI Image Examples (2).png
+	width 100line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Samples from applying DeepInversion on ResNet-50 pretrained on ImageNet.
+ Classes top to bottom: snail, volcano, cup, cheeseburger, traffic light,
+ bee eater, restaurant.
 \end_layout
 
 \end_inset
@@ -2439,7 +2484,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/Experiments/DI + HiddenSubnets.png
-	scale 40
+	width 100line%
 
 \end_inset
 
@@ -2450,7 +2495,7 @@ status open
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Labeled samples from applying DeepInversion on a Hidden Subnetwork
+Labeled samples from applying DeepInversion on a Hidden Subnetwork.
 \end_layout
 
 \end_inset
